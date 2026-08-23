@@ -1,0 +1,28 @@
+# This file configures the analyzer, which statically analyzes Dart code to
+# check for errors, warnings, and lints.
+
+include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  language:
+    strict-casts: true       # 型安全性の強化（暗黙の型変換を禁止）
+    strict-inference: true   # dynamic への暗黙推論を禁止
+    strict-raw-types: true   # ジェネリクスの型省略を禁止
+  errors:
+    # 生成コード（DriftやFreezedの *.g.dart）の警告を無視する設定
+    invalid_annotation_target: ignore
+
+linter:
+  rules:
+    # ----------------------------------------------------
+    # 【最重要】パラメータの横一列化を防ぎ、末尾カンマを強制する
+    # ----------------------------------------------------
+    require_trailing_commas: true
+
+    # ----------------------------------------------------
+    # 個人開発で邪魔になりやすい厳格ルールを無効化 (OFF)
+    # ----------------------------------------------------
+    public_member_api_docs: false      # 全てのクラス/関数へのコメント記述を免除
+    lines_longer_than_80_chars: false  # 1行80文字制限を緩和（Flutterでは厳しすぎるため）
+    avoid_classes_with_only_static_members: false # 定数クラスなどの作成を許可
+    one_member_abstracts: false        # 1メソッドのみのインターフェース作成を許可
