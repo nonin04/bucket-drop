@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:bucket_drop/features/calculator/presentation/calculator_controller.dart';
+import 'package:bucket_drop/core/presentation/widgets/calculator/calculator_controller.dart';
 
-class CalculatorPage extends ConsumerWidget {
-  const CalculatorPage({super.key});
+class CalculatorWidget extends ConsumerWidget {
+  const CalculatorWidget({super.key});
 
   // 3桁区切りのカンマを挿入するメソッド
   String _formatWithCommas(String value) {
