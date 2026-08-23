@@ -46,7 +46,7 @@ class AppNavigationBar extends ConsumerWidget {
       destinations: <Widget>[
         _buildDestination(icon: Symbols.home_rounded, label: 'ホーム'),
         _buildDestination(icon: Symbols.calendar_month_rounded, label: 'カレンダー'),
-        _buildDestination(icon: Symbols.area_chart_rounded, label: '分析'),
+        _buildDestination(icon: Symbols.area_chart_rounded, label: '集計・分析'),
         _buildDestination(icon: Symbols.save_as_rounded, label: 'エクスポート'),
         _buildDestination(icon: Symbols.settings_rounded, label: '設定'),
       ],

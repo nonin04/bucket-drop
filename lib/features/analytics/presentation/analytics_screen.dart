@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bucket_drop/features/drop/presentation/widgets/message_widget.dart';
+import 'package:bucket_drop/features/analytics/presentation/widgets/message_widget.dart';
 
 class AnalyticsScreen extends StatelessWidget {
   const AnalyticsScreen({super.key});

@@ -55,16 +55,16 @@ class MessageWidget extends ConsumerWidget {
           Expanded(
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                     "飛行機KIX-JFK",
+                  Text(
+                    '飛行機KIX-JFK',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                  const Text(
-                    "by UserA",
+                  Text(
+                    'by UserA',
                     style: TextStyle(color: Color.fromARGB(255, 179, 179, 179)),
                   ),
                 ],
