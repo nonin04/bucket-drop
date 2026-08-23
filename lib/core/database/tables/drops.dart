@@ -3,8 +3,6 @@ import 'package:bucket_drop/core/enums/drop_type.dart';
 import 'package:bucket_drop/core/database/tables/categories.dart';
 import 'package:bucket_drop/core/database/tables/buckets.dart';
 
-part 'drops.g.dart';
-
 class Drops extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text()();

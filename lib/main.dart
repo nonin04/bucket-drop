@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:bucket_drop/core/database/app_database.dart';
 import 'package:bucket_drop/features/home/presentation/home_screen.dart';
 import 'package:bucket_drop/features/calendar/presentation/calendar_screen.dart';
 import 'package:bucket_drop/features/analytics/presentation/analytics_screen.dart';
@@ -11,6 +12,7 @@ import 'package:bucket_drop/features/navigation/presentation/app_navigation_bar.
 
 void main() {
   debugPaintSizeEnabled = false; // ウィジェットの境界線（形）を表示する
+  final database = AppDatabase(); //追加
   runApp(const ProviderScope(child: MyApp()));
 }
 
