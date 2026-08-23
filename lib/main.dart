@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:bucket_drop/test_page_1.dart';
-import 'package:bucket_drop/test_page_2.dart';
-import 'package:bucket_drop/test_page_3.dart';
-import 'package:bucket_drop/test_page_4.dart';
-import 'package:bucket_drop/test_page_5.dart';
-import 'package:bucket_drop/index_notifier.dart';
-import 'package:bucket_drop/app_navigation_bar.dart';
+import 'package:bucket_drop/features/home/presentation/home_screen.dart';
+import 'package:bucket_drop/features/calendar/presentation/calendar_screen.dart';
+import 'package:bucket_drop/features/analytics/presentation/analytics_screen.dart';
+import 'package:bucket_drop/features/export/presentation/export_screen.dart';
+import 'package:bucket_drop/features/settings/presentation/settings_screen.dart';
+import 'package:bucket_drop/features/navigation/presentation/index_controller.dart';
+import 'package:bucket_drop/features/navigation/presentation/app_navigation_bar.dart';
 
 void main() {
   debugPaintSizeEnabled = false; // ウィジェットの境界線（形）を表示する
@@ -46,11 +46,11 @@ class MainPage extends ConsumerWidget {
     final currentIndex = ref.watch(indexProvider);
 
     final List<Widget> pages = [
-      const TestPage1(),
-      const TestPage2(),
-      const TestPage3(),
-      const TestPage4(),
-      const TestPage5(),
+      const HomeScreen(),
+      const CalendarScreen(),
+      const AnalyticsScreen(),
+      const ExportScreen(),
+      const SettingsScreen(),
     ];
 
     return Scaffold(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:bucket_drop/index_notifier.dart';
+import 'package:bucket_drop/features/navigation/presentation/index_controller.dart';
 
-class TestPage2 extends ConsumerWidget {
-  const TestPage2({super.key});
+class CalendarScreen extends ConsumerWidget {
+  const CalendarScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

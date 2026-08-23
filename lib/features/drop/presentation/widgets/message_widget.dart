@@ -60,7 +60,7 @@ class MessageWidget extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    "飛行機KIX-JFK",
+                     "飛行機KIX-JFK",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   const Text(

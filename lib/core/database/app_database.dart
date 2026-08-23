@@ -19,14 +19,10 @@ part 'app_database.g.dart';
     Drops,
     Icons,
   ],
-  include: {
-    'queries/filters.drift',
-  },
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection);
 
   @override
   int get schemaVersion => 1;
-
 }

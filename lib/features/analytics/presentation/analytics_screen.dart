@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:bucket_drop/message_widget.dart';
+import 'package:bucket_drop/features/drop/presentation/widgets/message_widget.dart';
 
-class TestPage3 extends StatelessWidget {
-  const TestPage3({super.key});
+class AnalyticsScreen extends StatelessWidget {
+  const AnalyticsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +11,7 @@ class TestPage3 extends StatelessWidget {
       body: Center(
         child: ListView.builder(
           itemBuilder: (context, index) {
-            return MessageWidget();
+            return const MessageWidget();
           },
           itemCount: 100,
         ),

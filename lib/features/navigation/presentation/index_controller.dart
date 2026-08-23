@@ -8,8 +8,6 @@ class IndexNotifier extends Notifier<int> {
 
   void setIndex(int newIndex) {
     state = newIndex;
-    // ページを切り替え
-    
   }
 }
 

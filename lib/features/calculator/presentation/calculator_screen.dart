@@ -1,68 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:bucket_drop/features/calculator/presentation/calculator_controller.dart';
 
-// build_runner用のpart指定（Riverpod生成コード用）
-part 'calculator.g.dart';
-
-// ==========================================
-// 1. 計算・状態管理（ロジック）クラス
-// ==========================================
-@riverpod
-class Calculator extends _$Calculator {
-  Timer? _timer;
-
-  @override
-  String build() {
-    ref.onDispose(() {
-      _timer?.cancel();
-    });
-    return '0';
-  }
-
-  void inputDigit(String digit) {
-    const maxDigit = 10;
-    if (state.length >= maxDigit) {
-      return;
-    }
-
-    if (state == '0') {
-      state = digit;
-    } else {
-      state = state + digit;
-    }
-  }
-
-  void clear() {
-    state = '0';
-  }
-
-  void deleteDigit() {
-    if (state.length <= 1) {
-      state = '0';
-    } else {
-      state = state.substring(0, state.length - 1);
-    }
-  }
-
-  void startAutoDelete() {
-    _timer?.cancel();
-    deleteDigit(); // 長押しがトリガーされた瞬間にまず1文字消す
-    _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
-      deleteDigit();
-    });
-  }
-
-  void stopAutoDelete() {
-    _timer?.cancel();
-    _timer = null;
-  }
-}
-
-// ==========================================
-// 2. 描画（UI）クラス (キーパッドWidget)
-// ==========================================
 class CalculatorPage extends ConsumerWidget {
   const CalculatorPage({super.key});
 

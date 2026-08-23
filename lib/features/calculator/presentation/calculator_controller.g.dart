@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'calculator.dart';
+part of 'calculator_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -40,7 +40,7 @@ final class CalculatorProvider extends $NotifierProvider<Calculator, String> {
   }
 }
 
-String _$calculatorHash() => r'5253dfdf0e50f43860bc1486489913ce96dccd77';
+String _$calculatorHash() => r'f1c15501ba3301f95540b529529d9680997adb0b';
 
 abstract class _$Calculator extends $Notifier<String> {
   String build();

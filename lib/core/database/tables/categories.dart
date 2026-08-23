@@ -1,6 +1,5 @@
 import 'package:drift/drift.dart';
-import 'icons.dart';
-part '../categories.g.dart';
+import 'package:bucket_drop/core/database/tables/icons.dart';
 
 class Categories extends Table {
   IntColumn get id => integer().autoIncrement()();

@@ -1,8 +1,7 @@
 import 'package:drift/drift.dart';
-import '../../models/enums/drop_type.dart';
-import 'categories.dart';
-import 'buckets.dart';
-part '../drops.g.dart';
+import 'package:bucket_drop/core/enums/drop_type.dart';
+import 'package:bucket_drop/core/database/tables/categories.dart';
+import 'package:bucket_drop/core/database/tables/buckets.dart';
 
 class Drops extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -17,18 +16,4 @@ class Drops extends Table {
   IntColumn get parentDropId => integer().nullable().references(Drops, #id)();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
-}
-
-@DriftDatabase(tables: [Drops])
-class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
-
-  @override
-  int get schemaVersion => 1;
-}
-
-Future<DatabaseConnection> _openConnection() async {
-  final dbFolder = await getApplicationDocumentsDirectory();
-  final file = File(p.join(dbFolder.path, 'db.sqlite'));
-  return DatabaseConnection(file);
 }

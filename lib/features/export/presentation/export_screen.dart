@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class TestPage4 extends StatelessWidget {
-  const TestPage4({super.key});
+class ExportScreen extends StatelessWidget {
+  const ExportScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: const Center(
+    return const Scaffold(
+      body: Center(
         child: Text("page4です", style: TextStyle(fontSize: 24)),
       ),
     );
