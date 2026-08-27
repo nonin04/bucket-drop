@@ -1,6 +1,6 @@
-import 'package:drift/drift.dart';
-import 'package:bucket_drop/core/enums/bucket_type.dart';
 import 'package:bucket_drop/core/database/tables/icons.dart';
+import 'package:bucket_drop/core/enums/bucket_type.dart';
+import 'package:drift/drift.dart';
 
 class Buckets extends Table {
   IntColumn get id => integer().autoIncrement()();

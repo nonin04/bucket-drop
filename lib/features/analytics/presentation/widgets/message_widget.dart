@@ -74,7 +74,7 @@ class MessageWidget extends ConsumerWidget {
           const Padding(
             padding: EdgeInsets.only(right: 16),
             child: Text(
-              "¥15,000",
+              '¥15,000',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 20,

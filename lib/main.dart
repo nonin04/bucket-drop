@@ -1,18 +1,16 @@
+import 'package:bucket_drop/features/analytics/presentation/analytics_screen.dart';
+import 'package:bucket_drop/features/calendar/presentation/calendar_screen.dart';
+import 'package:bucket_drop/features/export/presentation/export_screen.dart';
+import 'package:bucket_drop/features/home/presentation/home_screen.dart';
+import 'package:bucket_drop/features/navigation/presentation/app_navigation_bar.dart';
+import 'package:bucket_drop/features/navigation/presentation/index_controller.dart';
+import 'package:bucket_drop/features/settings/presentation/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:bucket_drop/core/database/app_database.dart';
-import 'package:bucket_drop/features/home/presentation/home_screen.dart';
-import 'package:bucket_drop/features/calendar/presentation/calendar_screen.dart';
-import 'package:bucket_drop/features/analytics/presentation/analytics_screen.dart';
-import 'package:bucket_drop/features/export/presentation/export_screen.dart';
-import 'package:bucket_drop/features/settings/presentation/settings_screen.dart';
-import 'package:bucket_drop/features/navigation/presentation/index_controller.dart';
-import 'package:bucket_drop/features/navigation/presentation/app_navigation_bar.dart';
 
 void main() {
   debugPaintSizeEnabled = false; // ウィジェットの境界線（形）を表示する
-  final database = AppDatabase(); //追加
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -55,10 +53,16 @@ class MainPage extends ConsumerWidget {
       const SettingsScreen(),
     ];
 
-    return Scaffold(
-      appBar: AppBar(backgroundColor: const Color.fromARGB(255, 255, 255, 255)),
-      body: IndexedStack(index: currentIndex, children: pages),
-      bottomNavigationBar: const AppNavigationBar(),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        // appBar: AppBar(
+        //   backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        // ),
+        body: IndexedStack(index: currentIndex, children: pages),
+        bottomNavigationBar: const AppNavigationBar(),
+      ),
     );
   }
 }

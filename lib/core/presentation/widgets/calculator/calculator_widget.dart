@@ -1,6 +1,7 @@
+import 'package:bucket_drop/core/presentation/widgets/calculator/calculator_controller.dart';
+import 'package:bucket_drop/core/presentation/widgets/neumorphic_inner_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:bucket_drop/core/presentation/widgets/calculator/calculator_controller.dart';
 
 class CalculatorWidget extends ConsumerWidget {
   const CalculatorWidget({super.key});
@@ -41,7 +42,8 @@ class CalculatorWidget extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: GestureDetector(
-          onTap: onTap,
+          onTap: key == 'Delete' ? onTap : null,
+          onTapDown: key != 'Delete' ? (_) => onTap?.call() : null,
           onLongPressStart: onLongPressStart,
           onLongPressEnd: onLongPressEnd,
           onLongPressUp: onLongPressUp,
@@ -50,7 +52,21 @@ class CalculatorWidget extends ConsumerWidget {
             height: 60, // 縦横比を整えるための固定の高さ
             decoration: BoxDecoration(
               color: bgColor,
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                const BoxShadow(
+                  color: Colors.white,
+                  offset: Offset(-3, -3),
+                  blurRadius: 5,
+                  spreadRadius: 1,
+                ),
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.6),
+                  offset: const Offset(3, 3),
+                  blurRadius: 5,
+                  spreadRadius: 1,
+                ),
+              ],
             ),
             child: Center(
               child: Text(
@@ -71,34 +87,36 @@ class CalculatorWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(8.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // 現在値の表示エリア
-          Container(
-            padding: const EdgeInsets.all(16.0),
-            alignment: Alignment.centerRight,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: const Color.fromARGB(255, 208, 208, 208),
+          NeumorphicInnerShadow(
+            child: Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 4.0,
               ),
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-            child: Consumer(
-              builder: (context, ref, child) {
-                final result = ref.watch(calculatorProvider);
-                return Text(
-                  '${_formatWithCommas(result)}円',
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              },
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 8.0,
+              ),
+              alignment: Alignment.centerRight,
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final result = ref.watch(calculatorProvider);
+                  return Text(
+                    '${_formatWithCommas(result)}円',
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
+              ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           // テンキー部分（軽量なRow/Columnで固定配置）
           Column(
             children: [

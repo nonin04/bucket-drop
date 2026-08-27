@@ -1,7 +1,7 @@
-import 'package:drift/drift.dart';
-import 'package:bucket_drop/core/enums/drop_type.dart';
-import 'package:bucket_drop/core/database/tables/categories.dart';
 import 'package:bucket_drop/core/database/tables/buckets.dart';
+import 'package:bucket_drop/core/database/tables/categories.dart';
+import 'package:bucket_drop/core/enums/drop_type.dart';
+import 'package:drift/drift.dart';
 
 class Drops extends Table {
   IntColumn get id => integer().autoIncrement()();

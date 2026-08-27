@@ -1,5 +1,5 @@
-import 'package:drift/drift.dart';
 import 'package:bucket_drop/core/database/tables/buckets.dart';
+import 'package:drift/drift.dart';
 
 class BucketBalances extends Table {
   IntColumn get id => integer().autoIncrement()();
