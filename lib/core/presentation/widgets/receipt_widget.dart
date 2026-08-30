@@ -1,5 +1,4 @@
-import 'package:bucket_drop/core/presentation/widgets/calculator/calculator_controller.dart';
-import 'package:bucket_drop/core/presentation/widgets/transaction_providers.dart';
+import 'package:bucket_drop/features/drop/presentation/transaction_input_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,8 +14,9 @@ class ReceiptWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final amount = ref.watch(calculatorProvider);
-    final title = ref.watch(transactionTitleProvider);
+    final formState = ref.watch(transactionInputControllerProvider);
+    final amount = formState.amount;
+    final title = formState.title;
 
     final now = DateTime.now();
     final formattedDate =
