@@ -3,17 +3,19 @@ import 'package:bucket_drop/core/database/tables/categories.dart';
 import 'package:bucket_drop/core/enums/drop_type.dart';
 import 'package:drift/drift.dart';
 
+@DataClassName('DropTable')
 class Drops extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text()();
   IntColumn get amount => integer()();
-  IntColumn get categoryId => integer().references(Categories, #id)();
-  IntColumn get bucketId => integer().references(Buckets, #id)();
+  IntColumn get categoryId =>
+      integer().nullable().references(Categories, #id)();
+  IntColumn get bucketId => integer().nullable().references(Buckets, #id)();
   IntColumn get toBucketId => integer().nullable().references(Buckets, #id)();
-  TextColumn get dropType => textEnum<DropType>()();
+  TextColumn get dropType => textEnum<DropType>().nullable()();
   DateTimeColumn get date => dateTime()();
   TextColumn get notes => text().nullable()();
   IntColumn get parentDropId => integer().nullable().references(Drops, #id)();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }

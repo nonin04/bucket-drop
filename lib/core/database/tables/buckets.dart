@@ -2,6 +2,7 @@ import 'package:bucket_drop/core/database/tables/icons.dart';
 import 'package:bucket_drop/core/enums/bucket_type.dart';
 import 'package:drift/drift.dart';
 
+@DataClassName('BucketTable')
 class Buckets extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();

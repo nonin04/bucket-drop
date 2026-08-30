@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 
+@DataClassName('IconTable')
 class Icons extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get codePoint => integer()();

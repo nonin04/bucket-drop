@@ -3,7 +3,7 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
-class $IconsTable extends Icons with TableInfo<$IconsTable, Icon> {
+class $IconsTable extends Icons with TableInfo<$IconsTable, IconTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -62,7 +62,7 @@ class $IconsTable extends Icons with TableInfo<$IconsTable, Icon> {
   static const String $name = 'icons';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Icon> instance, {
+    Insertable<IconTable> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -96,9 +96,9 @@ class $IconsTable extends Icons with TableInfo<$IconsTable, Icon> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Icon map(Map<String, dynamic> data, {String? tablePrefix}) {
+  IconTable map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Icon(
+    return IconTable(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -124,12 +124,12 @@ class $IconsTable extends Icons with TableInfo<$IconsTable, Icon> {
   }
 }
 
-class Icon extends DataClass implements Insertable<Icon> {
+class IconTable extends DataClass implements Insertable<IconTable> {
   final int id;
   final int codePoint;
   final String fontFamily;
   final String? name;
-  const Icon({
+  const IconTable({
     required this.id,
     required this.codePoint,
     required this.fontFamily,
@@ -156,12 +156,12 @@ class Icon extends DataClass implements Insertable<Icon> {
     );
   }
 
-  factory Icon.fromJson(
+  factory IconTable.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Icon(
+    return IconTable(
       id: serializer.fromJson<int>(json['id']),
       codePoint: serializer.fromJson<int>(json['codePoint']),
       fontFamily: serializer.fromJson<String>(json['fontFamily']),
@@ -179,19 +179,19 @@ class Icon extends DataClass implements Insertable<Icon> {
     };
   }
 
-  Icon copyWith({
+  IconTable copyWith({
     int? id,
     int? codePoint,
     String? fontFamily,
     Value<String?> name = const Value.absent(),
-  }) => Icon(
+  }) => IconTable(
     id: id ?? this.id,
     codePoint: codePoint ?? this.codePoint,
     fontFamily: fontFamily ?? this.fontFamily,
     name: name.present ? name.value : this.name,
   );
-  Icon copyWithCompanion(IconsCompanion data) {
-    return Icon(
+  IconTable copyWithCompanion(IconsCompanion data) {
+    return IconTable(
       id: data.id.present ? data.id.value : this.id,
       codePoint: data.codePoint.present ? data.codePoint.value : this.codePoint,
       fontFamily: data.fontFamily.present
@@ -203,7 +203,7 @@ class Icon extends DataClass implements Insertable<Icon> {
 
   @override
   String toString() {
-    return (StringBuffer('Icon(')
+    return (StringBuffer('IconTable(')
           ..write('id: $id, ')
           ..write('codePoint: $codePoint, ')
           ..write('fontFamily: $fontFamily, ')
@@ -217,14 +217,14 @@ class Icon extends DataClass implements Insertable<Icon> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Icon &&
+      (other is IconTable &&
           other.id == this.id &&
           other.codePoint == this.codePoint &&
           other.fontFamily == this.fontFamily &&
           other.name == this.name);
 }
 
-class IconsCompanion extends UpdateCompanion<Icon> {
+class IconsCompanion extends UpdateCompanion<IconTable> {
   final Value<int> id;
   final Value<int> codePoint;
   final Value<String> fontFamily;
@@ -241,7 +241,7 @@ class IconsCompanion extends UpdateCompanion<Icon> {
     this.fontFamily = const Value.absent(),
     this.name = const Value.absent(),
   }) : codePoint = Value(codePoint);
-  static Insertable<Icon> custom({
+  static Insertable<IconTable> custom({
     Expression<int>? id,
     Expression<int>? codePoint,
     Expression<String>? fontFamily,
@@ -299,7 +299,7 @@ class IconsCompanion extends UpdateCompanion<Icon> {
   }
 }
 
-class $BucketsTable extends Buckets with TableInfo<$BucketsTable, Bucket> {
+class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -397,7 +397,7 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, Bucket> {
   static const String $name = 'buckets';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Bucket> instance, {
+    Insertable<BucketTable> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -445,9 +445,9 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, Bucket> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Bucket map(Map<String, dynamic> data, {String? tablePrefix}) {
+  BucketTable map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Bucket(
+    return BucketTable(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -490,7 +490,7 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, Bucket> {
       const EnumNameConverter<BucketType>(BucketType.values);
 }
 
-class Bucket extends DataClass implements Insertable<Bucket> {
+class BucketTable extends DataClass implements Insertable<BucketTable> {
   final int id;
   final String name;
   final BucketType bucketType;
@@ -498,7 +498,7 @@ class Bucket extends DataClass implements Insertable<Bucket> {
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
-  const Bucket({
+  const BucketTable({
     required this.id,
     required this.name,
     required this.bucketType,
@@ -540,12 +540,12 @@ class Bucket extends DataClass implements Insertable<Bucket> {
     );
   }
 
-  factory Bucket.fromJson(
+  factory BucketTable.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Bucket(
+    return BucketTable(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       bucketType: $BucketsTable.$converterbucketType.fromJson(
@@ -573,7 +573,7 @@ class Bucket extends DataClass implements Insertable<Bucket> {
     };
   }
 
-  Bucket copyWith({
+  BucketTable copyWith({
     int? id,
     String? name,
     BucketType? bucketType,
@@ -581,7 +581,7 @@ class Bucket extends DataClass implements Insertable<Bucket> {
     Value<String?> notes = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) => Bucket(
+  }) => BucketTable(
     id: id ?? this.id,
     name: name ?? this.name,
     bucketType: bucketType ?? this.bucketType,
@@ -590,8 +590,8 @@ class Bucket extends DataClass implements Insertable<Bucket> {
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
-  Bucket copyWithCompanion(BucketsCompanion data) {
-    return Bucket(
+  BucketTable copyWithCompanion(BucketsCompanion data) {
+    return BucketTable(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       bucketType: data.bucketType.present
@@ -606,7 +606,7 @@ class Bucket extends DataClass implements Insertable<Bucket> {
 
   @override
   String toString() {
-    return (StringBuffer('Bucket(')
+    return (StringBuffer('BucketTable(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('bucketType: $bucketType, ')
@@ -624,7 +624,7 @@ class Bucket extends DataClass implements Insertable<Bucket> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Bucket &&
+      (other is BucketTable &&
           other.id == this.id &&
           other.name == this.name &&
           other.bucketType == this.bucketType &&
@@ -634,7 +634,7 @@ class Bucket extends DataClass implements Insertable<Bucket> {
           other.updatedAt == this.updatedAt);
 }
 
-class BucketsCompanion extends UpdateCompanion<Bucket> {
+class BucketsCompanion extends UpdateCompanion<BucketTable> {
   final Value<int> id;
   final Value<String> name;
   final Value<BucketType> bucketType;
@@ -662,7 +662,7 @@ class BucketsCompanion extends UpdateCompanion<Bucket> {
   }) : name = Value(name),
        bucketType = Value(bucketType),
        iconId = Value(iconId);
-  static Insertable<Bucket> custom({
+  static Insertable<BucketTable> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? bucketType,
@@ -747,7 +747,7 @@ class BucketsCompanion extends UpdateCompanion<Bucket> {
 }
 
 class $BucketBalancesTable extends BucketBalances
-    with TableInfo<$BucketBalancesTable, BucketBalance> {
+    with TableInfo<$BucketBalancesTable, BucketBalanceTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -839,7 +839,7 @@ class $BucketBalancesTable extends BucketBalances
   static const String $name = 'bucket_balances';
   @override
   VerificationContext validateIntegrity(
-    Insertable<BucketBalance> instance, {
+    Insertable<BucketBalanceTable> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -889,9 +889,9 @@ class $BucketBalancesTable extends BucketBalances
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  BucketBalance map(Map<String, dynamic> data, {String? tablePrefix}) {
+  BucketBalanceTable map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BucketBalance(
+    return BucketBalanceTable(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -925,14 +925,15 @@ class $BucketBalancesTable extends BucketBalances
   }
 }
 
-class BucketBalance extends DataClass implements Insertable<BucketBalance> {
+class BucketBalanceTable extends DataClass
+    implements Insertable<BucketBalanceTable> {
   final int id;
   final int bucketId;
   final int balance;
   final DateTime date;
   final DateTime createdAt;
   final DateTime updatedAt;
-  const BucketBalance({
+  const BucketBalanceTable({
     required this.id,
     required this.bucketId,
     required this.balance,
@@ -963,12 +964,12 @@ class BucketBalance extends DataClass implements Insertable<BucketBalance> {
     );
   }
 
-  factory BucketBalance.fromJson(
+  factory BucketBalanceTable.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BucketBalance(
+    return BucketBalanceTable(
       id: serializer.fromJson<int>(json['id']),
       bucketId: serializer.fromJson<int>(json['bucketId']),
       balance: serializer.fromJson<int>(json['balance']),
@@ -990,14 +991,14 @@ class BucketBalance extends DataClass implements Insertable<BucketBalance> {
     };
   }
 
-  BucketBalance copyWith({
+  BucketBalanceTable copyWith({
     int? id,
     int? bucketId,
     int? balance,
     DateTime? date,
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) => BucketBalance(
+  }) => BucketBalanceTable(
     id: id ?? this.id,
     bucketId: bucketId ?? this.bucketId,
     balance: balance ?? this.balance,
@@ -1005,8 +1006,8 @@ class BucketBalance extends DataClass implements Insertable<BucketBalance> {
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
-  BucketBalance copyWithCompanion(BucketBalancesCompanion data) {
-    return BucketBalance(
+  BucketBalanceTable copyWithCompanion(BucketBalancesCompanion data) {
+    return BucketBalanceTable(
       id: data.id.present ? data.id.value : this.id,
       bucketId: data.bucketId.present ? data.bucketId.value : this.bucketId,
       balance: data.balance.present ? data.balance.value : this.balance,
@@ -1018,7 +1019,7 @@ class BucketBalance extends DataClass implements Insertable<BucketBalance> {
 
   @override
   String toString() {
-    return (StringBuffer('BucketBalance(')
+    return (StringBuffer('BucketBalanceTable(')
           ..write('id: $id, ')
           ..write('bucketId: $bucketId, ')
           ..write('balance: $balance, ')
@@ -1035,7 +1036,7 @@ class BucketBalance extends DataClass implements Insertable<BucketBalance> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is BucketBalance &&
+      (other is BucketBalanceTable &&
           other.id == this.id &&
           other.bucketId == this.bucketId &&
           other.balance == this.balance &&
@@ -1044,7 +1045,7 @@ class BucketBalance extends DataClass implements Insertable<BucketBalance> {
           other.updatedAt == this.updatedAt);
 }
 
-class BucketBalancesCompanion extends UpdateCompanion<BucketBalance> {
+class BucketBalancesCompanion extends UpdateCompanion<BucketBalanceTable> {
   final Value<int> id;
   final Value<int> bucketId;
   final Value<int> balance;
@@ -1069,7 +1070,7 @@ class BucketBalancesCompanion extends UpdateCompanion<BucketBalance> {
   }) : bucketId = Value(bucketId),
        balance = Value(balance),
        date = Value(date);
-  static Insertable<BucketBalance> custom({
+  static Insertable<BucketBalanceTable> custom({
     Expression<int>? id,
     Expression<int>? bucketId,
     Expression<int>? balance,
@@ -1144,7 +1145,7 @@ class BucketBalancesCompanion extends UpdateCompanion<BucketBalance> {
 }
 
 class $CategoriesTable extends Categories
-    with TableInfo<$CategoriesTable, Category> {
+    with TableInfo<$CategoriesTable, CategoryTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1192,7 +1193,7 @@ class $CategoriesTable extends Categories
   static const String $name = 'categories';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Category> instance, {
+    Insertable<CategoryTable> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1220,9 +1221,9 @@ class $CategoriesTable extends Categories
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Category map(Map<String, dynamic> data, {String? tablePrefix}) {
+  CategoryTable map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Category(
+    return CategoryTable(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -1244,11 +1245,11 @@ class $CategoriesTable extends Categories
   }
 }
 
-class Category extends DataClass implements Insertable<Category> {
+class CategoryTable extends DataClass implements Insertable<CategoryTable> {
   final int id;
   final int iconId;
   final String? name;
-  const Category({required this.id, required this.iconId, this.name});
+  const CategoryTable({required this.id, required this.iconId, this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1268,12 +1269,12 @@ class Category extends DataClass implements Insertable<Category> {
     );
   }
 
-  factory Category.fromJson(
+  factory CategoryTable.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Category(
+    return CategoryTable(
       id: serializer.fromJson<int>(json['id']),
       iconId: serializer.fromJson<int>(json['iconId']),
       name: serializer.fromJson<String?>(json['name']),
@@ -1289,17 +1290,17 @@ class Category extends DataClass implements Insertable<Category> {
     };
   }
 
-  Category copyWith({
+  CategoryTable copyWith({
     int? id,
     int? iconId,
     Value<String?> name = const Value.absent(),
-  }) => Category(
+  }) => CategoryTable(
     id: id ?? this.id,
     iconId: iconId ?? this.iconId,
     name: name.present ? name.value : this.name,
   );
-  Category copyWithCompanion(CategoriesCompanion data) {
-    return Category(
+  CategoryTable copyWithCompanion(CategoriesCompanion data) {
+    return CategoryTable(
       id: data.id.present ? data.id.value : this.id,
       iconId: data.iconId.present ? data.iconId.value : this.iconId,
       name: data.name.present ? data.name.value : this.name,
@@ -1308,7 +1309,7 @@ class Category extends DataClass implements Insertable<Category> {
 
   @override
   String toString() {
-    return (StringBuffer('Category(')
+    return (StringBuffer('CategoryTable(')
           ..write('id: $id, ')
           ..write('iconId: $iconId, ')
           ..write('name: $name')
@@ -1321,13 +1322,13 @@ class Category extends DataClass implements Insertable<Category> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Category &&
+      (other is CategoryTable &&
           other.id == this.id &&
           other.iconId == this.iconId &&
           other.name == this.name);
 }
 
-class CategoriesCompanion extends UpdateCompanion<Category> {
+class CategoriesCompanion extends UpdateCompanion<CategoryTable> {
   final Value<int> id;
   final Value<int> iconId;
   final Value<String?> name;
@@ -1341,7 +1342,7 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     required int iconId,
     this.name = const Value.absent(),
   }) : iconId = Value(iconId);
-  static Insertable<Category> custom({
+  static Insertable<CategoryTable> custom({
     Expression<int>? id,
     Expression<int>? iconId,
     Expression<String>? name,
@@ -1391,7 +1392,7 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
   }
 }
 
-class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
+class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1434,9 +1435,9 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
   late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
     'category_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES categories (id)',
     ),
@@ -1448,9 +1449,9 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
   late final GeneratedColumn<int> bucketId = GeneratedColumn<int>(
     'bucket_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES buckets (id)',
     ),
@@ -1470,14 +1471,14 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
     ),
   );
   @override
-  late final GeneratedColumnWithTypeConverter<DropType, String> dropType =
+  late final GeneratedColumnWithTypeConverter<DropType?, String> dropType =
       GeneratedColumn<String>(
         'drop_type',
         aliasedName,
-        false,
+        true,
         type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<DropType>($DropsTable.$converterdropType);
+        requiredDuringInsert: false,
+      ).withConverter<DropType?>($DropsTable.$converterdropTypen);
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
@@ -1519,7 +1520,8 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
   );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
@@ -1530,7 +1532,8 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
   );
   @override
   List<GeneratedColumn> get $columns => [
@@ -1554,7 +1557,7 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
   static const String $name = 'drops';
   @override
   VerificationContext validateIntegrity(
-    Insertable<Drop> instance, {
+    Insertable<DropTable> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -1583,16 +1586,12 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
         _categoryIdMeta,
         categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_categoryIdMeta);
     }
     if (data.containsKey('bucket_id')) {
       context.handle(
         _bucketIdMeta,
         bucketId.isAcceptableOrUnknown(data['bucket_id']!, _bucketIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_bucketIdMeta);
     }
     if (data.containsKey('to_bucket_id')) {
       context.handle(
@@ -1631,16 +1630,12 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
         _createdAtMeta,
         createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
       );
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
     }
     if (data.containsKey('updated_at')) {
       context.handle(
         _updatedAtMeta,
         updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
       );
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -1648,9 +1643,9 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  Drop map(Map<String, dynamic> data, {String? tablePrefix}) {
+  DropTable map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Drop(
+    return DropTable(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -1666,20 +1661,20 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
       categoryId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}category_id'],
-      )!,
+      ),
       bucketId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}bucket_id'],
-      )!,
+      ),
       toBucketId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}to_bucket_id'],
       ),
-      dropType: $DropsTable.$converterdropType.fromSql(
+      dropType: $DropsTable.$converterdropTypen.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
           data['${effectivePrefix}drop_type'],
-        )!,
+        ),
       ),
       date: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
@@ -1711,29 +1706,31 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, Drop> {
 
   static JsonTypeConverter2<DropType, String, String> $converterdropType =
       const EnumNameConverter<DropType>(DropType.values);
+  static JsonTypeConverter2<DropType?, String?, String?> $converterdropTypen =
+      JsonTypeConverter2.asNullable($converterdropType);
 }
 
-class Drop extends DataClass implements Insertable<Drop> {
+class DropTable extends DataClass implements Insertable<DropTable> {
   final int id;
   final String title;
   final int amount;
-  final int categoryId;
-  final int bucketId;
+  final int? categoryId;
+  final int? bucketId;
   final int? toBucketId;
-  final DropType dropType;
+  final DropType? dropType;
   final DateTime date;
   final String? notes;
   final int? parentDropId;
   final DateTime createdAt;
   final DateTime updatedAt;
-  const Drop({
+  const DropTable({
     required this.id,
     required this.title,
     required this.amount,
-    required this.categoryId,
-    required this.bucketId,
+    this.categoryId,
+    this.bucketId,
     this.toBucketId,
-    required this.dropType,
+    this.dropType,
     required this.date,
     this.notes,
     this.parentDropId,
@@ -1746,14 +1743,18 @@ class Drop extends DataClass implements Insertable<Drop> {
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
     map['amount'] = Variable<int>(amount);
-    map['category_id'] = Variable<int>(categoryId);
-    map['bucket_id'] = Variable<int>(bucketId);
+    if (!nullToAbsent || categoryId != null) {
+      map['category_id'] = Variable<int>(categoryId);
+    }
+    if (!nullToAbsent || bucketId != null) {
+      map['bucket_id'] = Variable<int>(bucketId);
+    }
     if (!nullToAbsent || toBucketId != null) {
       map['to_bucket_id'] = Variable<int>(toBucketId);
     }
-    {
+    if (!nullToAbsent || dropType != null) {
       map['drop_type'] = Variable<String>(
-        $DropsTable.$converterdropType.toSql(dropType),
+        $DropsTable.$converterdropTypen.toSql(dropType),
       );
     }
     map['date'] = Variable<DateTime>(date);
@@ -1773,12 +1774,18 @@ class Drop extends DataClass implements Insertable<Drop> {
       id: Value(id),
       title: Value(title),
       amount: Value(amount),
-      categoryId: Value(categoryId),
-      bucketId: Value(bucketId),
+      categoryId: categoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoryId),
+      bucketId: bucketId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bucketId),
       toBucketId: toBucketId == null && nullToAbsent
           ? const Value.absent()
           : Value(toBucketId),
-      dropType: Value(dropType),
+      dropType: dropType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dropType),
       date: Value(date),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
@@ -1791,20 +1798,20 @@ class Drop extends DataClass implements Insertable<Drop> {
     );
   }
 
-  factory Drop.fromJson(
+  factory DropTable.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Drop(
+    return DropTable(
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       amount: serializer.fromJson<int>(json['amount']),
-      categoryId: serializer.fromJson<int>(json['categoryId']),
-      bucketId: serializer.fromJson<int>(json['bucketId']),
+      categoryId: serializer.fromJson<int?>(json['categoryId']),
+      bucketId: serializer.fromJson<int?>(json['bucketId']),
       toBucketId: serializer.fromJson<int?>(json['toBucketId']),
-      dropType: $DropsTable.$converterdropType.fromJson(
-        serializer.fromJson<String>(json['dropType']),
+      dropType: $DropsTable.$converterdropTypen.fromJson(
+        serializer.fromJson<String?>(json['dropType']),
       ),
       date: serializer.fromJson<DateTime>(json['date']),
       notes: serializer.fromJson<String?>(json['notes']),
@@ -1820,11 +1827,11 @@ class Drop extends DataClass implements Insertable<Drop> {
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
       'amount': serializer.toJson<int>(amount),
-      'categoryId': serializer.toJson<int>(categoryId),
-      'bucketId': serializer.toJson<int>(bucketId),
+      'categoryId': serializer.toJson<int?>(categoryId),
+      'bucketId': serializer.toJson<int?>(bucketId),
       'toBucketId': serializer.toJson<int?>(toBucketId),
-      'dropType': serializer.toJson<String>(
-        $DropsTable.$converterdropType.toJson(dropType),
+      'dropType': serializer.toJson<String?>(
+        $DropsTable.$converterdropTypen.toJson(dropType),
       ),
       'date': serializer.toJson<DateTime>(date),
       'notes': serializer.toJson<String?>(notes),
@@ -1834,35 +1841,35 @@ class Drop extends DataClass implements Insertable<Drop> {
     };
   }
 
-  Drop copyWith({
+  DropTable copyWith({
     int? id,
     String? title,
     int? amount,
-    int? categoryId,
-    int? bucketId,
+    Value<int?> categoryId = const Value.absent(),
+    Value<int?> bucketId = const Value.absent(),
     Value<int?> toBucketId = const Value.absent(),
-    DropType? dropType,
+    Value<DropType?> dropType = const Value.absent(),
     DateTime? date,
     Value<String?> notes = const Value.absent(),
     Value<int?> parentDropId = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) => Drop(
+  }) => DropTable(
     id: id ?? this.id,
     title: title ?? this.title,
     amount: amount ?? this.amount,
-    categoryId: categoryId ?? this.categoryId,
-    bucketId: bucketId ?? this.bucketId,
+    categoryId: categoryId.present ? categoryId.value : this.categoryId,
+    bucketId: bucketId.present ? bucketId.value : this.bucketId,
     toBucketId: toBucketId.present ? toBucketId.value : this.toBucketId,
-    dropType: dropType ?? this.dropType,
+    dropType: dropType.present ? dropType.value : this.dropType,
     date: date ?? this.date,
     notes: notes.present ? notes.value : this.notes,
     parentDropId: parentDropId.present ? parentDropId.value : this.parentDropId,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
-  Drop copyWithCompanion(DropsCompanion data) {
-    return Drop(
+  DropTable copyWithCompanion(DropsCompanion data) {
+    return DropTable(
       id: data.id.present ? data.id.value : this.id,
       title: data.title.present ? data.title.value : this.title,
       amount: data.amount.present ? data.amount.value : this.amount,
@@ -1886,7 +1893,7 @@ class Drop extends DataClass implements Insertable<Drop> {
 
   @override
   String toString() {
-    return (StringBuffer('Drop(')
+    return (StringBuffer('DropTable(')
           ..write('id: $id, ')
           ..write('title: $title, ')
           ..write('amount: $amount, ')
@@ -1921,7 +1928,7 @@ class Drop extends DataClass implements Insertable<Drop> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Drop &&
+      (other is DropTable &&
           other.id == this.id &&
           other.title == this.title &&
           other.amount == this.amount &&
@@ -1936,14 +1943,14 @@ class Drop extends DataClass implements Insertable<Drop> {
           other.updatedAt == this.updatedAt);
 }
 
-class DropsCompanion extends UpdateCompanion<Drop> {
+class DropsCompanion extends UpdateCompanion<DropTable> {
   final Value<int> id;
   final Value<String> title;
   final Value<int> amount;
-  final Value<int> categoryId;
-  final Value<int> bucketId;
+  final Value<int?> categoryId;
+  final Value<int?> bucketId;
   final Value<int?> toBucketId;
-  final Value<DropType> dropType;
+  final Value<DropType?> dropType;
   final Value<DateTime> date;
   final Value<String?> notes;
   final Value<int?> parentDropId;
@@ -1967,24 +1974,19 @@ class DropsCompanion extends UpdateCompanion<Drop> {
     this.id = const Value.absent(),
     required String title,
     required int amount,
-    required int categoryId,
-    required int bucketId,
+    this.categoryId = const Value.absent(),
+    this.bucketId = const Value.absent(),
     this.toBucketId = const Value.absent(),
-    required DropType dropType,
+    this.dropType = const Value.absent(),
     required DateTime date,
     this.notes = const Value.absent(),
     this.parentDropId = const Value.absent(),
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   }) : title = Value(title),
        amount = Value(amount),
-       categoryId = Value(categoryId),
-       bucketId = Value(bucketId),
-       dropType = Value(dropType),
-       date = Value(date),
-       createdAt = Value(createdAt),
-       updatedAt = Value(updatedAt);
-  static Insertable<Drop> custom({
+       date = Value(date);
+  static Insertable<DropTable> custom({
     Expression<int>? id,
     Expression<String>? title,
     Expression<int>? amount,
@@ -2018,10 +2020,10 @@ class DropsCompanion extends UpdateCompanion<Drop> {
     Value<int>? id,
     Value<String>? title,
     Value<int>? amount,
-    Value<int>? categoryId,
-    Value<int>? bucketId,
+    Value<int?>? categoryId,
+    Value<int?>? bucketId,
     Value<int?>? toBucketId,
-    Value<DropType>? dropType,
+    Value<DropType?>? dropType,
     Value<DateTime>? date,
     Value<String?>? notes,
     Value<int?>? parentDropId,
@@ -2067,7 +2069,7 @@ class DropsCompanion extends UpdateCompanion<Drop> {
     }
     if (dropType.present) {
       map['drop_type'] = Variable<String>(
-        $DropsTable.$converterdropType.toSql(dropType.value),
+        $DropsTable.$converterdropTypen.toSql(dropType.value),
       );
     }
     if (date.present) {
@@ -2145,12 +2147,11 @@ typedef $$IconsTableUpdateCompanionBuilder =
     });
 
 final class $$IconsTableReferences
-    extends BaseReferences<_$AppDatabase, $IconsTable, Icon> {
+    extends BaseReferences<_$AppDatabase, $IconsTable, IconTable> {
   $$IconsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
-  static MultiTypedResultKey<$BucketsTable, List<Bucket>> _bucketsRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
+  static MultiTypedResultKey<$BucketsTable, List<BucketTable>>
+  _bucketsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.buckets,
     aliasName: 'icons__id__buckets__icon_id',
   );
@@ -2167,7 +2168,7 @@ final class $$IconsTableReferences
     );
   }
 
-  static MultiTypedResultKey<$CategoriesTable, List<Category>>
+  static MultiTypedResultKey<$CategoriesTable, List<CategoryTable>>
   _categoriesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.categories,
     aliasName: 'icons__id__categories__icon_id',
@@ -2374,14 +2375,14 @@ class $$IconsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $IconsTable,
-          Icon,
+          IconTable,
           $$IconsTableFilterComposer,
           $$IconsTableOrderingComposer,
           $$IconsTableAnnotationComposer,
           $$IconsTableCreateCompanionBuilder,
           $$IconsTableUpdateCompanionBuilder,
-          (Icon, $$IconsTableReferences),
-          Icon,
+          (IconTable, $$IconsTableReferences),
+          IconTable,
           PrefetchHooks Function({bool bucketsRefs, bool categoriesRefs})
         > {
   $$IconsTableTableManager(_$AppDatabase db, $IconsTable table)
@@ -2437,7 +2438,11 @@ class $$IconsTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (bucketsRefs)
-                        await $_getPrefetchedData<Icon, $IconsTable, Bucket>(
+                        await $_getPrefetchedData<
+                          IconTable,
+                          $IconsTable,
+                          BucketTable
+                        >(
                           currentTable: table,
                           referencedTable: $$IconsTableReferences
                               ._bucketsRefsTable(db),
@@ -2450,7 +2455,11 @@ class $$IconsTableTableManager
                           typedResults: items,
                         ),
                       if (categoriesRefs)
-                        await $_getPrefetchedData<Icon, $IconsTable, Category>(
+                        await $_getPrefetchedData<
+                          IconTable,
+                          $IconsTable,
+                          CategoryTable
+                        >(
                           currentTable: table,
                           referencedTable: $$IconsTableReferences
                               ._categoriesRefsTable(db),
@@ -2478,14 +2487,14 @@ typedef $$IconsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $IconsTable,
-      Icon,
+      IconTable,
       $$IconsTableFilterComposer,
       $$IconsTableOrderingComposer,
       $$IconsTableAnnotationComposer,
       $$IconsTableCreateCompanionBuilder,
       $$IconsTableUpdateCompanionBuilder,
-      (Icon, $$IconsTableReferences),
-      Icon,
+      (IconTable, $$IconsTableReferences),
+      IconTable,
       PrefetchHooks Function({bool bucketsRefs, bool categoriesRefs})
     >;
 typedef $$BucketsTableCreateCompanionBuilder =
@@ -2510,7 +2519,7 @@ typedef $$BucketsTableUpdateCompanionBuilder =
     });
 
 final class $$BucketsTableReferences
-    extends BaseReferences<_$AppDatabase, $BucketsTable, Bucket> {
+    extends BaseReferences<_$AppDatabase, $BucketsTable, BucketTable> {
   $$BucketsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $IconsTable _iconIdTable(_$AppDatabase db) =>
@@ -2530,7 +2539,7 @@ final class $$BucketsTableReferences
     );
   }
 
-  static MultiTypedResultKey<$BucketBalancesTable, List<BucketBalance>>
+  static MultiTypedResultKey<$BucketBalancesTable, List<BucketBalanceTable>>
   _bucketBalancesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
     db.bucketBalances,
     aliasName: 'buckets__id__bucket_balances__bucket_id',
@@ -2785,14 +2794,14 @@ class $$BucketsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $BucketsTable,
-          Bucket,
+          BucketTable,
           $$BucketsTableFilterComposer,
           $$BucketsTableOrderingComposer,
           $$BucketsTableAnnotationComposer,
           $$BucketsTableCreateCompanionBuilder,
           $$BucketsTableUpdateCompanionBuilder,
-          (Bucket, $$BucketsTableReferences),
-          Bucket,
+          (BucketTable, $$BucketsTableReferences),
+          BucketTable,
           PrefetchHooks Function({bool iconId, bool bucketBalancesRefs})
         > {
   $$BucketsTableTableManager(_$AppDatabase db, $BucketsTable table)
@@ -2893,9 +2902,9 @@ class $$BucketsTableTableManager
                     return [
                       if (bucketBalancesRefs)
                         await $_getPrefetchedData<
-                          Bucket,
+                          BucketTable,
                           $BucketsTable,
-                          BucketBalance
+                          BucketBalanceTable
                         >(
                           currentTable: table,
                           referencedTable: $$BucketsTableReferences
@@ -2924,14 +2933,14 @@ typedef $$BucketsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $BucketsTable,
-      Bucket,
+      BucketTable,
       $$BucketsTableFilterComposer,
       $$BucketsTableOrderingComposer,
       $$BucketsTableAnnotationComposer,
       $$BucketsTableCreateCompanionBuilder,
       $$BucketsTableUpdateCompanionBuilder,
-      (Bucket, $$BucketsTableReferences),
-      Bucket,
+      (BucketTable, $$BucketsTableReferences),
+      BucketTable,
       PrefetchHooks Function({bool iconId, bool bucketBalancesRefs})
     >;
 typedef $$BucketBalancesTableCreateCompanionBuilder =
@@ -2954,7 +2963,12 @@ typedef $$BucketBalancesTableUpdateCompanionBuilder =
     });
 
 final class $$BucketBalancesTableReferences
-    extends BaseReferences<_$AppDatabase, $BucketBalancesTable, BucketBalance> {
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $BucketBalancesTable,
+          BucketBalanceTable
+        > {
   $$BucketBalancesTableReferences(
     super.$_db,
     super.$_table,
@@ -3148,14 +3162,14 @@ class $$BucketBalancesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $BucketBalancesTable,
-          BucketBalance,
+          BucketBalanceTable,
           $$BucketBalancesTableFilterComposer,
           $$BucketBalancesTableOrderingComposer,
           $$BucketBalancesTableAnnotationComposer,
           $$BucketBalancesTableCreateCompanionBuilder,
           $$BucketBalancesTableUpdateCompanionBuilder,
-          (BucketBalance, $$BucketBalancesTableReferences),
-          BucketBalance,
+          (BucketBalanceTable, $$BucketBalancesTableReferences),
+          BucketBalanceTable,
           PrefetchHooks Function({bool bucketId})
         > {
   $$BucketBalancesTableTableManager(
@@ -3261,14 +3275,14 @@ typedef $$BucketBalancesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $BucketBalancesTable,
-      BucketBalance,
+      BucketBalanceTable,
       $$BucketBalancesTableFilterComposer,
       $$BucketBalancesTableOrderingComposer,
       $$BucketBalancesTableAnnotationComposer,
       $$BucketBalancesTableCreateCompanionBuilder,
       $$BucketBalancesTableUpdateCompanionBuilder,
-      (BucketBalance, $$BucketBalancesTableReferences),
-      BucketBalance,
+      (BucketBalanceTable, $$BucketBalancesTableReferences),
+      BucketBalanceTable,
       PrefetchHooks Function({bool bucketId})
     >;
 typedef $$CategoriesTableCreateCompanionBuilder =
@@ -3285,7 +3299,7 @@ typedef $$CategoriesTableUpdateCompanionBuilder =
     });
 
 final class $$CategoriesTableReferences
-    extends BaseReferences<_$AppDatabase, $CategoriesTable, Category> {
+    extends BaseReferences<_$AppDatabase, $CategoriesTable, CategoryTable> {
   $$CategoriesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $IconsTable _iconIdTable(_$AppDatabase db) =>
@@ -3305,7 +3319,7 @@ final class $$CategoriesTableReferences
     );
   }
 
-  static MultiTypedResultKey<$DropsTable, List<Drop>> _dropsRefsTable(
+  static MultiTypedResultKey<$DropsTable, List<DropTable>> _dropsRefsTable(
     _$AppDatabase db,
   ) => MultiTypedResultKey.fromTable(
     db.drops,
@@ -3505,14 +3519,14 @@ class $$CategoriesTableTableManager
         RootTableManager<
           _$AppDatabase,
           $CategoriesTable,
-          Category,
+          CategoryTable,
           $$CategoriesTableFilterComposer,
           $$CategoriesTableOrderingComposer,
           $$CategoriesTableAnnotationComposer,
           $$CategoriesTableCreateCompanionBuilder,
           $$CategoriesTableUpdateCompanionBuilder,
-          (Category, $$CategoriesTableReferences),
-          Category,
+          (CategoryTable, $$CategoriesTableReferences),
+          CategoryTable,
           PrefetchHooks Function({bool iconId, bool dropsRefs})
         > {
   $$CategoriesTableTableManager(_$AppDatabase db, $CategoriesTable table)
@@ -3589,7 +3603,11 @@ class $$CategoriesTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (dropsRefs)
-                    await $_getPrefetchedData<Category, $CategoriesTable, Drop>(
+                    await $_getPrefetchedData<
+                      CategoryTable,
+                      $CategoriesTable,
+                      DropTable
+                    >(
                       currentTable: table,
                       referencedTable: $$CategoriesTableReferences
                           ._dropsRefsTable(db),
@@ -3611,14 +3629,14 @@ typedef $$CategoriesTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $CategoriesTable,
-      Category,
+      CategoryTable,
       $$CategoriesTableFilterComposer,
       $$CategoriesTableOrderingComposer,
       $$CategoriesTableAnnotationComposer,
       $$CategoriesTableCreateCompanionBuilder,
       $$CategoriesTableUpdateCompanionBuilder,
-      (Category, $$CategoriesTableReferences),
-      Category,
+      (CategoryTable, $$CategoriesTableReferences),
+      CategoryTable,
       PrefetchHooks Function({bool iconId, bool dropsRefs})
     >;
 typedef $$DropsTableCreateCompanionBuilder =
@@ -3626,25 +3644,25 @@ typedef $$DropsTableCreateCompanionBuilder =
       Value<int> id,
       required String title,
       required int amount,
-      required int categoryId,
-      required int bucketId,
+      Value<int?> categoryId,
+      Value<int?> bucketId,
       Value<int?> toBucketId,
-      required DropType dropType,
+      Value<DropType?> dropType,
       required DateTime date,
       Value<String?> notes,
       Value<int?> parentDropId,
-      required DateTime createdAt,
-      required DateTime updatedAt,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
     });
 typedef $$DropsTableUpdateCompanionBuilder =
     DropsCompanion Function({
       Value<int> id,
       Value<String> title,
       Value<int> amount,
-      Value<int> categoryId,
-      Value<int> bucketId,
+      Value<int?> categoryId,
+      Value<int?> bucketId,
       Value<int?> toBucketId,
-      Value<DropType> dropType,
+      Value<DropType?> dropType,
       Value<DateTime> date,
       Value<String?> notes,
       Value<int?> parentDropId,
@@ -3653,15 +3671,15 @@ typedef $$DropsTableUpdateCompanionBuilder =
     });
 
 final class $$DropsTableReferences
-    extends BaseReferences<_$AppDatabase, $DropsTable, Drop> {
+    extends BaseReferences<_$AppDatabase, $DropsTable, DropTable> {
   $$DropsTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $CategoriesTable _categoryIdTable(_$AppDatabase db) =>
       db.categories.createAlias('drops__category_id__categories__id');
 
-  $$CategoriesTableProcessedTableManager get categoryId {
-    final $_column = $_itemColumn<int>('category_id')!;
-
+  $$CategoriesTableProcessedTableManager? get categoryId {
+    final $_column = $_itemColumn<int>('category_id');
+    if ($_column == null) return null;
     final manager = $$CategoriesTableTableManager(
       $_db,
       $_db.categories,
@@ -3676,9 +3694,9 @@ final class $$DropsTableReferences
   static $BucketsTable _bucketIdTable(_$AppDatabase db) =>
       db.buckets.createAlias('drops__bucket_id__buckets__id');
 
-  $$BucketsTableProcessedTableManager get bucketId {
-    final $_column = $_itemColumn<int>('bucket_id')!;
-
+  $$BucketsTableProcessedTableManager? get bucketId {
+    final $_column = $_itemColumn<int>('bucket_id');
+    if ($_column == null) return null;
     final manager = $$BucketsTableTableManager(
       $_db,
       $_db.buckets,
@@ -3748,7 +3766,7 @@ class $$DropsTableFilterComposer extends Composer<_$AppDatabase, $DropsTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnWithTypeConverterFilters<DropType, DropType, String> get dropType =>
+  ColumnWithTypeConverterFilters<DropType?, DropType, String> get dropType =>
       $composableBuilder(
         column: $table.dropType,
         builder: (column) => ColumnWithTypeConverterFilters(column),
@@ -4027,7 +4045,7 @@ class $$DropsTableAnnotationComposer
   GeneratedColumn<int> get amount =>
       $composableBuilder(column: $table.amount, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<DropType, String> get dropType =>
+  GeneratedColumnWithTypeConverter<DropType?, String> get dropType =>
       $composableBuilder(column: $table.dropType, builder: (column) => column);
 
   GeneratedColumn<DateTime> get date =>
@@ -4140,14 +4158,14 @@ class $$DropsTableTableManager
         RootTableManager<
           _$AppDatabase,
           $DropsTable,
-          Drop,
+          DropTable,
           $$DropsTableFilterComposer,
           $$DropsTableOrderingComposer,
           $$DropsTableAnnotationComposer,
           $$DropsTableCreateCompanionBuilder,
           $$DropsTableUpdateCompanionBuilder,
-          (Drop, $$DropsTableReferences),
-          Drop,
+          (DropTable, $$DropsTableReferences),
+          DropTable,
           PrefetchHooks Function({
             bool categoryId,
             bool bucketId,
@@ -4171,10 +4189,10 @@ class $$DropsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> title = const Value.absent(),
                 Value<int> amount = const Value.absent(),
-                Value<int> categoryId = const Value.absent(),
-                Value<int> bucketId = const Value.absent(),
+                Value<int?> categoryId = const Value.absent(),
+                Value<int?> bucketId = const Value.absent(),
                 Value<int?> toBucketId = const Value.absent(),
-                Value<DropType> dropType = const Value.absent(),
+                Value<DropType?> dropType = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<int?> parentDropId = const Value.absent(),
@@ -4199,15 +4217,15 @@ class $$DropsTableTableManager
                 Value<int> id = const Value.absent(),
                 required String title,
                 required int amount,
-                required int categoryId,
-                required int bucketId,
+                Value<int?> categoryId = const Value.absent(),
+                Value<int?> bucketId = const Value.absent(),
                 Value<int?> toBucketId = const Value.absent(),
-                required DropType dropType,
+                Value<DropType?> dropType = const Value.absent(),
                 required DateTime date,
                 Value<String?> notes = const Value.absent(),
                 Value<int?> parentDropId = const Value.absent(),
-                required DateTime createdAt,
-                required DateTime updatedAt,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
               }) => DropsCompanion.insert(
                 id: id,
                 title: title,
@@ -4322,14 +4340,14 @@ typedef $$DropsTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $DropsTable,
-      Drop,
+      DropTable,
       $$DropsTableFilterComposer,
       $$DropsTableOrderingComposer,
       $$DropsTableAnnotationComposer,
       $$DropsTableCreateCompanionBuilder,
       $$DropsTableUpdateCompanionBuilder,
-      (Drop, $$DropsTableReferences),
-      Drop,
+      (DropTable, $$DropsTableReferences),
+      DropTable,
       PrefetchHooks Function({
         bool categoryId,
         bool bucketId,
