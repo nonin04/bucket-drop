@@ -40,7 +40,7 @@ final class CalculatorProvider extends $NotifierProvider<Calculator, String> {
   }
 }
 
-String _$calculatorHash() => r'f1c15501ba3301f95540b529529d9680997adb0b';
+String _$calculatorHash() => r'6a6153ddc591f7bfb9be915372b6910ba5a5cd78';
 
 abstract class _$Calculator extends $Notifier<String> {
   String build();

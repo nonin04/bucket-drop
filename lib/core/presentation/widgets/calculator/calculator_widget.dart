@@ -1,5 +1,4 @@
 import 'package:bucket_drop/core/presentation/widgets/calculator/calculator_controller.dart';
-import 'package:bucket_drop/core/presentation/widgets/neumorphic_inner_shadow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,57 +15,38 @@ class CalculatorWidget extends ConsumerWidget {
   Widget _buildKey(WidgetRef ref, String key) {
     final notifier = ref.read(calculatorProvider.notifier);
 
-    Color bgColor = const Color.fromARGB(255, 249, 249, 249);
+    const bgColor = Color.fromARGB(255, 245, 245, 247);
     Color fgColor;
-    VoidCallback? onTap;
-
-    GestureLongPressStartCallback? onLongPressStart;
-    GestureLongPressEndCallback? onLongPressEnd;
-    GestureLongPressUpCallback? onLongPressUp;
 
     if (key == 'C') {
       fgColor = const Color.fromARGB(255, 255, 183, 0);
-      onTap = () => notifier.clear();
     } else if (key == 'Delete') {
       fgColor = const Color.fromARGB(255, 255, 1, 1);
-      onTap = () => notifier.deleteDigit();
-      onLongPressStart = (_) => notifier.startAutoDelete();
-      onLongPressEnd = (_) => notifier.stopAutoDelete();
-      onLongPressUp = () => notifier.stopAutoDelete();
     } else {
       fgColor = Colors.black;
-      onTap = () => notifier.inputDigit(key);
     }
 
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: GestureDetector(
-          onTap: key == 'Delete' ? onTap : null,
-          onTapDown: key != 'Delete' ? (_) => onTap?.call() : null,
-          onLongPressStart: onLongPressStart,
-          onLongPressEnd: onLongPressEnd,
-          onLongPressUp: onLongPressUp,
+          onTapDown: (_) {
+            if (key == 'Delete') {
+              notifier.startDelete();
+            } else if (key == 'C') {
+              notifier.clear();
+            } else {
+              notifier.inputDigit(key);
+            }
+          },
+          onTapUp: key == 'Delete' ? (_) => notifier.stopDelete() : null,
+          onTapCancel: key == 'Delete' ? () => notifier.stopDelete() : null,
           behavior: HitTestBehavior.opaque, // タッチ領域をContainer全体に広げる
           child: Container(
             height: 60, // 縦横比を整えるための固定の高さ
             decoration: BoxDecoration(
               color: bgColor,
               borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                const BoxShadow(
-                  color: Colors.white,
-                  offset: Offset(-3, -3),
-                  blurRadius: 5,
-                  spreadRadius: 1,
-                ),
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.6),
-                  offset: const Offset(3, 3),
-                  blurRadius: 5,
-                  spreadRadius: 1,
-                ),
-              ],
             ),
             child: Center(
               child: Text(
@@ -92,28 +72,26 @@ class CalculatorWidget extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           // 現在値の表示エリア
-          NeumorphicInnerShadow(
-            child: Container(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 4.0,
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 8.0,
-              ),
-              alignment: Alignment.centerRight,
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final result = ref.watch(calculatorProvider);
-                  return Text(
-                    '${_formatWithCommas(result)}円',
-                    style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  );
-                },
-              ),
+          Container(
+            margin: const EdgeInsets.symmetric(
+              horizontal: 4.0,
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 8.0,
+            ),
+            alignment: Alignment.centerRight,
+            child: Consumer(
+              builder: (context, ref, child) {
+                final result = ref.watch(calculatorProvider);
+                return Text(
+                  '${_formatWithCommas(result)}円',
+                  style: const TextStyle(
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(height: 10),

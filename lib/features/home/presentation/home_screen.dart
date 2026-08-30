@@ -8,10 +8,10 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Column(
+    return const Column(
       children: [
         // 上半分: レシート風ウィジェット（キーボード等で潰れてもスクロール可能にする）
-        const Expanded(
+        Expanded(
           child: Center(
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
@@ -20,7 +20,7 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
         // 下半分: 入力パネル
-        const TransactionInputPanel(),
+        TransactionInputPanel(),
       ],
     );
   }

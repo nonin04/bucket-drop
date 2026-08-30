@@ -6,12 +6,14 @@ part 'calculator_controller.g.dart';
 
 @riverpod
 class Calculator extends _$Calculator {
-  Timer? _timer;
+  Timer? _initialDelayTimer;
+  Timer? _repeatTimer;
 
   @override
   String build() {
     ref.onDispose(() {
-      _timer?.cancel();
+      _initialDelayTimer?.cancel();
+      _repeatTimer?.cancel();
     });
     return '0';
   }
@@ -41,16 +43,23 @@ class Calculator extends _$Calculator {
     }
   }
 
-  void startAutoDelete() {
-    _timer?.cancel();
-    deleteDigit(); // 長押しがトリガーされた瞬間にまず1文字消す
-    _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
-      deleteDigit();
+  /// タップダウン時に即座に1桁消し、長押しされたら連続削除を開始
+  void startDelete() {
+    deleteDigit();
+    _initialDelayTimer?.cancel();
+    _repeatTimer?.cancel();
+    _initialDelayTimer = Timer(const Duration(milliseconds: 400), () {
+      _repeatTimer = Timer.periodic(const Duration(milliseconds: 80), (timer) {
+        deleteDigit();
+      });
     });
   }
 
-  void stopAutoDelete() {
-    _timer?.cancel();
-    _timer = null;
+  /// 指を離した時・タップキャンセル時にタイマーを停止
+  void stopDelete() {
+    _initialDelayTimer?.cancel();
+    _initialDelayTimer = null;
+    _repeatTimer?.cancel();
+    _repeatTimer = null;
   }
 }
