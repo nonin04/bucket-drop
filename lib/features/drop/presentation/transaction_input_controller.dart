@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bucket_drop/core/enums/drop_type.dart';
 import 'package:bucket_drop/features/drop/data/drop_repository.dart';
 import 'package:bucket_drop/features/drop/domain/drop.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,11 +11,17 @@ class TransactionInputState {
   const TransactionInputState({
     this.title = '',
     this.amount = '0',
+    this.dropType = DropType.expense,
+    this.bucketId,
+    this.toBucketId,
     this.resetKey = 0,
   });
 
   final String title;
   final String amount;
+  final DropType dropType;
+  final int? bucketId;
+  final int? toBucketId;
   final int resetKey;
 
   int get parsedAmount => int.tryParse(amount) ?? 0;
@@ -22,10 +29,17 @@ class TransactionInputState {
   TransactionInputState copyWith({
     String? title,
     String? amount,
+    DropType? dropType,
+    int? Function()? bucketId,
+    int? Function()? toBucketId,
   }) {
     return TransactionInputState(
       title: title ?? this.title,
       amount: amount ?? this.amount,
+      dropType: dropType ?? this.dropType,
+      bucketId: bucketId != null ? bucketId() : this.bucketId,
+      toBucketId: toBucketId != null ? toBucketId() : this.toBucketId,
+      resetKey: resetKey,
     );
   }
 }
@@ -51,6 +65,21 @@ class TransactionInputController extends _$TransactionInputController {
   /// タイトルの更新
   void updateTitle(String title) {
     state = state.copyWith(title: title);
+  }
+
+  /// 取引タイプ（収入・支出・振替）の更新
+  void updateDropType(DropType type) {
+    state = state.copyWith(dropType: type);
+  }
+
+  /// 出金元/対象バケットの更新
+  void updateBucketId(int? bucketId) {
+    state = state.copyWith(bucketId: () => bucketId);
+  }
+
+  /// 振替先バケットの更新
+  void updateToBucketId(int? toBucketId) {
+    state = state.copyWith(toBucketId: () => toBucketId);
   }
 
   /// 金額：数字の入力
@@ -103,12 +132,20 @@ class TransactionInputController extends _$TransactionInputController {
     final newDrop = Drop(
       title: state.title,
       amount: state.parsedAmount,
+      dropType: state.dropType,
+      bucketId: state.bucketId,
+      toBucketId: state.dropType == DropType.transfer ? state.toBucketId : null,
       date: DateTime.now(),
     );
 
     await ref.read(dropRepositoryProvider).insertDrop(newDrop);
 
-    // 状態を初期状態に戻す（全UIパーツが自動的に初期状態を描画）
-    state = TransactionInputState(resetKey: state.resetKey + 1);
+    // 状態を初期状態に戻す（選択中バケット・dropTypeは引き継ぐ）
+    state = TransactionInputState(
+      dropType: state.dropType,
+      bucketId: state.bucketId,
+      toBucketId: state.toBucketId,
+      resetKey: state.resetKey + 1,
+    );
   }
 }
