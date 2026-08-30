@@ -8,20 +8,31 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Column(
-      children: [
-        // 上半分: レシート風ウィジェット（キーボード等で潰れてもスクロール可能にする）
-        Expanded(
-          child: Center(
-            child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
-              child: ReceiptWidget(),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight,
+            ),
+            child: const IntrinsicHeight(
+              child: Column(
+                children: [
+                  // 上半分: レシート風ウィジェット
+                  Expanded(
+                    child: Center(
+                      child: ReceiptWidget(),
+                    ),
+                  ),
+                  // 下半分: 入力パネル
+                  TransactionInputPanel(),
+                ],
+              ),
             ),
           ),
-        ),
-        // 下半分: 入力パネル
-        TransactionInputPanel(),
-      ],
+        );
+      },
     );
   }
 }

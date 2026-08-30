@@ -56,10 +56,7 @@ class MainPage extends ConsumerWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        // appBar: AppBar(
-        //   backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-        // ),
+        // resizeToAvoidBottomInset: true (デフォルト) によりキーボード出現時にスクロール領域を確保
         body: IndexedStack(index: currentIndex, children: pages),
         bottomNavigationBar: const AppNavigationBar(),
       ),
