@@ -1,6 +1,8 @@
+import 'package:bucket_drop/core/presentation/widgets/calculator/calculator_controller.dart';
 import 'package:bucket_drop/core/presentation/widgets/calculator/calculator_widget.dart';
-import 'package:bucket_drop/core/presentation/widgets/neumorphic_inner_shadow.dart';
 import 'package:bucket_drop/core/presentation/widgets/transaction_providers.dart';
+import 'package:bucket_drop/features/drop/data/drop_repository.dart';
+import 'package:bucket_drop/features/drop/domain/drop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,67 +11,72 @@ class TransactionInputPanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedCategory = ref.watch(transactionCategoryProvider);
-    final categories = ['🍔 食費', '🛒 日用品', '🚗 交通費', '🎮 エンタメ', '💬 その他'];
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: NeumorphicInnerShadow(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Container(
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 245, 245, 247),
+              borderRadius: BorderRadius.circular(10),
+            ),
             child: TextField(
-              onChanged: (value) => ref.read(transactionTitleProvider.notifier).set(value),
+              onChanged: (value) =>
+                  ref.read(transactionTitleProvider.notifier).set(value),
               decoration: const InputDecoration(
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 hintText: 'Type here...',
                 hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),
           ),
         ),
-        const SizedBox(height: 4.0),
-        SizedBox(
-          height: 38,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final cat = categories[index];
-              final isSelected = selectedCategory == cat;
-              return Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: ChoiceChip(
-                  label: Text(
-                    cat,
-                    style: TextStyle(
-                      color: isSelected ? Colors.white : Colors.black87,
-                      fontSize: 12,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
-                  selected: isSelected,
-                  selectedColor: const Color.fromARGB(255, 43, 93, 134),
-                  backgroundColor: const Color.fromARGB(255, 245, 245, 247),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: BorderSide.none,
-                  ),
-                  showCheckmark: false,
-                  onSelected: (selected) {
-                    if (selected) {
-                      ref.read(transactionCategoryProvider.notifier).set(cat);
-                    }
-                  },
-                ),
+        const SizedBox(height: 4),
+        const CalculatorWidget(),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
+          child: ElevatedButton(
+            onPressed: () async {
+              final title = ref.read(transactionTitleProvider);
+              final amount = int.tryParse(ref.read(calculatorProvider)) ?? 0;
+              // DB保存処理
+              final newDrop = Drop(
+                title: title,
+                amount: amount,
+                date: DateTime.now(),
               );
+
+              await ref.read(dropRepositoryProvider).insertDrop(newDrop);
+
+              // 入力値を破棄
+              ref.read(transactionTitleProvider.notifier).clear();
+              ref.read(calculatorProvider.notifier).clear();
             },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              minimumSize: const Size(double.infinity, 48),
+            ),
+            child: const Text(
+              '保存',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
-        const SizedBox(height: 8.0),
-        const CalculatorWidget(),
       ],
     );
   }
