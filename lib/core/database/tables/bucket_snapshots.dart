@@ -1,8 +1,8 @@
 import 'package:bucket_drop/core/database/tables/buckets.dart';
 import 'package:drift/drift.dart';
 
-@DataClassName('BucketBalanceTable')
-class BucketBalances extends Table {
+@DataClassName('BucketSnapshotTable')
+class BucketSnapshots extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get bucketId => integer().references(Buckets, #id)();
   IntColumn get balance => integer()();

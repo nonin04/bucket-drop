@@ -10,7 +10,7 @@ abstract class Drop with _$Drop {
     required int amount, // 金額
     required DateTime date, // 日付
     int? id, // id
-    int? categoryId, // カテゴリーID
+    int? dropCategoryId, // カテゴリーID
     int? bucketId, // バケットID
     int? toBucketId, // ToバケットID
     DropType? dropType, // ドロップタイプ

@@ -4,9 +4,8 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DropRepository {
-  final AppDatabase _db;
-
   DropRepository(this._db);
+  final AppDatabase _db;
 
   // insert
   Future<int> insertDrop(Drop drop) {
@@ -42,7 +41,7 @@ extension DropToCompanion on Drop {
     title: title,
     amount: amount,
     date: date,
-    categoryId: Value(categoryId),
+    dropCategoryId: Value(dropCategoryId),
     bucketId: Value(bucketId),
     toBucketId: Value(toBucketId),
     dropType: Value(dropType),
@@ -59,7 +58,7 @@ extension DropDataToDomain on DropTable {
     title: title,
     amount: amount,
     date: date,
-    categoryId: categoryId,
+    dropCategoryId: dropCategoryId,
     bucketId: bucketId,
     toBucketId: toBucketId,
     dropType: dropType,

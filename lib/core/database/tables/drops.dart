@@ -1,5 +1,5 @@
 import 'package:bucket_drop/core/database/tables/buckets.dart';
-import 'package:bucket_drop/core/database/tables/categories.dart';
+import 'package:bucket_drop/core/database/tables/drop_categories.dart';
 import 'package:bucket_drop/core/enums/drop_type.dart';
 import 'package:drift/drift.dart';
 
@@ -8,8 +8,8 @@ class Drops extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text()();
   IntColumn get amount => integer()();
-  IntColumn get categoryId =>
-      integer().nullable().references(Categories, #id)();
+  IntColumn get dropCategoryId =>
+      integer().nullable().references(DropCategories, #id)();
   IntColumn get bucketId => integer().nullable().references(Buckets, #id)();
   IntColumn get toBucketId => integer().nullable().references(Buckets, #id)();
   TextColumn get dropType => textEnum<DropType>().nullable()();
