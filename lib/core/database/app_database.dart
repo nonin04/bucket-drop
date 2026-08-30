@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bucket_drop/core/database/seed.dart';
 import 'package:bucket_drop/core/database/tables/bucket_categories.dart';
 import 'package:bucket_drop/core/database/tables/bucket_snapshots.dart';
 import 'package:bucket_drop/core/database/tables/buckets.dart';
@@ -31,16 +32,22 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-    onUpgrade: (m, from, to) async {
-      for (final table in allTables) {
-        await m.deleteTable(table.actualTableName);
-      }
+    onCreate: (m) async {
       await m.createAll();
-      debugPrint('新しいデータベースを作成しました');
+      await runSeed(this);
+      debugPrint('🌱 初回シードデータを投入しました');
+    },
+    beforeOpen: (details) async {
+      // データベース起動時にバケットが0件なら確実にシードを実行
+      final existingBuckets = await (select(buckets)..limit(1)).get();
+      if (existingBuckets.isEmpty) {
+        await runSeed(this);
+        debugPrint('🌱 バケットが空だったためシードデータを自動投入しました');
+      }
     },
   );
 }

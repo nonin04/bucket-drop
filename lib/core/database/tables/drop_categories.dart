@@ -4,6 +4,6 @@ import 'package:drift/drift.dart';
 @DataClassName('DropCategoryTable')
 class DropCategories extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get iconId => integer().references(Icons, #id)();
+  IntColumn get iconId => integer().references(Icons, #id).nullable()();
   TextColumn get name => text().nullable()();
 }

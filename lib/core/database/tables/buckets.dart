@@ -6,8 +6,9 @@ import 'package:drift/drift.dart';
 class Buckets extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get name => text()();
-  IntColumn get bucketCategoryId => integer().references(BucketCategories, #id)();
-  IntColumn get iconId => integer().references(Icons, #id)();
+  IntColumn get bucketCategoryId =>
+      integer().references(BucketCategories, #id)();
+  IntColumn get iconId => integer().references(Icons, #id).nullable()();
   TextColumn get notes => text().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();

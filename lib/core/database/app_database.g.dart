@@ -603,9 +603,9 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
   late final GeneratedColumn<int> iconId = GeneratedColumn<int>(
     'icon_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES icons (id)',
     ),
@@ -692,8 +692,6 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
         _iconIdMeta,
         iconId.isAcceptableOrUnknown(data['icon_id']!, _iconIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_iconIdMeta);
     }
     if (data.containsKey('notes')) {
       context.handle(
@@ -737,7 +735,7 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
       iconId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}icon_id'],
-      )!,
+      ),
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
@@ -763,7 +761,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
   final int id;
   final String name;
   final int bucketCategoryId;
-  final int iconId;
+  final int? iconId;
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -771,7 +769,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     required this.id,
     required this.name,
     required this.bucketCategoryId,
-    required this.iconId,
+    this.iconId,
     this.notes,
     required this.createdAt,
     required this.updatedAt,
@@ -782,7 +780,9 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     map['bucket_category_id'] = Variable<int>(bucketCategoryId);
-    map['icon_id'] = Variable<int>(iconId);
+    if (!nullToAbsent || iconId != null) {
+      map['icon_id'] = Variable<int>(iconId);
+    }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
     }
@@ -796,7 +796,9 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       id: Value(id),
       name: Value(name),
       bucketCategoryId: Value(bucketCategoryId),
-      iconId: Value(iconId),
+      iconId: iconId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(iconId),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
@@ -814,7 +816,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       bucketCategoryId: serializer.fromJson<int>(json['bucketCategoryId']),
-      iconId: serializer.fromJson<int>(json['iconId']),
+      iconId: serializer.fromJson<int?>(json['iconId']),
       notes: serializer.fromJson<String?>(json['notes']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -827,7 +829,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'bucketCategoryId': serializer.toJson<int>(bucketCategoryId),
-      'iconId': serializer.toJson<int>(iconId),
+      'iconId': serializer.toJson<int?>(iconId),
       'notes': serializer.toJson<String?>(notes),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -838,7 +840,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     int? id,
     String? name,
     int? bucketCategoryId,
-    int? iconId,
+    Value<int?> iconId = const Value.absent(),
     Value<String?> notes = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -846,7 +848,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     id: id ?? this.id,
     name: name ?? this.name,
     bucketCategoryId: bucketCategoryId ?? this.bucketCategoryId,
-    iconId: iconId ?? this.iconId,
+    iconId: iconId.present ? iconId.value : this.iconId,
     notes: notes.present ? notes.value : this.notes,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -906,7 +908,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
   final Value<int> id;
   final Value<String> name;
   final Value<int> bucketCategoryId;
-  final Value<int> iconId;
+  final Value<int?> iconId;
   final Value<String?> notes;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -923,13 +925,12 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     this.id = const Value.absent(),
     required String name,
     required int bucketCategoryId,
-    required int iconId,
+    this.iconId = const Value.absent(),
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : name = Value(name),
-       bucketCategoryId = Value(bucketCategoryId),
-       iconId = Value(iconId);
+       bucketCategoryId = Value(bucketCategoryId);
   static Insertable<BucketTable> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -954,7 +955,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     Value<int>? id,
     Value<String>? name,
     Value<int>? bucketCategoryId,
-    Value<int>? iconId,
+    Value<int?>? iconId,
     Value<String?>? notes,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -1434,9 +1435,9 @@ class $DropCategoriesTable extends DropCategories
   late final GeneratedColumn<int> iconId = GeneratedColumn<int>(
     'icon_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES icons (id)',
     ),
@@ -1472,8 +1473,6 @@ class $DropCategoriesTable extends DropCategories
         _iconIdMeta,
         iconId.isAcceptableOrUnknown(data['icon_id']!, _iconIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_iconIdMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -1497,7 +1496,7 @@ class $DropCategoriesTable extends DropCategories
       iconId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}icon_id'],
-      )!,
+      ),
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
@@ -1514,14 +1513,16 @@ class $DropCategoriesTable extends DropCategories
 class DropCategoryTable extends DataClass
     implements Insertable<DropCategoryTable> {
   final int id;
-  final int iconId;
+  final int? iconId;
   final String? name;
-  const DropCategoryTable({required this.id, required this.iconId, this.name});
+  const DropCategoryTable({required this.id, this.iconId, this.name});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['icon_id'] = Variable<int>(iconId);
+    if (!nullToAbsent || iconId != null) {
+      map['icon_id'] = Variable<int>(iconId);
+    }
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
@@ -1531,7 +1532,9 @@ class DropCategoryTable extends DataClass
   DropCategoriesCompanion toCompanion(bool nullToAbsent) {
     return DropCategoriesCompanion(
       id: Value(id),
-      iconId: Value(iconId),
+      iconId: iconId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(iconId),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
     );
   }
@@ -1543,7 +1546,7 @@ class DropCategoryTable extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DropCategoryTable(
       id: serializer.fromJson<int>(json['id']),
-      iconId: serializer.fromJson<int>(json['iconId']),
+      iconId: serializer.fromJson<int?>(json['iconId']),
       name: serializer.fromJson<String?>(json['name']),
     );
   }
@@ -1552,18 +1555,18 @@ class DropCategoryTable extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'iconId': serializer.toJson<int>(iconId),
+      'iconId': serializer.toJson<int?>(iconId),
       'name': serializer.toJson<String?>(name),
     };
   }
 
   DropCategoryTable copyWith({
     int? id,
-    int? iconId,
+    Value<int?> iconId = const Value.absent(),
     Value<String?> name = const Value.absent(),
   }) => DropCategoryTable(
     id: id ?? this.id,
-    iconId: iconId ?? this.iconId,
+    iconId: iconId.present ? iconId.value : this.iconId,
     name: name.present ? name.value : this.name,
   );
   DropCategoryTable copyWithCompanion(DropCategoriesCompanion data) {
@@ -1597,7 +1600,7 @@ class DropCategoryTable extends DataClass
 
 class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
   final Value<int> id;
-  final Value<int> iconId;
+  final Value<int?> iconId;
   final Value<String?> name;
   const DropCategoriesCompanion({
     this.id = const Value.absent(),
@@ -1606,9 +1609,9 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
   });
   DropCategoriesCompanion.insert({
     this.id = const Value.absent(),
-    required int iconId,
+    this.iconId = const Value.absent(),
     this.name = const Value.absent(),
-  }) : iconId = Value(iconId);
+  });
   static Insertable<DropCategoryTable> custom({
     Expression<int>? id,
     Expression<int>? iconId,
@@ -1623,7 +1626,7 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
 
   DropCategoriesCompanion copyWith({
     Value<int>? id,
-    Value<int>? iconId,
+    Value<int?>? iconId,
     Value<String?>? name,
   }) {
     return DropCategoriesCompanion(
@@ -3050,7 +3053,7 @@ typedef $$BucketsTableCreateCompanionBuilder =
       Value<int> id,
       required String name,
       required int bucketCategoryId,
-      required int iconId,
+      Value<int?> iconId,
       Value<String?> notes,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -3060,7 +3063,7 @@ typedef $$BucketsTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> name,
       Value<int> bucketCategoryId,
-      Value<int> iconId,
+      Value<int?> iconId,
       Value<String?> notes,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
@@ -3091,9 +3094,9 @@ final class $$BucketsTableReferences
   static $IconsTable _iconIdTable(_$AppDatabase db) =>
       db.icons.createAlias('buckets__icon_id__icons__id');
 
-  $$IconsTableProcessedTableManager get iconId {
-    final $_column = $_itemColumn<int>('icon_id')!;
-
+  $$IconsTableProcessedTableManager? get iconId {
+    final $_column = $_itemColumn<int>('icon_id');
+    if ($_column == null) return null;
     final manager = $$IconsTableTableManager(
       $_db,
       $_db.icons,
@@ -3444,7 +3447,7 @@ class $$BucketsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<int> bucketCategoryId = const Value.absent(),
-                Value<int> iconId = const Value.absent(),
+                Value<int?> iconId = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -3462,7 +3465,7 @@ class $$BucketsTableTableManager
                 Value<int> id = const Value.absent(),
                 required String name,
                 required int bucketCategoryId,
-                required int iconId,
+                Value<int?> iconId = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -3934,13 +3937,13 @@ typedef $$BucketSnapshotsTableProcessedTableManager =
 typedef $$DropCategoriesTableCreateCompanionBuilder =
     DropCategoriesCompanion Function({
       Value<int> id,
-      required int iconId,
+      Value<int?> iconId,
       Value<String?> name,
     });
 typedef $$DropCategoriesTableUpdateCompanionBuilder =
     DropCategoriesCompanion Function({
       Value<int> id,
-      Value<int> iconId,
+      Value<int?> iconId,
       Value<String?> name,
     });
 
@@ -3956,9 +3959,9 @@ final class $$DropCategoriesTableReferences
   static $IconsTable _iconIdTable(_$AppDatabase db) =>
       db.icons.createAlias('drop_categories__icon_id__icons__id');
 
-  $$IconsTableProcessedTableManager get iconId {
-    final $_column = $_itemColumn<int>('icon_id')!;
-
+  $$IconsTableProcessedTableManager? get iconId {
+    final $_column = $_itemColumn<int>('icon_id');
+    if ($_column == null) return null;
     final manager = $$IconsTableTableManager(
       $_db,
       $_db.icons,
@@ -4196,13 +4199,13 @@ class $$DropCategoriesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                Value<int> iconId = const Value.absent(),
+                Value<int?> iconId = const Value.absent(),
                 Value<String?> name = const Value.absent(),
               }) => DropCategoriesCompanion(id: id, iconId: iconId, name: name),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                required int iconId,
+                Value<int?> iconId = const Value.absent(),
                 Value<String?> name = const Value.absent(),
               }) => DropCategoriesCompanion.insert(
                 id: id,
