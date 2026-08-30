@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class TransactionInputPanel extends HookConsumerWidget {
-  const TransactionInputPanel({super.key});
+class ExpenseInputPanel extends HookConsumerWidget {
+  const ExpenseInputPanel({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,12 +18,13 @@ class TransactionInputPanel extends HookConsumerWidget {
       keys: [resetKey],
     );
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Container(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Column(
+        spacing: 8,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 245, 245, 247),
               borderRadius: BorderRadius.circular(10),
@@ -33,26 +34,27 @@ class TransactionInputPanel extends HookConsumerWidget {
               onChanged: (value) => ref
                   .read(transactionInputControllerProvider.notifier)
                   .updateTitle(value),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
               decoration: const InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
-                hintText: 'Type here...',
-                hintStyle: TextStyle(color: Colors.grey, fontSize: 14),
+                hintText: 'タイトルを書いてください',
+                hintStyle: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 4),
-        const CalculatorWidget(),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-          child: ElevatedButton(
+          const CalculatorWidget(),
+          ElevatedButton(
             // UI は「保存」というイベントを Controller に通知するだけ
             onPressed: () =>
                 ref.read(transactionInputControllerProvider.notifier).save(),
@@ -60,20 +62,20 @@ class TransactionInputPanel extends HookConsumerWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              backgroundColor: Colors.blue,
+              backgroundColor: const Color.fromARGB(255, 120, 120, 120),
               foregroundColor: Colors.white,
-              minimumSize: const Size(double.infinity, 48),
+              minimumSize: const Size.fromHeight(48),
             ),
             child: const Text(
-              '保存',
+              '追加する',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
