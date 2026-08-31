@@ -1,4 +1,5 @@
 import 'package:bucket_drop/core/enums/drop_type.dart';
+import 'package:bucket_drop/features/bucket/data/bucket_repository.dart';
 import 'package:bucket_drop/features/drop/presentation/transaction_input_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ class DropTypeToggle extends ConsumerWidget {
     final currentDropType = ref.watch(
       transactionInputControllerProvider.select((s) => s.dropType),
     );
+    final bucketsAsync = ref.watch(bucketListStreamProvider);
+    final buckets = bucketsAsync.value ?? [];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
@@ -41,7 +44,7 @@ class DropTypeToggle extends ConsumerWidget {
             if (value != null) {
               ref
                   .read(transactionInputControllerProvider.notifier)
-                  .updateDropType(value);
+                  .updateDropType(value, buckets: buckets);
             }
           },
         ),

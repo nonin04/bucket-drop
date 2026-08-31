@@ -2,6 +2,7 @@ import 'package:bucket_drop/core/database/app_database.dart';
 import 'package:bucket_drop/core/enums/drop_type.dart';
 import 'package:bucket_drop/features/drop/domain/drop_category.dart';
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DropCategoryRepository {
@@ -10,23 +11,29 @@ class DropCategoryRepository {
 
   /// 全てのカテゴリーを取得（並び順ソート、リアルタイム監視）
   Stream<List<DropCategory>> watchAllDropCategories() {
+    debugPrint('[DropCategoryRepository] watchAllDropCategories called');
     return (_db.select(_db.dropCategories)
           ..orderBy([
             (t) => OrderingTerm.asc(t.sort),
             (t) => OrderingTerm.asc(t.id),
           ]))
         .watch()
-        .map((rows) => rows.map((e) => e.toDomain()).toList());
+        .map((rows) {
+          debugPrint('[DropCategoryRepository] watchAllDropCategories stream emitted: ${rows.length} items');
+          return rows.map((e) => e.toDomain()).toList();
+        });
   }
 
   /// 全てのカテゴリーを1回取得
   Future<List<DropCategory>> getAllDropCategories() async {
+    debugPrint('[DropCategoryRepository] getAllDropCategories called');
     final rows = await (_db.select(_db.dropCategories)
           ..orderBy([
             (t) => OrderingTerm.asc(t.sort),
             (t) => OrderingTerm.asc(t.id),
           ]))
         .get();
+    debugPrint('[DropCategoryRepository] getAllDropCategories fetched: ${rows.length} items');
     return rows.map((e) => e.toDomain()).toList();
   }
 
@@ -37,6 +44,7 @@ class DropCategoryRepository {
     int? iconId,
     String? note,
   }) async {
+    debugPrint('[DropCategoryRepository] insertDropCategory: name=$name, dropType=${dropType.name}');
     final currentCategories = await getAllDropCategories();
     final maxSort = currentCategories.isEmpty
         ? 0
@@ -44,7 +52,7 @@ class DropCategoryRepository {
             .map((c) => c.sort)
             .reduce((a, b) => a > b ? a : b);
 
-    return _db.into(_db.dropCategories).insert(
+    final id = await _db.into(_db.dropCategories).insert(
           DropCategoriesCompanion.insert(
             name: name,
             dropType: dropType,
@@ -53,6 +61,8 @@ class DropCategoryRepository {
             sort: Value(maxSort + 1),
           ),
         );
+    debugPrint('[DropCategoryRepository] insertDropCategory completed: generatedId=$id');
+    return id;
   }
 
   /// カテゴリーの更新
@@ -62,8 +72,9 @@ class DropCategoryRepository {
     required DropType dropType,
     int? iconId,
     String? note,
-  }) {
-    return (_db.update(_db.dropCategories)..where((t) => t.id.equals(id))).write(
+  }) async {
+    debugPrint('[DropCategoryRepository] updateDropCategory: id=$id, name=$name, dropType=${dropType.name}');
+    final success = await (_db.update(_db.dropCategories)..where((t) => t.id.equals(id))).write(
       DropCategoriesCompanion(
         name: Value(name),
         dropType: Value(dropType),
@@ -72,11 +83,16 @@ class DropCategoryRepository {
         updatedAt: Value(DateTime.now()),
       ),
     ).then((rows) => rows > 0);
+    debugPrint('[DropCategoryRepository] updateDropCategory completed: success=$success');
+    return success;
   }
 
   /// カテゴリーの削除
-  Future<int> deleteDropCategory(int id) {
-    return (_db.delete(_db.dropCategories)..where((t) => t.id.equals(id))).go();
+  Future<int> deleteDropCategory(int id) async {
+    debugPrint('[DropCategoryRepository] deleteDropCategory: id=$id');
+    final rows = await (_db.delete(_db.dropCategories)..where((t) => t.id.equals(id))).go();
+    debugPrint('[DropCategoryRepository] deleteDropCategory completed: deletedRows=$rows');
+    return rows;
   }
 }
 
@@ -111,7 +127,7 @@ final dropCategoryRepositoryProvider = Provider<DropCategoryRepository>((ref) {
   return DropCategoryRepository(db);
 });
 
-/// カテゴリー一覧の StreamProvider
+/// 全てのカテゴリーの StreamProvider
 final dropCategoryListStreamProvider =
     StreamProvider<List<DropCategory>>((ref) {
   return ref.watch(dropCategoryRepositoryProvider).watchAllDropCategories();

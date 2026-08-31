@@ -7,6 +7,7 @@ import 'package:bucket_drop/features/navigation/presentation/index_controller.da
 import 'package:bucket_drop/features/settings/presentation/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
@@ -24,6 +25,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         useMaterial3: true,
+        // ステータスバーを透明に、アイコンを黒に
+        appBarTheme: const AppBarTheme(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+          ),
+        ),
         // NavigationBarのグローバルテーマ設定
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: const Color.fromARGB(255, 245, 245, 247), // 背景色

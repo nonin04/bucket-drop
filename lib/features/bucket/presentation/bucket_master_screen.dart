@@ -6,6 +6,7 @@ import 'package:bucket_drop/features/bucket/domain/bucket.dart';
 import 'package:bucket_drop/features/bucket/domain/bucket_category.dart';
 import 'package:bucket_drop/features/bucket/presentation/widgets/bucket_form_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// バケット（口座・財布など）のマスタ管理画面
@@ -73,12 +74,15 @@ class BucketMasterScreen extends ConsumerWidget {
                 itemCount: categories.length,
                 itemBuilder: (context, index) {
                   final category = categories[index];
+                  // カテゴリーに属するバケットを sort 順で取得
                   final categoryBuckets = buckets
                       .where((b) => b.bucketCategoryId == category.id)
-                      .toList();
+                      .toList()
+                    ..sort((a, b) => a.sort.compareTo(b.sort));
 
                   return _buildCategorySection(
                     context,
+                    ref,
                     category: category,
                     buckets: categoryBuckets,
                   );
@@ -104,9 +108,10 @@ class BucketMasterScreen extends ConsumerWidget {
     );
   }
 
-  /// カテゴリーごとのセクション（ヘッダー ＋ バケットリストカード）
+  /// カテゴリーごとのセクション（ヘッダー ＋ ドラッグ並び替え可能なバケットリスト）
   Widget _buildCategorySection(
-    BuildContext context, {
+    BuildContext context,
+    WidgetRef ref, {
     required BucketCategory category,
     required List<Bucket> buckets,
   }) {
@@ -184,7 +189,7 @@ class BucketMasterScreen extends ConsumerWidget {
             ),
           ),
 
-          // バケット一覧カード
+          // バケット一覧カード（ドラッグ並び替え対応）
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -211,71 +216,179 @@ class BucketMasterScreen extends ConsumerWidget {
                       ),
                     ),
                   )
-                : ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: buckets.length,
-                    separatorBuilder: (context, index) => const Divider(
-                      height: 1,
-                      indent: 52,
-                      color: Color(0xFFEEEEEE),
+                : Theme(
+                    data: Theme.of(context).copyWith(
+                      canvasColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
                     ),
-                    itemBuilder: (context, index) {
-                      final bucket = buckets[index];
-                      return ListTile(
-                        leading: Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: isAsset
-                                ? Colors.blue.shade50
-                                : Colors.orange.shade50,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            isAsset
-                                ? Icons.account_balance_wallet
-                                : Icons.credit_card,
-                            color: isAsset
-                                ? Colors.blue.shade600
-                                : Colors.orange.shade600,
-                            size: 20,
-                          ),
-                        ),
-                        title: Text(
-                          bucket.name,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        subtitle: bucket.notes != null && bucket.notes!.isNotEmpty
-                            ? Text(
-                                bucket.notes!,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey.shade500,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              )
-                            : null,
-                        trailing: const Icon(
-                          Icons.chevron_right,
-                          size: 18,
-                          color: Colors.black26,
-                        ),
-                        onTap: () {
-                          unawaited(
-                            BucketFormModal.show(
-                              context,
-                              bucket: bucket,
+                    child: ReorderableListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: buckets.length,
+                      // Flutterバージョン間の互換性を保つため onReorder を使用
+                      // ignore: deprecated_member_use
+                      onReorder: (oldIndex, newIndex) async {
+                        unawaited(HapticFeedback.mediumImpact());
+                        final list = List<Bucket>.from(buckets);
+                        var targetIndex = newIndex;
+                        if (oldIndex < targetIndex) {
+                          targetIndex -= 1;
+                        }
+                        final item = list.removeAt(oldIndex);
+                        list.insert(targetIndex, item);
+
+                        // 並び順を一括保存
+                        await ref
+                            .read(bucketRepositoryProvider)
+                            .updateSortOrders(list);
+                      },
+                      itemBuilder: (context, index) {
+                        final bucket = buckets[index];
+                        return Material(
+                          key: ValueKey(bucket.id),
+                          color: Colors.white,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: index < buckets.length - 1
+                                    ? const BorderSide(
+                                        color: Color(0xFFEEEEEE),
+                                      )
+                                    : BorderSide.none,
+                              ),
                             ),
-                          );
-                        },
-                      );
-                    },
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 2,
+                              ),
+                              leading: Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: isAsset
+                                      ? Colors.blue.shade50
+                                      : Colors.orange.shade50,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  isAsset
+                                      ? Icons.account_balance_wallet
+                                      : Icons.credit_card,
+                                  color: isAsset
+                                      ? Colors.blue.shade600
+                                      : Colors.orange.shade600,
+                                  size: 20,
+                                ),
+                              ),
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      bucket.name,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                  if (bucket.isDefaultExpense == true)
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 6),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFB33939)
+                                            .withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: const Text(
+                                        '支出既定',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFFB33939),
+                                        ),
+                                      ),
+                                    ),
+                                  if (bucket.isDefaultIncome == true)
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 6),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF2C5E8A)
+                                            .withValues(alpha: 0.12),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: const Text(
+                                        '収入既定',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF2C5E8A),
+                                        ),
+                                      ),
+                                    ),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 1,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade100,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      '#${bucket.sort}',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Colors.grey.shade600,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              subtitle:
+                                  bucket.notes != null && bucket.notes!.isNotEmpty
+                                      ? Text(
+                                          bucket.notes!,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey.shade500,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        )
+                                      : null,
+                              // 右側のドラッグハンドル
+                              trailing: ReorderableDragStartListener(
+                                index: index,
+                                child: Icon(
+                                  Icons.drag_handle_rounded,
+                                  color: Colors.grey.shade400,
+                                  size: 22,
+                                ),
+                              ),
+                              onTap: () {
+                                unawaited(
+                                  BucketFormModal.show(
+                                    context,
+                                    bucket: bucket,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
           ),
         ],

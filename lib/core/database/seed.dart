@@ -12,23 +12,23 @@ INSERT INTO bucket_categories (id, name, balance_type, sort) VALUES
   (5, 'クレジットカード', 'liability', 5);
 
 -- バケット
-INSERT INTO buckets (id, name, bucket_category_id, sort) VALUES 
-  (1, '三井住友銀行', 1, 1),
-  (2, '三菱UFJ銀行', 1, 2),
-  (3, 'ゆうちょ銀行', 1, 3),
-  (4, '池田泉州銀行', 1, 4),
-  (5, '島根銀行', 1, 5),
-  (6, 'PayPay銀行', 1, 6),
-  (7, 'ドコモSMTBネット銀行', 1, 7),
-  (8, 'SBI証券', 2, 8),
-  (9, 'WealthNavi', 2, 9),
-  (10, 'ideco', 2, 10),
-  (11, '現金', 3, 11),
-  (12, 'PASMO', 3, 12),
-  (13, 'PayPay', 3, 13),
-  (14, 'Vポイント', 4, 14),
-  (15, 'dポイント', 4, 15),
-  (16, 'クレジットカード', 5, 16);
+INSERT INTO buckets (id, name, bucket_category_id, sort, is_default_expense, is_default_income) VALUES 
+  (1, '三井住友銀行', 1, 1, 0, 1),
+  (2, '三菱UFJ銀行', 1, 2, 0, 0),
+  (3, 'ゆうちょ銀行', 1, 3, 0, 0),
+  (4, '池田泉州銀行', 1, 4, 0, 0),
+  (5, '島根銀行', 1, 5, 0, 0),
+  (6, 'PayPay銀行', 1, 6, 0, 0),
+  (7, 'ドコモSMTBネット銀行', 1, 7, 0, 0),
+  (8, 'SBI証券', 2, 8, 0, 0),
+  (9, 'WealthNavi', 2, 9, 0, 0),
+  (10, 'ideco', 2, 10, 0, 0),
+  (11, '現金', 3, 11, 1, 0),
+  (12, 'PASMO', 3, 12, 0, 0),
+  (13, 'PayPay', 3, 13, 0, 0),
+  (14, 'Vポイント', 4, 14, 0, 0),
+  (15, 'dポイント', 4, 15, 0, 0),
+  (16, 'クレジットカード', 5, 16, 0, 0);
 
 
 -- アイコン
@@ -92,7 +92,7 @@ INSERT INTO drop_categories (id, icon_id, name, drop_type, note, sort) VALUES
   (26, 26, '差額精算(収入)', 'income', null, 26),
   (27, 27, '積立[基本]', 'transfer', null, 27),
   (28, 28, '積立[余剰]', 'transfer', null, 28),
-  (29, 29, 'クレカ・負債返済', 'transfer', null, 29),
+  (29, 29, 'カード引き落とし', 'transfer', null, 29),
   (30, 30, '口座間振替', 'transfer', null, 30);
   
 ''';

@@ -1,13 +1,17 @@
 import 'package:bucket_drop/core/enums/drop_type.dart';
 import 'package:bucket_drop/features/bucket/data/bucket_repository.dart';
+import 'package:bucket_drop/features/bucket/domain/bucket.dart';
+import 'package:bucket_drop/features/drop/data/drop_category_repository.dart';
+import 'package:bucket_drop/features/drop/domain/drop_category.dart';
 import 'package:bucket_drop/features/drop/presentation/transaction_input_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// コンパクトで洗練されたレシートプレビューウィジェット
 class ReceiptWidget extends ConsumerWidget {
   const ReceiptWidget({super.key});
 
-  // 3桁区切りのカンマを挿入するメソッド
+  // 3桁区切りのカンマフォーマット
   String _formatWithCommas(String value) {
     if (value.isEmpty) return '0';
     final reg = RegExp(r'\B(?=(\d{3})+(?!\d))');
@@ -19,9 +23,18 @@ class ReceiptWidget extends ConsumerWidget {
     final formState = ref.watch(transactionInputControllerProvider);
     final amount = formState.amount;
     final title = formState.title;
+    final dropType = formState.dropType;
 
+    // カテゴリー
+    final categoriesAsync = ref.watch(dropCategoryListStreamProvider);
+    final categories = categoriesAsync.value ?? <DropCategory>[];
+    final selectedCategory = categories
+        .where((c) => c.id == formState.dropCategoryId)
+        .firstOrNull;
+
+    // バケット
     final bucketsAsync = ref.watch(bucketListStreamProvider);
-    final buckets = bucketsAsync.value ?? [];
+    final buckets = bucketsAsync.value ?? <Bucket>[];
     final fromBucket = buckets
         .where((b) => b.id == formState.bucketId)
         .firstOrNull;
@@ -29,12 +42,14 @@ class ReceiptWidget extends ConsumerWidget {
         .where((b) => b.id == formState.toBucketId)
         .firstOrNull;
 
+    // 日付フォーマット（例: 8/31(月)）
     final now = DateTime.now();
-    final formattedDate =
-        '${now.year}/${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}';
+    const weekdays = ['月', '火', '水', '木', '金', '土', '日'];
+    final formattedShortDate =
+        '${now.month}/${now.day}(${weekdays[now.weekday - 1]})';
 
     final String bucketDisplay;
-    if (formState.dropType == DropType.transfer) {
+    if (dropType == DropType.transfer) {
       final fromName = fromBucket?.name ?? '未選択';
       final toName = toBucket?.name ?? '未選択';
       bucketDisplay = '$fromName → $toName';
@@ -42,19 +57,154 @@ class ReceiptWidget extends ConsumerWidget {
       bucketDisplay = fromBucket?.name ?? '未選択';
     }
 
+    final typeColor = _getTypeColor(dropType);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: const Color.fromARGB(255, 248, 249, 250),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: const Color.fromARGB(255, 235, 236, 240),
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 金額表示
+            // ① 上段: 日付 + 種別バッジ + カテゴリーバッジ + バケット名
+            Row(
+              children: [
+                // 日付
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.calendar_today_outlined,
+                      size: 13,
+                      color: Colors.grey.shade500,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      formattedShortDate,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 8),
+
+                // 種別バッジ
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: typeColor.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    dropType.label,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: typeColor,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 6),
+
+                // カテゴリーバッジ
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: selectedCategory != null
+                        ? Colors.grey.shade200
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(4),
+                    border: selectedCategory == null
+                        ? Border.all(color: Colors.grey.shade300)
+                        : null,
+                  ),
+                  child: Text(
+                    selectedCategory?.name ?? '未分類',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: selectedCategory != null
+                          ? FontWeight.bold
+                          : FontWeight.w500,
+                      color: selectedCategory != null
+                          ? Colors.black87
+                          : Colors.grey.shade500,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+
+                // バケット名（右寄せ）
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Icon(
+                        Icons.account_balance_wallet_outlined,
+                        size: 13,
+                        color: Colors.grey.shade500,
+                      ),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          bucketDisplay,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade700,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            // ② 中段: タイトル（入力がある場合のみ表示）
+            if (title.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Icon(
+                    Icons.edit_note_rounded,
+                    size: 14,
+                    color: Colors.grey.shade400,
+                  ),
+                  const SizedBox(width: 4),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey.shade700,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+
+            const SizedBox(height: 8),
+            const Divider(height: 1, color: Color(0xFFEEEEEE)),
+            const SizedBox(height: 8),
+
+            // ③ ⭐️ 下段: 金額表示（主役として下に配置）
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -63,7 +213,7 @@ class ReceiptWidget extends ConsumerWidget {
                 const Text(
                   '金額',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 13,
                     color: Colors.grey,
                     fontWeight: FontWeight.w500,
                   ),
@@ -71,72 +221,27 @@ class ReceiptWidget extends ConsumerWidget {
                 Text(
                   '¥ ${_formatWithCommas(amount)}',
                   style: const TextStyle(
-                    fontSize: 28,
+                    fontSize: 26,
                     fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 40, 40, 40),
+                    color: Color.fromARGB(255, 30, 30, 30),
                   ),
                 ),
               ],
             ),
-            const Divider(
-              height: 24,
-              thickness: 1,
-              color: Color.fromARGB(255, 230, 230, 235),
-            ),
-
-            // 種別（収入・支出・振替）
-            _buildRow('種別', formState.dropType.label),
-            const SizedBox(height: 12),
-
-            // バケット
-            _buildRow('バケット', bucketDisplay),
-            const SizedBox(height: 12),
-
-            // 日付
-            _buildRow('日付', formattedDate),
-            const SizedBox(height: 12),
-
-            // メモ・品名
-            _buildRow('タイトル', title.isEmpty ? 'なし' : title),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildRow(String label, String value) {
-    const rowStrutStyle = StrutStyle(
-      fontSize: 13,
-      height: 1.2,
-      forceStrutHeight: true,
-    );
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          strutStyle: rowStrutStyle,
-          style: const TextStyle(
-            fontSize: 13,
-            color: Colors.grey,
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            strutStyle: rowStrutStyle,
-            textAlign: TextAlign.right,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Color.fromARGB(255, 60, 60, 60),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
-    );
+  Color _getTypeColor(DropType type) {
+    switch (type) {
+      case DropType.expense:
+        return const Color(0xFFB33939); // 渋い赤
+      case DropType.income:
+        return const Color(0xFF2C5E8A); // 渋い青
+      case DropType.transfer:
+        return const Color(0xFF2E7D5B); // 渋い緑
+    }
   }
 }

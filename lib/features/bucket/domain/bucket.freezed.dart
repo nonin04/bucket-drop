@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Bucket {
 
- int get id; String get name; int get bucketCategoryId; int get sort; int? get iconId; String? get notes; DateTime? get createdAt; DateTime? get updatedAt;
+ int get id; String get name; int get bucketCategoryId; int get sort; int? get iconId; String? get notes; bool? get isDefaultExpense; bool? get isDefaultIncome; DateTime? get createdAt; DateTime? get updatedAt;
 /// Create a copy of Bucket
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $BucketCopyWith<Bucket> get copyWith => _$BucketCopyWithImpl<Bucket>(this as Buc
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Bucket&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.bucketCategoryId, bucketCategoryId) || other.bucketCategoryId == bucketCategoryId)&&(identical(other.sort, sort) || other.sort == sort)&&(identical(other.iconId, iconId) || other.iconId == iconId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Bucket&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.bucketCategoryId, bucketCategoryId) || other.bucketCategoryId == bucketCategoryId)&&(identical(other.sort, sort) || other.sort == sort)&&(identical(other.iconId, iconId) || other.iconId == iconId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.isDefaultExpense, isDefaultExpense) || other.isDefaultExpense == isDefaultExpense)&&(identical(other.isDefaultIncome, isDefaultIncome) || other.isDefaultIncome == isDefaultIncome)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,bucketCategoryId,sort,iconId,notes,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,name,bucketCategoryId,sort,iconId,notes,isDefaultExpense,isDefaultIncome,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'Bucket(id: $id, name: $name, bucketCategoryId: $bucketCategoryId, sort: $sort, iconId: $iconId, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Bucket(id: $id, name: $name, bucketCategoryId: $bucketCategoryId, sort: $sort, iconId: $iconId, notes: $notes, isDefaultExpense: $isDefaultExpense, isDefaultIncome: $isDefaultIncome, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $BucketCopyWith<$Res>  {
   factory $BucketCopyWith(Bucket value, $Res Function(Bucket) _then) = _$BucketCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, int bucketCategoryId, int sort, int? iconId, String? notes, DateTime? createdAt, DateTime? updatedAt
+ int id, String name, int bucketCategoryId, int sort, int? iconId, String? notes, bool? isDefaultExpense, bool? isDefaultIncome, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -62,7 +62,7 @@ class _$BucketCopyWithImpl<$Res>
 
 /// Create a copy of Bucket
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? bucketCategoryId = null,Object? sort = null,Object? iconId = freezed,Object? notes = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? bucketCategoryId = null,Object? sort = null,Object? iconId = freezed,Object? notes = freezed,Object? isDefaultExpense = freezed,Object? isDefaultIncome = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -70,7 +70,9 @@ as String,bucketCategoryId: null == bucketCategoryId ? _self.bucketCategoryId : 
 as int,sort: null == sort ? _self.sort : sort // ignore: cast_nullable_to_non_nullable
 as int,iconId: freezed == iconId ? _self.iconId : iconId // ignore: cast_nullable_to_non_nullable
 as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
-as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,isDefaultExpense: freezed == isDefaultExpense ? _self.isDefaultExpense : isDefaultExpense // ignore: cast_nullable_to_non_nullable
+as bool?,isDefaultIncome: freezed == isDefaultIncome ? _self.isDefaultIncome : isDefaultIncome // ignore: cast_nullable_to_non_nullable
+as bool?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
@@ -157,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  int bucketCategoryId,  int sort,  int? iconId,  String? notes,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  int bucketCategoryId,  int sort,  int? iconId,  String? notes,  bool? isDefaultExpense,  bool? isDefaultIncome,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Bucket() when $default != null:
-return $default(_that.id,_that.name,_that.bucketCategoryId,_that.sort,_that.iconId,_that.notes,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.name,_that.bucketCategoryId,_that.sort,_that.iconId,_that.notes,_that.isDefaultExpense,_that.isDefaultIncome,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -178,10 +180,10 @@ return $default(_that.id,_that.name,_that.bucketCategoryId,_that.sort,_that.icon
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  int bucketCategoryId,  int sort,  int? iconId,  String? notes,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  int bucketCategoryId,  int sort,  int? iconId,  String? notes,  bool? isDefaultExpense,  bool? isDefaultIncome,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Bucket():
-return $default(_that.id,_that.name,_that.bucketCategoryId,_that.sort,_that.iconId,_that.notes,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.name,_that.bucketCategoryId,_that.sort,_that.iconId,_that.notes,_that.isDefaultExpense,_that.isDefaultIncome,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +200,10 @@ return $default(_that.id,_that.name,_that.bucketCategoryId,_that.sort,_that.icon
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  int bucketCategoryId,  int sort,  int? iconId,  String? notes,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  int bucketCategoryId,  int sort,  int? iconId,  String? notes,  bool? isDefaultExpense,  bool? isDefaultIncome,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Bucket() when $default != null:
-return $default(_that.id,_that.name,_that.bucketCategoryId,_that.sort,_that.iconId,_that.notes,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.name,_that.bucketCategoryId,_that.sort,_that.iconId,_that.notes,_that.isDefaultExpense,_that.isDefaultIncome,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -213,7 +215,7 @@ return $default(_that.id,_that.name,_that.bucketCategoryId,_that.sort,_that.icon
 
 
 class _Bucket implements Bucket {
-  const _Bucket({required this.id, required this.name, required this.bucketCategoryId, required this.sort, this.iconId, this.notes, this.createdAt, this.updatedAt});
+  const _Bucket({required this.id, required this.name, required this.bucketCategoryId, required this.sort, this.iconId, this.notes, this.isDefaultExpense, this.isDefaultIncome, this.createdAt, this.updatedAt});
   
 
 @override final  int id;
@@ -222,6 +224,8 @@ class _Bucket implements Bucket {
 @override final  int sort;
 @override final  int? iconId;
 @override final  String? notes;
+@override final  bool? isDefaultExpense;
+@override final  bool? isDefaultIncome;
 @override final  DateTime? createdAt;
 @override final  DateTime? updatedAt;
 
@@ -235,16 +239,16 @@ _$BucketCopyWith<_Bucket> get copyWith => __$BucketCopyWithImpl<_Bucket>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Bucket&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.bucketCategoryId, bucketCategoryId) || other.bucketCategoryId == bucketCategoryId)&&(identical(other.sort, sort) || other.sort == sort)&&(identical(other.iconId, iconId) || other.iconId == iconId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Bucket&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.bucketCategoryId, bucketCategoryId) || other.bucketCategoryId == bucketCategoryId)&&(identical(other.sort, sort) || other.sort == sort)&&(identical(other.iconId, iconId) || other.iconId == iconId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.isDefaultExpense, isDefaultExpense) || other.isDefaultExpense == isDefaultExpense)&&(identical(other.isDefaultIncome, isDefaultIncome) || other.isDefaultIncome == isDefaultIncome)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,bucketCategoryId,sort,iconId,notes,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,id,name,bucketCategoryId,sort,iconId,notes,isDefaultExpense,isDefaultIncome,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'Bucket(id: $id, name: $name, bucketCategoryId: $bucketCategoryId, sort: $sort, iconId: $iconId, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Bucket(id: $id, name: $name, bucketCategoryId: $bucketCategoryId, sort: $sort, iconId: $iconId, notes: $notes, isDefaultExpense: $isDefaultExpense, isDefaultIncome: $isDefaultIncome, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -255,7 +259,7 @@ abstract mixin class _$BucketCopyWith<$Res> implements $BucketCopyWith<$Res> {
   factory _$BucketCopyWith(_Bucket value, $Res Function(_Bucket) _then) = __$BucketCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, int bucketCategoryId, int sort, int? iconId, String? notes, DateTime? createdAt, DateTime? updatedAt
+ int id, String name, int bucketCategoryId, int sort, int? iconId, String? notes, bool? isDefaultExpense, bool? isDefaultIncome, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -272,7 +276,7 @@ class __$BucketCopyWithImpl<$Res>
 
 /// Create a copy of Bucket
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? bucketCategoryId = null,Object? sort = null,Object? iconId = freezed,Object? notes = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? bucketCategoryId = null,Object? sort = null,Object? iconId = freezed,Object? notes = freezed,Object? isDefaultExpense = freezed,Object? isDefaultIncome = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_Bucket(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -280,7 +284,9 @@ as String,bucketCategoryId: null == bucketCategoryId ? _self.bucketCategoryId : 
 as int,sort: null == sort ? _self.sort : sort // ignore: cast_nullable_to_non_nullable
 as int,iconId: freezed == iconId ? _self.iconId : iconId // ignore: cast_nullable_to_non_nullable
 as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
-as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,isDefaultExpense: freezed == isDefaultExpense ? _self.isDefaultExpense : isDefaultExpense // ignore: cast_nullable_to_non_nullable
+as bool?,isDefaultIncome: freezed == isDefaultIncome ? _self.isDefaultIncome : isDefaultIncome // ignore: cast_nullable_to_non_nullable
+as bool?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));

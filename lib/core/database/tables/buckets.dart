@@ -11,6 +11,8 @@ class Buckets extends Table {
   IntColumn get iconId => integer().references(Icons, #id).nullable()();
   TextColumn get notes => text().nullable()();
   IntColumn get sort => integer().withDefault(const Constant(0))();
+  BoolColumn get isDefaultExpense => boolean().nullable()();
+  BoolColumn get isDefaultIncome => boolean().nullable()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }

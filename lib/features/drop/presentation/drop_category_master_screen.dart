@@ -195,28 +195,30 @@ class DropCategoryMasterScreen extends ConsumerWidget {
               ],
             ),
             clipBehavior: Clip.antiAlias,
-            child: categories.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Center(
-                      child: Text(
-                        '登録されているカテゴリーはありません',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey.shade400,
+            child: Material(
+              color: Colors.white,
+              child: categories.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Center(
+                        child: Text(
+                          '登録されているカテゴリーはありません',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey.shade400,
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                : ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: categories.length,
-                    separatorBuilder: (context, index) => const Divider(
-                      height: 1,
-                      indent: 52,
-                      color: Color(0xFFEEEEEE),
-                    ),
+                    )
+                  : ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: categories.length,
+                      separatorBuilder: (context, index) => const Divider(
+                        height: 1,
+                        indent: 52,
+                        color: Color(0xFFEEEEEE),
+                      ),
                     itemBuilder: (context, index) {
                       final category = categories[index];
                       return ListTile(
@@ -268,6 +270,7 @@ class DropCategoryMasterScreen extends ConsumerWidget {
                       );
                     },
                   ),
+            ),
           ),
         ],
       ),

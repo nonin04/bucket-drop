@@ -11,6 +11,8 @@ abstract class Bucket with _$Bucket {
     required int sort,
     int? iconId,
     String? notes,
+    bool? isDefaultExpense,
+    bool? isDefaultIncome,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) = _Bucket;

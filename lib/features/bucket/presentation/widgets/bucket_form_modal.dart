@@ -47,6 +47,9 @@ class BucketFormModal extends HookConsumerWidget {
     // フォームの入力状態
     final nameController = useTextEditingController(text: bucket?.name ?? '');
     final notesController = useTextEditingController(text: bucket?.notes ?? '');
+    final sortController = useTextEditingController(
+      text: bucket?.sort.toString() ?? '',
+    );
 
     // カテゴリーの初期選択
     final selectedCategoryId = useState<int?>(
@@ -59,6 +62,10 @@ class BucketFormModal extends HookConsumerWidget {
     if (selectedCategoryId.value == null && categories.isNotEmpty) {
       selectedCategoryId.value = categories.first.id;
     }
+
+    // デフォルトフラグの状態
+    final isDefaultExpense = useState<bool>(bucket?.isDefaultExpense ?? false);
+    final isDefaultIncome = useState<bool>(bucket?.isDefaultIncome ?? false);
 
     final isSubmitting = useState<bool>(false);
 
@@ -80,6 +87,8 @@ class BucketFormModal extends HookConsumerWidget {
         return;
       }
 
+      final sortValue = int.tryParse(sortController.text.trim());
+
       isSubmitting.value = true;
       try {
         final repository = ref.read(bucketRepositoryProvider);
@@ -91,6 +100,9 @@ class BucketFormModal extends HookConsumerWidget {
             notes: notesController.text.trim().isEmpty
                 ? null
                 : notesController.text.trim(),
+            sort: sortValue,
+            isDefaultExpense: isDefaultExpense.value,
+            isDefaultIncome: isDefaultIncome.value,
           );
         } else {
           await repository.insertBucket(
@@ -99,6 +111,9 @@ class BucketFormModal extends HookConsumerWidget {
             notes: notesController.text.trim().isEmpty
                 ? null
                 : notesController.text.trim(),
+            sort: sortValue,
+            isDefaultExpense: isDefaultExpense.value,
+            isDefaultIncome: isDefaultIncome.value,
           );
         }
 
@@ -301,6 +316,35 @@ class BucketFormModal extends HookConsumerWidget {
             ),
             const SizedBox(height: 16),
 
+            // 並び順（sort）入力
+            const Text(
+              '並び順番号（任意）',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 6),
+            TextField(
+              controller: sortController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                hintText: '例: 1, 2, 3...（未指定なら末尾に追加）',
+                filled: true,
+                fillColor: const Color(0xFFF5F5F7),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
             // メモ入力
             const Text(
               'メモ（任意）',
@@ -326,6 +370,57 @@ class BucketFormModal extends HookConsumerWidget {
                   horizontal: 14,
                   vertical: 12,
                 ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // デフォルト設定スイッチ
+            Material(
+              color: const Color(0xFFF5F5F7),
+              borderRadius: BorderRadius.circular(12),
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                children: [
+                  SwitchListTile(
+                    title: const Text(
+                      '支出時のデフォルトバケットにする',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    subtitle: const Text(
+                      '支出入力時の初期選択バケットになります（1件のみ）',
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                    value: isDefaultExpense.value,
+                    activeTrackColor: const Color(0xFFB33939),
+                    onChanged: (val) {
+                      isDefaultExpense.value = val;
+                    },
+                  ),
+                  const Divider(height: 1, color: Color(0xFFE5E5EA)),
+                  SwitchListTile(
+                    title: const Text(
+                      '収入時のデフォルトバケットにする',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    subtitle: const Text(
+                      '収入入力時の初期選択バケットになります（1件のみ）',
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
+                    ),
+                    value: isDefaultIncome.value,
+                    activeTrackColor: const Color(0xFF2C5E8A),
+                    onChanged: (val) {
+                      isDefaultIncome.value = val;
+                    },
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 24),

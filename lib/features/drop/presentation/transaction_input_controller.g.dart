@@ -44,7 +44,7 @@ final class TransactionInputControllerProvider
 }
 
 String _$transactionInputControllerHash() =>
-    r'c3d828760b64d96dc1b269bf796e1ee803f37a06';
+    r'f7e5af7bac972f24b6296b745e5a8949a7bb3ff8';
 
 abstract class _$TransactionInputController
     extends $Notifier<TransactionInputState> {

@@ -1,4 +1,5 @@
 import 'package:bucket_drop/core/presentation/widgets/bucket_selector.dart';
+import 'package:bucket_drop/core/presentation/widgets/category_and_title_row.dart';
 import 'package:bucket_drop/core/presentation/widgets/drop_type_toggle.dart';
 import 'package:bucket_drop/core/presentation/widgets/expense_input_panel.dart';
 import 'package:bucket_drop/core/presentation/widgets/receipt_widget.dart';
@@ -24,6 +25,7 @@ class HomeScreen extends ConsumerWidget {
                   children: [
                     DropTypeToggle(),
                     BucketSelector(),
+                    CategoryAndTitleRow(),
                     ReceiptWidget(),
                     ExpenseInputPanel(),
                   ],

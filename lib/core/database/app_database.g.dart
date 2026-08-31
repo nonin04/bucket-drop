@@ -771,6 +771,34 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _isDefaultExpenseMeta = const VerificationMeta(
+    'isDefaultExpense',
+  );
+  @override
+  late final GeneratedColumn<bool> isDefaultExpense = GeneratedColumn<bool>(
+    'is_default_expense',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_default_expense" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _isDefaultIncomeMeta = const VerificationMeta(
+    'isDefaultIncome',
+  );
+  @override
+  late final GeneratedColumn<bool> isDefaultIncome = GeneratedColumn<bool>(
+    'is_default_income',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_default_income" IN (0, 1))',
+    ),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -803,6 +831,8 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     iconId,
     notes,
     sort,
+    isDefaultExpense,
+    isDefaultIncome,
     createdAt,
     updatedAt,
   ];
@@ -858,6 +888,24 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
         sort.isAcceptableOrUnknown(data['sort']!, _sortMeta),
       );
     }
+    if (data.containsKey('is_default_expense')) {
+      context.handle(
+        _isDefaultExpenseMeta,
+        isDefaultExpense.isAcceptableOrUnknown(
+          data['is_default_expense']!,
+          _isDefaultExpenseMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_default_income')) {
+      context.handle(
+        _isDefaultIncomeMeta,
+        isDefaultIncome.isAcceptableOrUnknown(
+          data['is_default_income']!,
+          _isDefaultIncomeMeta,
+        ),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -903,6 +951,14 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
         DriftSqlType.int,
         data['${effectivePrefix}sort'],
       )!,
+      isDefaultExpense: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_default_expense'],
+      ),
+      isDefaultIncome: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_default_income'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -927,6 +983,8 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
   final int? iconId;
   final String? notes;
   final int sort;
+  final bool? isDefaultExpense;
+  final bool? isDefaultIncome;
   final DateTime createdAt;
   final DateTime updatedAt;
   const BucketTable({
@@ -936,6 +994,8 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     this.iconId,
     this.notes,
     required this.sort,
+    this.isDefaultExpense,
+    this.isDefaultIncome,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -952,6 +1012,12 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       map['notes'] = Variable<String>(notes);
     }
     map['sort'] = Variable<int>(sort);
+    if (!nullToAbsent || isDefaultExpense != null) {
+      map['is_default_expense'] = Variable<bool>(isDefaultExpense);
+    }
+    if (!nullToAbsent || isDefaultIncome != null) {
+      map['is_default_income'] = Variable<bool>(isDefaultIncome);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -969,6 +1035,12 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
           ? const Value.absent()
           : Value(notes),
       sort: Value(sort),
+      isDefaultExpense: isDefaultExpense == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isDefaultExpense),
+      isDefaultIncome: isDefaultIncome == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isDefaultIncome),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -986,6 +1058,8 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       iconId: serializer.fromJson<int?>(json['iconId']),
       notes: serializer.fromJson<String?>(json['notes']),
       sort: serializer.fromJson<int>(json['sort']),
+      isDefaultExpense: serializer.fromJson<bool?>(json['isDefaultExpense']),
+      isDefaultIncome: serializer.fromJson<bool?>(json['isDefaultIncome']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -1000,6 +1074,8 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       'iconId': serializer.toJson<int?>(iconId),
       'notes': serializer.toJson<String?>(notes),
       'sort': serializer.toJson<int>(sort),
+      'isDefaultExpense': serializer.toJson<bool?>(isDefaultExpense),
+      'isDefaultIncome': serializer.toJson<bool?>(isDefaultIncome),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -1012,6 +1088,8 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     Value<int?> iconId = const Value.absent(),
     Value<String?> notes = const Value.absent(),
     int? sort,
+    Value<bool?> isDefaultExpense = const Value.absent(),
+    Value<bool?> isDefaultIncome = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => BucketTable(
@@ -1021,6 +1099,12 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     iconId: iconId.present ? iconId.value : this.iconId,
     notes: notes.present ? notes.value : this.notes,
     sort: sort ?? this.sort,
+    isDefaultExpense: isDefaultExpense.present
+        ? isDefaultExpense.value
+        : this.isDefaultExpense,
+    isDefaultIncome: isDefaultIncome.present
+        ? isDefaultIncome.value
+        : this.isDefaultIncome,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -1034,6 +1118,12 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       iconId: data.iconId.present ? data.iconId.value : this.iconId,
       notes: data.notes.present ? data.notes.value : this.notes,
       sort: data.sort.present ? data.sort.value : this.sort,
+      isDefaultExpense: data.isDefaultExpense.present
+          ? data.isDefaultExpense.value
+          : this.isDefaultExpense,
+      isDefaultIncome: data.isDefaultIncome.present
+          ? data.isDefaultIncome.value
+          : this.isDefaultIncome,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1048,6 +1138,8 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
           ..write('iconId: $iconId, ')
           ..write('notes: $notes, ')
           ..write('sort: $sort, ')
+          ..write('isDefaultExpense: $isDefaultExpense, ')
+          ..write('isDefaultIncome: $isDefaultIncome, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1062,6 +1154,8 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     iconId,
     notes,
     sort,
+    isDefaultExpense,
+    isDefaultIncome,
     createdAt,
     updatedAt,
   );
@@ -1075,6 +1169,8 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
           other.iconId == this.iconId &&
           other.notes == this.notes &&
           other.sort == this.sort &&
+          other.isDefaultExpense == this.isDefaultExpense &&
+          other.isDefaultIncome == this.isDefaultIncome &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1086,6 +1182,8 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
   final Value<int?> iconId;
   final Value<String?> notes;
   final Value<int> sort;
+  final Value<bool?> isDefaultExpense;
+  final Value<bool?> isDefaultIncome;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const BucketsCompanion({
@@ -1095,6 +1193,8 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     this.iconId = const Value.absent(),
     this.notes = const Value.absent(),
     this.sort = const Value.absent(),
+    this.isDefaultExpense = const Value.absent(),
+    this.isDefaultIncome = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -1105,6 +1205,8 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     this.iconId = const Value.absent(),
     this.notes = const Value.absent(),
     this.sort = const Value.absent(),
+    this.isDefaultExpense = const Value.absent(),
+    this.isDefaultIncome = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : name = Value(name),
@@ -1116,6 +1218,8 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     Expression<int>? iconId,
     Expression<String>? notes,
     Expression<int>? sort,
+    Expression<bool>? isDefaultExpense,
+    Expression<bool>? isDefaultIncome,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
@@ -1126,6 +1230,8 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
       if (iconId != null) 'icon_id': iconId,
       if (notes != null) 'notes': notes,
       if (sort != null) 'sort': sort,
+      if (isDefaultExpense != null) 'is_default_expense': isDefaultExpense,
+      if (isDefaultIncome != null) 'is_default_income': isDefaultIncome,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -1138,6 +1244,8 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     Value<int?>? iconId,
     Value<String?>? notes,
     Value<int>? sort,
+    Value<bool?>? isDefaultExpense,
+    Value<bool?>? isDefaultIncome,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
   }) {
@@ -1148,6 +1256,8 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
       iconId: iconId ?? this.iconId,
       notes: notes ?? this.notes,
       sort: sort ?? this.sort,
+      isDefaultExpense: isDefaultExpense ?? this.isDefaultExpense,
+      isDefaultIncome: isDefaultIncome ?? this.isDefaultIncome,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -1174,6 +1284,12 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     if (sort.present) {
       map['sort'] = Variable<int>(sort.value);
     }
+    if (isDefaultExpense.present) {
+      map['is_default_expense'] = Variable<bool>(isDefaultExpense.value);
+    }
+    if (isDefaultIncome.present) {
+      map['is_default_income'] = Variable<bool>(isDefaultIncome.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1192,6 +1308,8 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
           ..write('iconId: $iconId, ')
           ..write('notes: $notes, ')
           ..write('sort: $sort, ')
+          ..write('isDefaultExpense: $isDefaultExpense, ')
+          ..write('isDefaultIncome: $isDefaultIncome, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -3484,6 +3602,8 @@ typedef $$BucketsTableCreateCompanionBuilder =
       Value<int?> iconId,
       Value<String?> notes,
       Value<int> sort,
+      Value<bool?> isDefaultExpense,
+      Value<bool?> isDefaultIncome,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
     });
@@ -3495,6 +3615,8 @@ typedef $$BucketsTableUpdateCompanionBuilder =
       Value<int?> iconId,
       Value<String?> notes,
       Value<int> sort,
+      Value<bool?> isDefaultExpense,
+      Value<bool?> isDefaultIncome,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
     });
@@ -3585,6 +3707,16 @@ class $$BucketsTableFilterComposer
 
   ColumnFilters<int> get sort => $composableBuilder(
     column: $table.sort,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDefaultExpense => $composableBuilder(
+    column: $table.isDefaultExpense,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDefaultIncome => $composableBuilder(
+    column: $table.isDefaultIncome,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3699,6 +3831,16 @@ class $$BucketsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isDefaultExpense => $composableBuilder(
+    column: $table.isDefaultExpense,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDefaultIncome => $composableBuilder(
+    column: $table.isDefaultIncome,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -3776,6 +3918,16 @@ class $$BucketsTableAnnotationComposer
 
   GeneratedColumn<int> get sort =>
       $composableBuilder(column: $table.sort, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDefaultExpense => $composableBuilder(
+    column: $table.isDefaultExpense,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isDefaultIncome => $composableBuilder(
+    column: $table.isDefaultIncome,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -3893,6 +4045,8 @@ class $$BucketsTableTableManager
                 Value<int?> iconId = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<int> sort = const Value.absent(),
+                Value<bool?> isDefaultExpense = const Value.absent(),
+                Value<bool?> isDefaultIncome = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
               }) => BucketsCompanion(
@@ -3902,6 +4056,8 @@ class $$BucketsTableTableManager
                 iconId: iconId,
                 notes: notes,
                 sort: sort,
+                isDefaultExpense: isDefaultExpense,
+                isDefaultIncome: isDefaultIncome,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),
@@ -3913,6 +4069,8 @@ class $$BucketsTableTableManager
                 Value<int?> iconId = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<int> sort = const Value.absent(),
+                Value<bool?> isDefaultExpense = const Value.absent(),
+                Value<bool?> isDefaultIncome = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
               }) => BucketsCompanion.insert(
@@ -3922,6 +4080,8 @@ class $$BucketsTableTableManager
                 iconId: iconId,
                 notes: notes,
                 sort: sort,
+                isDefaultExpense: isDefaultExpense,
+                isDefaultIncome: isDefaultIncome,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),

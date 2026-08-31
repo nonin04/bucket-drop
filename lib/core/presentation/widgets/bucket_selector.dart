@@ -19,6 +19,24 @@ class BucketSelector extends ConsumerWidget {
 
     final buckets = bucketsAsync.value ?? <Bucket>[];
 
+    // 初回ロード時のみデフォルトバケットを適用
+    ref.listen<AsyncValue<List<Bucket>>>(bucketListStreamProvider, (_, next) {
+      final list = next.value;
+      if (list != null && list.isNotEmpty) {
+        ref
+            .read(transactionInputControllerProvider.notifier)
+            .applyInitialDefaultBuckets(list);
+      }
+    });
+
+    if (buckets.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref
+            .read(transactionInputControllerProvider.notifier)
+            .applyInitialDefaultBuckets(buckets);
+      });
+    }
+
     // 選択中のバケット名を取得
     final fromBucket = buckets
         .where((b) => b.id == formState.bucketId)
