@@ -44,7 +44,6 @@ extension DropToCompanion on Drop {
     dropCategoryId: Value(dropCategoryId),
     bucketId: Value(bucketId),
     toBucketId: Value(toBucketId),
-    dropType: Value(dropType),
     notes: Value(notes),
     parentDropId: Value(parentDropId),
   );
@@ -61,7 +60,6 @@ extension DropDataToDomain on DropTable {
     dropCategoryId: dropCategoryId,
     bucketId: bucketId,
     toBucketId: toBucketId,
-    dropType: dropType,
     notes: notes,
     parentDropId: parentDropId,
     createdAt: createdAt,

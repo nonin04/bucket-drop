@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Drop {
 
- String get title; int get amount; DateTime get date; int? get id; int? get dropCategoryId; int? get bucketId; int? get toBucketId; DropType? get dropType; int? get parentDropId; String? get notes; DateTime? get createdAt; DateTime? get updatedAt;
+ String get title; int get amount; DateTime get date; int? get id; int? get dropCategoryId; int? get bucketId; int? get toBucketId; int? get parentDropId; String? get notes; DateTime? get createdAt; DateTime? get updatedAt;
 /// Create a copy of Drop
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $DropCopyWith<Drop> get copyWith => _$DropCopyWithImpl<Drop>(this as Drop, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Drop&&(identical(other.title, title) || other.title == title)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.date, date) || other.date == date)&&(identical(other.id, id) || other.id == id)&&(identical(other.dropCategoryId, dropCategoryId) || other.dropCategoryId == dropCategoryId)&&(identical(other.bucketId, bucketId) || other.bucketId == bucketId)&&(identical(other.toBucketId, toBucketId) || other.toBucketId == toBucketId)&&(identical(other.dropType, dropType) || other.dropType == dropType)&&(identical(other.parentDropId, parentDropId) || other.parentDropId == parentDropId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Drop&&(identical(other.title, title) || other.title == title)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.date, date) || other.date == date)&&(identical(other.id, id) || other.id == id)&&(identical(other.dropCategoryId, dropCategoryId) || other.dropCategoryId == dropCategoryId)&&(identical(other.bucketId, bucketId) || other.bucketId == bucketId)&&(identical(other.toBucketId, toBucketId) || other.toBucketId == toBucketId)&&(identical(other.parentDropId, parentDropId) || other.parentDropId == parentDropId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,amount,date,id,dropCategoryId,bucketId,toBucketId,dropType,parentDropId,notes,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,title,amount,date,id,dropCategoryId,bucketId,toBucketId,parentDropId,notes,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'Drop(title: $title, amount: $amount, date: $date, id: $id, dropCategoryId: $dropCategoryId, bucketId: $bucketId, toBucketId: $toBucketId, dropType: $dropType, parentDropId: $parentDropId, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Drop(title: $title, amount: $amount, date: $date, id: $id, dropCategoryId: $dropCategoryId, bucketId: $bucketId, toBucketId: $toBucketId, parentDropId: $parentDropId, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $DropCopyWith<$Res>  {
   factory $DropCopyWith(Drop value, $Res Function(Drop) _then) = _$DropCopyWithImpl;
 @useResult
 $Res call({
- String title, int amount, DateTime date, int? id, int? dropCategoryId, int? bucketId, int? toBucketId, DropType? dropType, int? parentDropId, String? notes, DateTime? createdAt, DateTime? updatedAt
+ String title, int amount, DateTime date, int? id, int? dropCategoryId, int? bucketId, int? toBucketId, int? parentDropId, String? notes, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -62,7 +62,7 @@ class _$DropCopyWithImpl<$Res>
 
 /// Create a copy of Drop
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? amount = null,Object? date = null,Object? id = freezed,Object? dropCategoryId = freezed,Object? bucketId = freezed,Object? toBucketId = freezed,Object? dropType = freezed,Object? parentDropId = freezed,Object? notes = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? amount = null,Object? date = null,Object? id = freezed,Object? dropCategoryId = freezed,Object? bucketId = freezed,Object? toBucketId = freezed,Object? parentDropId = freezed,Object? notes = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
@@ -71,8 +71,7 @@ as DateTime,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nu
 as int?,dropCategoryId: freezed == dropCategoryId ? _self.dropCategoryId : dropCategoryId // ignore: cast_nullable_to_non_nullable
 as int?,bucketId: freezed == bucketId ? _self.bucketId : bucketId // ignore: cast_nullable_to_non_nullable
 as int?,toBucketId: freezed == toBucketId ? _self.toBucketId : toBucketId // ignore: cast_nullable_to_non_nullable
-as int?,dropType: freezed == dropType ? _self.dropType : dropType // ignore: cast_nullable_to_non_nullable
-as DropType?,parentDropId: freezed == parentDropId ? _self.parentDropId : parentDropId // ignore: cast_nullable_to_non_nullable
+as int?,parentDropId: freezed == parentDropId ? _self.parentDropId : parentDropId // ignore: cast_nullable_to_non_nullable
 as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -161,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  int amount,  DateTime date,  int? id,  int? dropCategoryId,  int? bucketId,  int? toBucketId,  DropType? dropType,  int? parentDropId,  String? notes,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  int amount,  DateTime date,  int? id,  int? dropCategoryId,  int? bucketId,  int? toBucketId,  int? parentDropId,  String? notes,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Drop() when $default != null:
-return $default(_that.title,_that.amount,_that.date,_that.id,_that.dropCategoryId,_that.bucketId,_that.toBucketId,_that.dropType,_that.parentDropId,_that.notes,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.title,_that.amount,_that.date,_that.id,_that.dropCategoryId,_that.bucketId,_that.toBucketId,_that.parentDropId,_that.notes,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -182,10 +181,10 @@ return $default(_that.title,_that.amount,_that.date,_that.id,_that.dropCategoryI
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  int amount,  DateTime date,  int? id,  int? dropCategoryId,  int? bucketId,  int? toBucketId,  DropType? dropType,  int? parentDropId,  String? notes,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  int amount,  DateTime date,  int? id,  int? dropCategoryId,  int? bucketId,  int? toBucketId,  int? parentDropId,  String? notes,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Drop():
-return $default(_that.title,_that.amount,_that.date,_that.id,_that.dropCategoryId,_that.bucketId,_that.toBucketId,_that.dropType,_that.parentDropId,_that.notes,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.title,_that.amount,_that.date,_that.id,_that.dropCategoryId,_that.bucketId,_that.toBucketId,_that.parentDropId,_that.notes,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +201,10 @@ return $default(_that.title,_that.amount,_that.date,_that.id,_that.dropCategoryI
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  int amount,  DateTime date,  int? id,  int? dropCategoryId,  int? bucketId,  int? toBucketId,  DropType? dropType,  int? parentDropId,  String? notes,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  int amount,  DateTime date,  int? id,  int? dropCategoryId,  int? bucketId,  int? toBucketId,  int? parentDropId,  String? notes,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Drop() when $default != null:
-return $default(_that.title,_that.amount,_that.date,_that.id,_that.dropCategoryId,_that.bucketId,_that.toBucketId,_that.dropType,_that.parentDropId,_that.notes,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.title,_that.amount,_that.date,_that.id,_that.dropCategoryId,_that.bucketId,_that.toBucketId,_that.parentDropId,_that.notes,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -217,7 +216,7 @@ return $default(_that.title,_that.amount,_that.date,_that.id,_that.dropCategoryI
 
 
 class _Drop implements Drop {
-  const _Drop({required this.title, required this.amount, required this.date, this.id, this.dropCategoryId, this.bucketId, this.toBucketId, this.dropType, this.parentDropId, this.notes, this.createdAt, this.updatedAt});
+  const _Drop({required this.title, required this.amount, required this.date, this.id, this.dropCategoryId, this.bucketId, this.toBucketId, this.parentDropId, this.notes, this.createdAt, this.updatedAt});
   
 
 @override final  String title;
@@ -227,7 +226,6 @@ class _Drop implements Drop {
 @override final  int? dropCategoryId;
 @override final  int? bucketId;
 @override final  int? toBucketId;
-@override final  DropType? dropType;
 @override final  int? parentDropId;
 @override final  String? notes;
 @override final  DateTime? createdAt;
@@ -243,16 +241,16 @@ _$DropCopyWith<_Drop> get copyWith => __$DropCopyWithImpl<_Drop>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Drop&&(identical(other.title, title) || other.title == title)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.date, date) || other.date == date)&&(identical(other.id, id) || other.id == id)&&(identical(other.dropCategoryId, dropCategoryId) || other.dropCategoryId == dropCategoryId)&&(identical(other.bucketId, bucketId) || other.bucketId == bucketId)&&(identical(other.toBucketId, toBucketId) || other.toBucketId == toBucketId)&&(identical(other.dropType, dropType) || other.dropType == dropType)&&(identical(other.parentDropId, parentDropId) || other.parentDropId == parentDropId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Drop&&(identical(other.title, title) || other.title == title)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.date, date) || other.date == date)&&(identical(other.id, id) || other.id == id)&&(identical(other.dropCategoryId, dropCategoryId) || other.dropCategoryId == dropCategoryId)&&(identical(other.bucketId, bucketId) || other.bucketId == bucketId)&&(identical(other.toBucketId, toBucketId) || other.toBucketId == toBucketId)&&(identical(other.parentDropId, parentDropId) || other.parentDropId == parentDropId)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,amount,date,id,dropCategoryId,bucketId,toBucketId,dropType,parentDropId,notes,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,title,amount,date,id,dropCategoryId,bucketId,toBucketId,parentDropId,notes,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'Drop(title: $title, amount: $amount, date: $date, id: $id, dropCategoryId: $dropCategoryId, bucketId: $bucketId, toBucketId: $toBucketId, dropType: $dropType, parentDropId: $parentDropId, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Drop(title: $title, amount: $amount, date: $date, id: $id, dropCategoryId: $dropCategoryId, bucketId: $bucketId, toBucketId: $toBucketId, parentDropId: $parentDropId, notes: $notes, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -263,7 +261,7 @@ abstract mixin class _$DropCopyWith<$Res> implements $DropCopyWith<$Res> {
   factory _$DropCopyWith(_Drop value, $Res Function(_Drop) _then) = __$DropCopyWithImpl;
 @override @useResult
 $Res call({
- String title, int amount, DateTime date, int? id, int? dropCategoryId, int? bucketId, int? toBucketId, DropType? dropType, int? parentDropId, String? notes, DateTime? createdAt, DateTime? updatedAt
+ String title, int amount, DateTime date, int? id, int? dropCategoryId, int? bucketId, int? toBucketId, int? parentDropId, String? notes, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -280,7 +278,7 @@ class __$DropCopyWithImpl<$Res>
 
 /// Create a copy of Drop
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? amount = null,Object? date = null,Object? id = freezed,Object? dropCategoryId = freezed,Object? bucketId = freezed,Object? toBucketId = freezed,Object? dropType = freezed,Object? parentDropId = freezed,Object? notes = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? amount = null,Object? date = null,Object? id = freezed,Object? dropCategoryId = freezed,Object? bucketId = freezed,Object? toBucketId = freezed,Object? parentDropId = freezed,Object? notes = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_Drop(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
@@ -289,8 +287,7 @@ as DateTime,id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nu
 as int?,dropCategoryId: freezed == dropCategoryId ? _self.dropCategoryId : dropCategoryId // ignore: cast_nullable_to_non_nullable
 as int?,bucketId: freezed == bucketId ? _self.bucketId : bucketId // ignore: cast_nullable_to_non_nullable
 as int?,toBucketId: freezed == toBucketId ? _self.toBucketId : toBucketId // ignore: cast_nullable_to_non_nullable
-as int?,dropType: freezed == dropType ? _self.dropType : dropType // ignore: cast_nullable_to_non_nullable
-as DropType?,parentDropId: freezed == parentDropId ? _self.parentDropId : parentDropId // ignore: cast_nullable_to_non_nullable
+as int?,parentDropId: freezed == parentDropId ? _self.parentDropId : parentDropId // ignore: cast_nullable_to_non_nullable
 as int?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
 as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable

@@ -132,7 +132,6 @@ class TransactionInputController extends _$TransactionInputController {
     final newDrop = Drop(
       title: state.title,
       amount: state.parsedAmount,
-      dropType: state.dropType,
       bucketId: state.bucketId,
       toBucketId: state.dropType == DropType.transfer ? state.toBucketId : null,
       date: DateTime.now(),

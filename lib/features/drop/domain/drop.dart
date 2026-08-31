@@ -13,7 +13,6 @@ abstract class Drop with _$Drop {
     int? dropCategoryId, // カテゴリーID
     int? bucketId, // バケットID
     int? toBucketId, // ToバケットID
-    DropType? dropType, // ドロップタイプ
     int? parentDropId, // 親ドロップID
     String? notes, // メモ
     DateTime? createdAt, // 作成日時

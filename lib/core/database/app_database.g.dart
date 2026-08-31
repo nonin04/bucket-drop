@@ -42,8 +42,38 @@ class $BucketCategoriesTable extends BucketCategories
       ).withConverter<BalanceType>(
         $BucketCategoriesTable.$converterbalanceType,
       );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, name, balanceType];
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    balanceType,
+    createdAt,
+    updatedAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -66,6 +96,18 @@ class $BucketCategoriesTable extends BucketCategories
       );
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
     }
     return context;
   }
@@ -90,6 +132,14 @@ class $BucketCategoriesTable extends BucketCategories
           data['${effectivePrefix}balance_type'],
         )!,
       ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
     );
   }
 
@@ -106,10 +156,14 @@ class BucketCategory extends DataClass implements Insertable<BucketCategory> {
   final int id;
   final String name;
   final BalanceType balanceType;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   const BucketCategory({
     required this.id,
     required this.name,
     required this.balanceType,
+    required this.createdAt,
+    required this.updatedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -121,6 +175,8 @@ class BucketCategory extends DataClass implements Insertable<BucketCategory> {
         $BucketCategoriesTable.$converterbalanceType.toSql(balanceType),
       );
     }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
   }
 
@@ -129,6 +185,8 @@ class BucketCategory extends DataClass implements Insertable<BucketCategory> {
       id: Value(id),
       name: Value(name),
       balanceType: Value(balanceType),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
     );
   }
 
@@ -143,6 +201,8 @@ class BucketCategory extends DataClass implements Insertable<BucketCategory> {
       balanceType: $BucketCategoriesTable.$converterbalanceType.fromJson(
         serializer.fromJson<String>(json['balanceType']),
       ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -154,15 +214,24 @@ class BucketCategory extends DataClass implements Insertable<BucketCategory> {
       'balanceType': serializer.toJson<String>(
         $BucketCategoriesTable.$converterbalanceType.toJson(balanceType),
       ),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
-  BucketCategory copyWith({int? id, String? name, BalanceType? balanceType}) =>
-      BucketCategory(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        balanceType: balanceType ?? this.balanceType,
-      );
+  BucketCategory copyWith({
+    int? id,
+    String? name,
+    BalanceType? balanceType,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => BucketCategory(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    balanceType: balanceType ?? this.balanceType,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
   BucketCategory copyWithCompanion(BucketCategoriesCompanion data) {
     return BucketCategory(
       id: data.id.present ? data.id.value : this.id,
@@ -170,6 +239,8 @@ class BucketCategory extends DataClass implements Insertable<BucketCategory> {
       balanceType: data.balanceType.present
           ? data.balanceType.value
           : this.balanceType,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
 
@@ -178,46 +249,60 @@ class BucketCategory extends DataClass implements Insertable<BucketCategory> {
     return (StringBuffer('BucketCategory(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('balanceType: $balanceType')
+          ..write('balanceType: $balanceType, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, name, balanceType);
+  int get hashCode => Object.hash(id, name, balanceType, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is BucketCategory &&
           other.id == this.id &&
           other.name == this.name &&
-          other.balanceType == this.balanceType);
+          other.balanceType == this.balanceType &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
 }
 
 class BucketCategoriesCompanion extends UpdateCompanion<BucketCategory> {
   final Value<int> id;
   final Value<String> name;
   final Value<BalanceType> balanceType;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const BucketCategoriesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.balanceType = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   });
   BucketCategoriesCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required BalanceType balanceType,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   }) : name = Value(name),
        balanceType = Value(balanceType);
   static Insertable<BucketCategory> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? balanceType,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (balanceType != null) 'balance_type': balanceType,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
 
@@ -225,11 +310,15 @@ class BucketCategoriesCompanion extends UpdateCompanion<BucketCategory> {
     Value<int>? id,
     Value<String>? name,
     Value<BalanceType>? balanceType,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
   }) {
     return BucketCategoriesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       balanceType: balanceType ?? this.balanceType,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -247,6 +336,12 @@ class BucketCategoriesCompanion extends UpdateCompanion<BucketCategory> {
         $BucketCategoriesTable.$converterbalanceType.toSql(balanceType.value),
       );
     }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
     return map;
   }
 
@@ -255,7 +350,9 @@ class BucketCategoriesCompanion extends UpdateCompanion<BucketCategory> {
     return (StringBuffer('BucketCategoriesCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
-          ..write('balanceType: $balanceType')
+          ..write('balanceType: $balanceType, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -1435,9 +1532,9 @@ class $DropCategoriesTable extends DropCategories
   late final GeneratedColumn<int> iconId = GeneratedColumn<int>(
     'icon_id',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.int,
-    requiredDuringInsert: false,
+    requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES icons (id)',
     ),
@@ -1447,12 +1544,62 @@ class $DropCategoriesTable extends DropCategories
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
     'name',
     aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DropType, String> dropType =
+      GeneratedColumn<String>(
+        'drop_type',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<DropType>($DropCategoriesTable.$converterdropType);
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, iconId, name];
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    iconId,
+    name,
+    dropType,
+    note,
+    createdAt,
+    updatedAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1473,11 +1620,33 @@ class $DropCategoriesTable extends DropCategories
         _iconIdMeta,
         iconId.isAcceptableOrUnknown(data['icon_id']!, _iconIdMeta),
       );
+    } else if (isInserting) {
+      context.missing(_iconIdMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
         _nameMeta,
         name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
       );
     }
     return context;
@@ -1496,11 +1665,29 @@ class $DropCategoriesTable extends DropCategories
       iconId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}icon_id'],
-      ),
+      )!,
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
+      )!,
+      dropType: $DropCategoriesTable.$converterdropType.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}drop_type'],
+        )!,
       ),
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
     );
   }
 
@@ -1508,34 +1695,57 @@ class $DropCategoriesTable extends DropCategories
   $DropCategoriesTable createAlias(String alias) {
     return $DropCategoriesTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<DropType, String, String> $converterdropType =
+      const EnumNameConverter<DropType>(DropType.values);
 }
 
 class DropCategoryTable extends DataClass
     implements Insertable<DropCategoryTable> {
   final int id;
-  final int? iconId;
-  final String? name;
-  const DropCategoryTable({required this.id, this.iconId, this.name});
+  final int iconId;
+  final String name;
+  final DropType dropType;
+  final String? note;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const DropCategoryTable({
+    required this.id,
+    required this.iconId,
+    required this.name,
+    required this.dropType,
+    this.note,
+    required this.createdAt,
+    required this.updatedAt,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    if (!nullToAbsent || iconId != null) {
-      map['icon_id'] = Variable<int>(iconId);
+    map['icon_id'] = Variable<int>(iconId);
+    map['name'] = Variable<String>(name);
+    {
+      map['drop_type'] = Variable<String>(
+        $DropCategoriesTable.$converterdropType.toSql(dropType),
+      );
     }
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
     }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
   }
 
   DropCategoriesCompanion toCompanion(bool nullToAbsent) {
     return DropCategoriesCompanion(
       id: Value(id),
-      iconId: iconId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(iconId),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      iconId: Value(iconId),
+      name: Value(name),
+      dropType: Value(dropType),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
     );
   }
 
@@ -1546,8 +1756,14 @@ class DropCategoryTable extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DropCategoryTable(
       id: serializer.fromJson<int>(json['id']),
-      iconId: serializer.fromJson<int?>(json['iconId']),
-      name: serializer.fromJson<String?>(json['name']),
+      iconId: serializer.fromJson<int>(json['iconId']),
+      name: serializer.fromJson<String>(json['name']),
+      dropType: $DropCategoriesTable.$converterdropType.fromJson(
+        serializer.fromJson<String>(json['dropType']),
+      ),
+      note: serializer.fromJson<String?>(json['note']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -1555,25 +1771,43 @@ class DropCategoryTable extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'iconId': serializer.toJson<int?>(iconId),
-      'name': serializer.toJson<String?>(name),
+      'iconId': serializer.toJson<int>(iconId),
+      'name': serializer.toJson<String>(name),
+      'dropType': serializer.toJson<String>(
+        $DropCategoriesTable.$converterdropType.toJson(dropType),
+      ),
+      'note': serializer.toJson<String?>(note),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
   DropCategoryTable copyWith({
     int? id,
-    Value<int?> iconId = const Value.absent(),
-    Value<String?> name = const Value.absent(),
+    int? iconId,
+    String? name,
+    DropType? dropType,
+    Value<String?> note = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) => DropCategoryTable(
     id: id ?? this.id,
-    iconId: iconId.present ? iconId.value : this.iconId,
-    name: name.present ? name.value : this.name,
+    iconId: iconId ?? this.iconId,
+    name: name ?? this.name,
+    dropType: dropType ?? this.dropType,
+    note: note.present ? note.value : this.note,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
   );
   DropCategoryTable copyWithCompanion(DropCategoriesCompanion data) {
     return DropCategoryTable(
       id: data.id.present ? data.id.value : this.id,
       iconId: data.iconId.present ? data.iconId.value : this.iconId,
       name: data.name.present ? data.name.value : this.name,
+      dropType: data.dropType.present ? data.dropType.value : this.dropType,
+      note: data.note.present ? data.note.value : this.note,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
 
@@ -1582,57 +1816,96 @@ class DropCategoryTable extends DataClass
     return (StringBuffer('DropCategoryTable(')
           ..write('id: $id, ')
           ..write('iconId: $iconId, ')
-          ..write('name: $name')
+          ..write('name: $name, ')
+          ..write('dropType: $dropType, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, iconId, name);
+  int get hashCode =>
+      Object.hash(id, iconId, name, dropType, note, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is DropCategoryTable &&
           other.id == this.id &&
           other.iconId == this.iconId &&
-          other.name == this.name);
+          other.name == this.name &&
+          other.dropType == this.dropType &&
+          other.note == this.note &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
 }
 
 class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
   final Value<int> id;
-  final Value<int?> iconId;
-  final Value<String?> name;
+  final Value<int> iconId;
+  final Value<String> name;
+  final Value<DropType> dropType;
+  final Value<String?> note;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const DropCategoriesCompanion({
     this.id = const Value.absent(),
     this.iconId = const Value.absent(),
     this.name = const Value.absent(),
+    this.dropType = const Value.absent(),
+    this.note = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   });
   DropCategoriesCompanion.insert({
     this.id = const Value.absent(),
-    this.iconId = const Value.absent(),
-    this.name = const Value.absent(),
-  });
+    required int iconId,
+    required String name,
+    required DropType dropType,
+    this.note = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : iconId = Value(iconId),
+       name = Value(name),
+       dropType = Value(dropType);
   static Insertable<DropCategoryTable> custom({
     Expression<int>? id,
     Expression<int>? iconId,
     Expression<String>? name,
+    Expression<String>? dropType,
+    Expression<String>? note,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (iconId != null) 'icon_id': iconId,
       if (name != null) 'name': name,
+      if (dropType != null) 'drop_type': dropType,
+      if (note != null) 'note': note,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
 
   DropCategoriesCompanion copyWith({
     Value<int>? id,
-    Value<int?>? iconId,
-    Value<String?>? name,
+    Value<int>? iconId,
+    Value<String>? name,
+    Value<DropType>? dropType,
+    Value<String?>? note,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
   }) {
     return DropCategoriesCompanion(
       id: id ?? this.id,
       iconId: iconId ?? this.iconId,
       name: name ?? this.name,
+      dropType: dropType ?? this.dropType,
+      note: note ?? this.note,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -1648,6 +1921,20 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (dropType.present) {
+      map['drop_type'] = Variable<String>(
+        $DropCategoriesTable.$converterdropType.toSql(dropType.value),
+      );
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
     return map;
   }
 
@@ -1656,7 +1943,11 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
     return (StringBuffer('DropCategoriesCompanion(')
           ..write('id: $id, ')
           ..write('iconId: $iconId, ')
-          ..write('name: $name')
+          ..write('name: $name, ')
+          ..write('dropType: $dropType, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -1740,15 +2031,6 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
       'REFERENCES buckets (id)',
     ),
   );
-  @override
-  late final GeneratedColumnWithTypeConverter<DropType?, String> dropType =
-      GeneratedColumn<String>(
-        'drop_type',
-        aliasedName,
-        true,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-      ).withConverter<DropType?>($DropsTable.$converterdropTypen);
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
@@ -1813,7 +2095,6 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
     dropCategoryId,
     bucketId,
     toBucketId,
-    dropType,
     date,
     notes,
     parentDropId,
@@ -1943,12 +2224,6 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
         DriftSqlType.int,
         data['${effectivePrefix}to_bucket_id'],
       ),
-      dropType: $DropsTable.$converterdropTypen.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}drop_type'],
-        ),
-      ),
       date: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}date'],
@@ -1976,11 +2251,6 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
   $DropsTable createAlias(String alias) {
     return $DropsTable(attachedDatabase, alias);
   }
-
-  static JsonTypeConverter2<DropType, String, String> $converterdropType =
-      const EnumNameConverter<DropType>(DropType.values);
-  static JsonTypeConverter2<DropType?, String?, String?> $converterdropTypen =
-      JsonTypeConverter2.asNullable($converterdropType);
 }
 
 class DropTable extends DataClass implements Insertable<DropTable> {
@@ -1990,7 +2260,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
   final int? dropCategoryId;
   final int? bucketId;
   final int? toBucketId;
-  final DropType? dropType;
   final DateTime date;
   final String? notes;
   final int? parentDropId;
@@ -2003,7 +2272,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
     this.dropCategoryId,
     this.bucketId,
     this.toBucketId,
-    this.dropType,
     required this.date,
     this.notes,
     this.parentDropId,
@@ -2024,11 +2292,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
     }
     if (!nullToAbsent || toBucketId != null) {
       map['to_bucket_id'] = Variable<int>(toBucketId);
-    }
-    if (!nullToAbsent || dropType != null) {
-      map['drop_type'] = Variable<String>(
-        $DropsTable.$converterdropTypen.toSql(dropType),
-      );
     }
     map['date'] = Variable<DateTime>(date);
     if (!nullToAbsent || notes != null) {
@@ -2056,9 +2319,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
       toBucketId: toBucketId == null && nullToAbsent
           ? const Value.absent()
           : Value(toBucketId),
-      dropType: dropType == null && nullToAbsent
-          ? const Value.absent()
-          : Value(dropType),
       date: Value(date),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
@@ -2083,9 +2343,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
       dropCategoryId: serializer.fromJson<int?>(json['dropCategoryId']),
       bucketId: serializer.fromJson<int?>(json['bucketId']),
       toBucketId: serializer.fromJson<int?>(json['toBucketId']),
-      dropType: $DropsTable.$converterdropTypen.fromJson(
-        serializer.fromJson<String?>(json['dropType']),
-      ),
       date: serializer.fromJson<DateTime>(json['date']),
       notes: serializer.fromJson<String?>(json['notes']),
       parentDropId: serializer.fromJson<int?>(json['parentDropId']),
@@ -2103,9 +2360,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
       'dropCategoryId': serializer.toJson<int?>(dropCategoryId),
       'bucketId': serializer.toJson<int?>(bucketId),
       'toBucketId': serializer.toJson<int?>(toBucketId),
-      'dropType': serializer.toJson<String?>(
-        $DropsTable.$converterdropTypen.toJson(dropType),
-      ),
       'date': serializer.toJson<DateTime>(date),
       'notes': serializer.toJson<String?>(notes),
       'parentDropId': serializer.toJson<int?>(parentDropId),
@@ -2121,7 +2375,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
     Value<int?> dropCategoryId = const Value.absent(),
     Value<int?> bucketId = const Value.absent(),
     Value<int?> toBucketId = const Value.absent(),
-    Value<DropType?> dropType = const Value.absent(),
     DateTime? date,
     Value<String?> notes = const Value.absent(),
     Value<int?> parentDropId = const Value.absent(),
@@ -2136,7 +2389,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
         : this.dropCategoryId,
     bucketId: bucketId.present ? bucketId.value : this.bucketId,
     toBucketId: toBucketId.present ? toBucketId.value : this.toBucketId,
-    dropType: dropType.present ? dropType.value : this.dropType,
     date: date ?? this.date,
     notes: notes.present ? notes.value : this.notes,
     parentDropId: parentDropId.present ? parentDropId.value : this.parentDropId,
@@ -2155,7 +2407,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
       toBucketId: data.toBucketId.present
           ? data.toBucketId.value
           : this.toBucketId,
-      dropType: data.dropType.present ? data.dropType.value : this.dropType,
       date: data.date.present ? data.date.value : this.date,
       notes: data.notes.present ? data.notes.value : this.notes,
       parentDropId: data.parentDropId.present
@@ -2175,7 +2426,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
           ..write('dropCategoryId: $dropCategoryId, ')
           ..write('bucketId: $bucketId, ')
           ..write('toBucketId: $toBucketId, ')
-          ..write('dropType: $dropType, ')
           ..write('date: $date, ')
           ..write('notes: $notes, ')
           ..write('parentDropId: $parentDropId, ')
@@ -2193,7 +2443,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
     dropCategoryId,
     bucketId,
     toBucketId,
-    dropType,
     date,
     notes,
     parentDropId,
@@ -2210,7 +2459,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
           other.dropCategoryId == this.dropCategoryId &&
           other.bucketId == this.bucketId &&
           other.toBucketId == this.toBucketId &&
-          other.dropType == this.dropType &&
           other.date == this.date &&
           other.notes == this.notes &&
           other.parentDropId == this.parentDropId &&
@@ -2225,7 +2473,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
   final Value<int?> dropCategoryId;
   final Value<int?> bucketId;
   final Value<int?> toBucketId;
-  final Value<DropType?> dropType;
   final Value<DateTime> date;
   final Value<String?> notes;
   final Value<int?> parentDropId;
@@ -2238,7 +2485,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
     this.dropCategoryId = const Value.absent(),
     this.bucketId = const Value.absent(),
     this.toBucketId = const Value.absent(),
-    this.dropType = const Value.absent(),
     this.date = const Value.absent(),
     this.notes = const Value.absent(),
     this.parentDropId = const Value.absent(),
@@ -2252,7 +2498,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
     this.dropCategoryId = const Value.absent(),
     this.bucketId = const Value.absent(),
     this.toBucketId = const Value.absent(),
-    this.dropType = const Value.absent(),
     required DateTime date,
     this.notes = const Value.absent(),
     this.parentDropId = const Value.absent(),
@@ -2268,7 +2513,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
     Expression<int>? dropCategoryId,
     Expression<int>? bucketId,
     Expression<int>? toBucketId,
-    Expression<String>? dropType,
     Expression<DateTime>? date,
     Expression<String>? notes,
     Expression<int>? parentDropId,
@@ -2282,7 +2526,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
       if (dropCategoryId != null) 'drop_category_id': dropCategoryId,
       if (bucketId != null) 'bucket_id': bucketId,
       if (toBucketId != null) 'to_bucket_id': toBucketId,
-      if (dropType != null) 'drop_type': dropType,
       if (date != null) 'date': date,
       if (notes != null) 'notes': notes,
       if (parentDropId != null) 'parent_drop_id': parentDropId,
@@ -2298,7 +2541,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
     Value<int?>? dropCategoryId,
     Value<int?>? bucketId,
     Value<int?>? toBucketId,
-    Value<DropType?>? dropType,
     Value<DateTime>? date,
     Value<String?>? notes,
     Value<int?>? parentDropId,
@@ -2312,7 +2554,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
       dropCategoryId: dropCategoryId ?? this.dropCategoryId,
       bucketId: bucketId ?? this.bucketId,
       toBucketId: toBucketId ?? this.toBucketId,
-      dropType: dropType ?? this.dropType,
       date: date ?? this.date,
       notes: notes ?? this.notes,
       parentDropId: parentDropId ?? this.parentDropId,
@@ -2342,11 +2583,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
     if (toBucketId.present) {
       map['to_bucket_id'] = Variable<int>(toBucketId.value);
     }
-    if (dropType.present) {
-      map['drop_type'] = Variable<String>(
-        $DropsTable.$converterdropTypen.toSql(dropType.value),
-      );
-    }
     if (date.present) {
       map['date'] = Variable<DateTime>(date.value);
     }
@@ -2374,7 +2610,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
           ..write('dropCategoryId: $dropCategoryId, ')
           ..write('bucketId: $bucketId, ')
           ..write('toBucketId: $toBucketId, ')
-          ..write('dropType: $dropType, ')
           ..write('date: $date, ')
           ..write('notes: $notes, ')
           ..write('parentDropId: $parentDropId, ')
@@ -2417,12 +2652,16 @@ typedef $$BucketCategoriesTableCreateCompanionBuilder =
       Value<int> id,
       required String name,
       required BalanceType balanceType,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
     });
 typedef $$BucketCategoriesTableUpdateCompanionBuilder =
     BucketCategoriesCompanion Function({
       Value<int> id,
       Value<String> name,
       Value<BalanceType> balanceType,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
     });
 
 final class $$BucketCategoriesTableReferences
@@ -2478,6 +2717,16 @@ class $$BucketCategoriesTableFilterComposer
     builder: (column) => ColumnWithTypeConverterFilters(column),
   );
 
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> bucketsRefs(
     Expression<bool> Function($$BucketsTableFilterComposer f) f,
   ) {
@@ -2527,6 +2776,16 @@ class $$BucketCategoriesTableOrderingComposer
     column: $table.balanceType,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$BucketCategoriesTableAnnotationComposer
@@ -2549,6 +2808,12 @@ class $$BucketCategoriesTableAnnotationComposer
         column: $table.balanceType,
         builder: (column) => column,
       );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
   Expression<T> bucketsRefs<T extends Object>(
     Expression<T> Function($$BucketsTableAnnotationComposer a) f,
@@ -2609,20 +2874,28 @@ class $$BucketCategoriesTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<BalanceType> balanceType = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
               }) => BucketCategoriesCompanion(
                 id: id,
                 name: name,
                 balanceType: balanceType,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
               ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
                 required String name,
                 required BalanceType balanceType,
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
               }) => BucketCategoriesCompanion.insert(
                 id: id,
                 name: name,
                 balanceType: balanceType,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -3937,14 +4210,22 @@ typedef $$BucketSnapshotsTableProcessedTableManager =
 typedef $$DropCategoriesTableCreateCompanionBuilder =
     DropCategoriesCompanion Function({
       Value<int> id,
-      Value<int?> iconId,
-      Value<String?> name,
+      required int iconId,
+      required String name,
+      required DropType dropType,
+      Value<String?> note,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
     });
 typedef $$DropCategoriesTableUpdateCompanionBuilder =
     DropCategoriesCompanion Function({
       Value<int> id,
-      Value<int?> iconId,
-      Value<String?> name,
+      Value<int> iconId,
+      Value<String> name,
+      Value<DropType> dropType,
+      Value<String?> note,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
     });
 
 final class $$DropCategoriesTableReferences
@@ -3959,9 +4240,9 @@ final class $$DropCategoriesTableReferences
   static $IconsTable _iconIdTable(_$AppDatabase db) =>
       db.icons.createAlias('drop_categories__icon_id__icons__id');
 
-  $$IconsTableProcessedTableManager? get iconId {
-    final $_column = $_itemColumn<int>('icon_id');
-    if ($_column == null) return null;
+  $$IconsTableProcessedTableManager get iconId {
+    final $_column = $_itemColumn<int>('icon_id')!;
+
     final manager = $$IconsTableTableManager(
       $_db,
       $_db.icons,
@@ -4009,6 +4290,27 @@ class $$DropCategoriesTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<DropType, DropType, String> get dropType =>
+      $composableBuilder(
+        column: $table.dropType,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -4080,6 +4382,26 @@ class $$DropCategoriesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get dropType => $composableBuilder(
+    column: $table.dropType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$IconsTableOrderingComposer get iconId {
     final $$IconsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -4118,6 +4440,18 @@ class $$DropCategoriesTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DropType, String> get dropType =>
+      $composableBuilder(column: $table.dropType, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
   $$IconsTableAnnotationComposer get iconId {
     final $$IconsTableAnnotationComposer composer = $composerBuilder(
@@ -4199,18 +4533,38 @@ class $$DropCategoriesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                Value<int?> iconId = const Value.absent(),
-                Value<String?> name = const Value.absent(),
-              }) => DropCategoriesCompanion(id: id, iconId: iconId, name: name),
+                Value<int> iconId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<DropType> dropType = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => DropCategoriesCompanion(
+                id: id,
+                iconId: iconId,
+                name: name,
+                dropType: dropType,
+                note: note,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
           createCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                Value<int?> iconId = const Value.absent(),
-                Value<String?> name = const Value.absent(),
+                required int iconId,
+                required String name,
+                required DropType dropType,
+                Value<String?> note = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
               }) => DropCategoriesCompanion.insert(
                 id: id,
                 iconId: iconId,
                 name: name,
+                dropType: dropType,
+                note: note,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -4310,7 +4664,6 @@ typedef $$DropsTableCreateCompanionBuilder =
       Value<int?> dropCategoryId,
       Value<int?> bucketId,
       Value<int?> toBucketId,
-      Value<DropType?> dropType,
       required DateTime date,
       Value<String?> notes,
       Value<int?> parentDropId,
@@ -4325,7 +4678,6 @@ typedef $$DropsTableUpdateCompanionBuilder =
       Value<int?> dropCategoryId,
       Value<int?> bucketId,
       Value<int?> toBucketId,
-      Value<DropType?> dropType,
       Value<DateTime> date,
       Value<String?> notes,
       Value<int?> parentDropId,
@@ -4429,12 +4781,6 @@ class $$DropsTableFilterComposer extends Composer<_$AppDatabase, $DropsTable> {
     column: $table.amount,
     builder: (column) => ColumnFilters(column),
   );
-
-  ColumnWithTypeConverterFilters<DropType?, DropType, String> get dropType =>
-      $composableBuilder(
-        column: $table.dropType,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
 
   ColumnFilters<DateTime> get date => $composableBuilder(
     column: $table.date,
@@ -4573,11 +4919,6 @@ class $$DropsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get dropType => $composableBuilder(
-    column: $table.dropType,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<DateTime> get date => $composableBuilder(
     column: $table.date,
     builder: (column) => ColumnOrderings(column),
@@ -4708,9 +5049,6 @@ class $$DropsTableAnnotationComposer
 
   GeneratedColumn<int> get amount =>
       $composableBuilder(column: $table.amount, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<DropType?, String> get dropType =>
-      $composableBuilder(column: $table.dropType, builder: (column) => column);
 
   GeneratedColumn<DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
@@ -4856,7 +5194,6 @@ class $$DropsTableTableManager
                 Value<int?> dropCategoryId = const Value.absent(),
                 Value<int?> bucketId = const Value.absent(),
                 Value<int?> toBucketId = const Value.absent(),
-                Value<DropType?> dropType = const Value.absent(),
                 Value<DateTime> date = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<int?> parentDropId = const Value.absent(),
@@ -4869,7 +5206,6 @@ class $$DropsTableTableManager
                 dropCategoryId: dropCategoryId,
                 bucketId: bucketId,
                 toBucketId: toBucketId,
-                dropType: dropType,
                 date: date,
                 notes: notes,
                 parentDropId: parentDropId,
@@ -4884,7 +5220,6 @@ class $$DropsTableTableManager
                 Value<int?> dropCategoryId = const Value.absent(),
                 Value<int?> bucketId = const Value.absent(),
                 Value<int?> toBucketId = const Value.absent(),
-                Value<DropType?> dropType = const Value.absent(),
                 required DateTime date,
                 Value<String?> notes = const Value.absent(),
                 Value<int?> parentDropId = const Value.absent(),
@@ -4897,7 +5232,6 @@ class $$DropsTableTableManager
                 dropCategoryId: dropCategoryId,
                 bucketId: bucketId,
                 toBucketId: toBucketId,
-                dropType: dropType,
                 date: date,
                 notes: notes,
                 parentDropId: parentDropId,
