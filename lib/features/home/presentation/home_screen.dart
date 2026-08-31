@@ -11,29 +11,33 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SafeArea(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints.maxHeight,
-              ),
-              child: const IntrinsicHeight(
-                child: Column(
-                  children: [
-                    DropTypeToggle(),
-                    BucketSelector(),
-                    CategoryAndTitleRow(),
-                    ReceiptWidget(),
-                    ExpenseInputPanel(),
-                  ],
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: const IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      DropTypeToggle(),
+                      BucketSelector(),
+                      CategoryAndTitleRow(),
+                      ReceiptWidget(),
+                      ExpenseInputPanel(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

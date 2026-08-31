@@ -41,6 +41,7 @@ class DropTypeToggle extends ConsumerWidget {
             ),
           },
           onValueChanged: (value) {
+            FocusScope.of(context).unfocus();
             if (value != null) {
               ref
                   .read(transactionInputControllerProvider.notifier)

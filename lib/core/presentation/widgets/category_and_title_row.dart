@@ -22,6 +22,7 @@ class CategoryAndTitleRow extends HookConsumerWidget {
     final textController = useTextEditingController(
       keys: [resetKey],
     );
+    final focusNode = useFocusNode();
 
     // 取引タイプと選択中のカテゴリーIDを監視
     final dropType = ref.watch(
@@ -53,6 +54,7 @@ class CategoryAndTitleRow extends HookConsumerWidget {
           // ① カテゴリー選択バー（タップでモーダル表示）
           GestureDetector(
             onTap: () {
+              FocusScope.of(context).unfocus();
               unawaited(
                 DropCategoryPickerModal.show(
                   context,
@@ -126,6 +128,7 @@ class CategoryAndTitleRow extends HookConsumerWidget {
             alignment: Alignment.center,
             child: TextField(
               controller: textController,
+              focusNode: focusNode,
               onChanged: (value) => ref
                   .read(transactionInputControllerProvider.notifier)
                   .updateTitle(value),

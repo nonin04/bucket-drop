@@ -26,8 +26,9 @@ class DropCategoryPickerModal extends StatelessWidget {
     required DropType dropType,
     required ValueChanged<int?> onSelected,
     int? currentCategoryId,
-  }) {
-    return showDialog<void>(
+  }) async {
+    FocusScope.of(context).unfocus();
+    await showDialog<void>(
       context: context,
       builder: (context) => DropCategoryPickerModal(
         categories: categories,
@@ -36,6 +37,7 @@ class DropCategoryPickerModal extends StatelessWidget {
         onSelected: onSelected,
       ),
     );
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   @override

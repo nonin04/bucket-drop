@@ -241,6 +241,7 @@ class BucketSelector extends ConsumerWidget {
     required List<Bucket> buckets,
     required ValueChanged<int?> onSelected,
   }) {
+    FocusScope.of(context).unfocus();
     unawaited(
       showModalBottomSheet<void>(
         context: context,
