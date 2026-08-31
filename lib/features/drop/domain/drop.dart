@@ -1,4 +1,3 @@
-import 'package:bucket_drop/core/enums/drop_type.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'drop.freezed.dart';
