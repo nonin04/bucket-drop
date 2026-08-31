@@ -57,43 +57,52 @@ class CalculatorWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // 余白入れる 8px
-    return Column(
-      spacing: 8,
-      children: [
-        Row(
+    // OSのキーボードが表示されているかどうかを判定
+    final isKeyboardVisible = MediaQuery.of(context).viewInsets.bottom > 0;
+
+    return IgnorePointer(
+      ignoring: isKeyboardVisible,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: isKeyboardVisible ? 0.4 : 1.0,
+        child: Column(
           spacing: 8,
           children: [
-            _buildKey(ref, '1', 1),
-            _buildKey(ref, '2', 2),
-            _buildKey(ref, '3', 3),
+            Row(
+              spacing: 8,
+              children: [
+                _buildKey(ref, '1', 1),
+                _buildKey(ref, '2', 2),
+                _buildKey(ref, '3', 3),
+              ],
+            ),
+            Row(
+              spacing: 8,
+              children: [
+                _buildKey(ref, '4', 4),
+                _buildKey(ref, '5', 5),
+                _buildKey(ref, '6', 6),
+              ],
+            ),
+            Row(
+              spacing: 8,
+              children: [
+                _buildKey(ref, '7', 7),
+                _buildKey(ref, '8', 8),
+                _buildKey(ref, '9', 9),
+              ],
+            ),
+            Row(
+              spacing: 8,
+              children: [
+                _buildKey(ref, 'C', 10),
+                _buildKey(ref, '0', 0),
+                _buildKey(ref, '⌫', 11),
+              ],
+            ),
           ],
         ),
-        Row(
-          spacing: 8,
-          children: [
-            _buildKey(ref, '4', 4),
-            _buildKey(ref, '5', 5),
-            _buildKey(ref, '6', 6),
-          ],
-        ),
-        Row(
-          spacing: 8,
-          children: [
-            _buildKey(ref, '7', 7),
-            _buildKey(ref, '8', 8),
-            _buildKey(ref, '9', 9),
-          ],
-        ),
-        Row(
-          spacing: 8,
-          children: [
-            _buildKey(ref, 'C', 10),
-            _buildKey(ref, '0', 0),
-            _buildKey(ref, '⌫', 11),
-          ],
-        ),
-      ],
+      ),
     );
   }
 }

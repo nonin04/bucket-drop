@@ -246,10 +246,9 @@ class TransactionInputController extends _$TransactionInputController {
 
     await ref.read(dropRepositoryProvider).insertDrop(newDrop);
 
-    // 状態を初期状態に戻す（選択中バケット・dropType・カテゴリーは引き継ぐ）
+    // 状態を初期状態に戻す（選択中バケット・dropTypeは引き継ぎ、カテゴリー・タイトル・金額はクリア）
     state = TransactionInputState(
       dropType: state.dropType,
-      dropCategoryId: state.dropCategoryId,
       bucketId: state.bucketId,
       toBucketId: state.toBucketId,
       resetKey: state.resetKey + 1,
