@@ -14,7 +14,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
-import 'package:path_provider/path_provider.dart';
+import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 
 part 'app_database.g.dart';
 
@@ -60,8 +60,9 @@ final databaseProvider = Provider<AppDatabase>((ref) {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
+    final dbDirectory = await getDatabasesPath();
+
+    final file = File(p.join(dbDirectory, 'db.sqlite'));
     debugPrint('📁 Database Path: ${file.path}');
     return NativeDatabase(file);
   });
