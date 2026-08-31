@@ -1,6 +1,8 @@
-import 'package:bucket_drop/core/database/app_database.dart';
+import 'dart:async';
+
 import 'package:bucket_drop/core/enums/drop_type.dart';
 import 'package:bucket_drop/features/bucket/data/bucket_repository.dart';
+import 'package:bucket_drop/features/bucket/domain/bucket.dart';
 import 'package:bucket_drop/features/drop/presentation/transaction_input_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +17,7 @@ class BucketSelector extends ConsumerWidget {
     final dropType = formState.dropType;
     final bucketsAsync = ref.watch(bucketListStreamProvider);
 
-    final buckets = bucketsAsync.value ?? <BucketTable>[];
+    final buckets = bucketsAsync.value ?? <Bucket>[];
 
     // 選択中のバケット名を取得
     final fromBucket = buckets
@@ -54,9 +56,9 @@ class BucketSelector extends ConsumerWidget {
   Widget _buildTransferSelector(
     BuildContext context,
     WidgetRef ref, {
-    required BucketTable? fromBucket,
-    required BucketTable? toBucket,
-    required List<BucketTable> buckets,
+    required Bucket? fromBucket,
+    required Bucket? toBucket,
+    required List<Bucket> buckets,
   }) {
     return Row(
       key: const ValueKey('transfer_selector'),
@@ -114,8 +116,8 @@ class BucketSelector extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref, {
     required DropType dropType,
-    required BucketTable? selectedBucket,
-    required List<BucketTable> buckets,
+    required Bucket? selectedBucket,
+    required List<Bucket> buckets,
   }) {
     final label = dropType == DropType.income ? '入金先バケット' : '支出元バケット';
 
@@ -141,7 +143,7 @@ class BucketSelector extends ConsumerWidget {
   Widget _buildBucketCard(
     BuildContext context, {
     required String label,
-    required BucketTable? bucket,
+    required Bucket? bucket,
     required VoidCallback onTap,
     bool isCompact = false,
     Key? key,
@@ -218,111 +220,114 @@ class BucketSelector extends ConsumerWidget {
     WidgetRef ref, {
     required String title,
     required int? currentId,
-    required List<BucketTable> buckets,
+    required List<Bucket> buckets,
     required ValueChanged<int?> onSelected,
   }) {
-    showModalBottomSheet<void>(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      backgroundColor: Colors.white,
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // ヘッダーバー
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
+    unawaited(
+      showModalBottomSheet<void>(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        backgroundColor: Colors.white,
+        builder: (context) {
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // ヘッダーバー
+                  Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 4,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      if (currentId != null)
-                        TextButton(
-                          onPressed: () {
-                            onSelected(null);
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('クリア'),
-                        ),
-                    ],
-                  ),
-                ),
-                const Divider(),
-                if (buckets.isEmpty)
                   Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Text(
-                      '登録されているバケットがありません',
-                      style: TextStyle(color: Colors.grey[600]),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 4,
                     ),
-                  )
-                else
-                  Flexible(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: buckets.length,
-                      itemBuilder: (context, index) {
-                        final item = buckets[index];
-                        final isSelected = item.id == currentId;
-                        return ListTile(
-                          leading: const CircleAvatar(
-                            backgroundColor: Color.fromARGB(255, 240, 240, 245),
-                            child: Icon(
-                              Icons.shopping_bag_outlined,
-                              size: 18,
-                              color: Colors.black87,
-                            ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                          title: Text(
-                            item.name,
-                            style: TextStyle(
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                            ),
+                        ),
+                        if (currentId != null)
+                          TextButton(
+                            onPressed: () {
+                              onSelected(null);
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('クリア'),
                           ),
-                          trailing: isSelected
-                              ? const Icon(
-                                  Icons.check_circle,
-                                  color: Colors.blue,
-                                )
-                              : null,
-                          onTap: () {
-                            onSelected(item.id);
-                            Navigator.of(context).pop();
-                          },
-                        );
-                      },
+                      ],
                     ),
                   ),
-              ],
+                  const Divider(),
+                  if (buckets.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Text(
+                        '登録されているバケットがありません',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    )
+                  else
+                    Flexible(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: buckets.length,
+                        itemBuilder: (context, index) {
+                          final item = buckets[index];
+                          final isSelected = item.id == currentId;
+                          return ListTile(
+                            leading: const CircleAvatar(
+                              backgroundColor:
+                                  Color.fromARGB(255, 240, 240, 245),
+                              child: Icon(
+                                Icons.shopping_bag_outlined,
+                                size: 18,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            title: Text(
+                              item.name,
+                              style: TextStyle(
+                                fontWeight: isSelected
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                            trailing: isSelected
+                                ? const Icon(
+                                    Icons.check_circle,
+                                    color: Colors.blue,
+                                  )
+                                : null,
+                            onTap: () {
+                              onSelected(item.id);
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
