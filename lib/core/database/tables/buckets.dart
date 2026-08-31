@@ -10,6 +10,7 @@ class Buckets extends Table {
       integer().references(BucketCategories, #id)();
   IntColumn get iconId => integer().references(Icons, #id).nullable()();
   TextColumn get notes => text().nullable()();
+  IntColumn get sort => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }

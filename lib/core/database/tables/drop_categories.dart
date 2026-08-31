@@ -9,6 +9,7 @@ class DropCategories extends Table {
   TextColumn get name => text()();
   TextColumn get dropType => textEnum<DropType>()();
   TextColumn get note => text().nullable()();
+  IntColumn get sort => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }
