@@ -183,6 +183,14 @@ class TransactionInputController extends _$TransactionInputController {
     state = state.copyWith(toBucketId: () => toBucketId);
   }
 
+  /// 振替：出金元と入金先バケットをワンタップで入れ替え（Swap）
+  void swapBuckets() {
+    state = state.copyWith(
+      bucketId: () => state.toBucketId,
+      toBucketId: () => state.bucketId,
+    );
+  }
+
   /// 金額：数字の入力
   void inputDigit(String digit) {
     const maxDigit = 10;
