@@ -11,6 +11,11 @@ analyzer:
   errors:
     # 生成コード（DriftやFreezedの *.g.dart）の警告を無視する設定
     invalid_annotation_target: ignore
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
 
 linter:
   rules:

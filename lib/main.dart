@@ -1,10 +1,5 @@
-import 'package:bucket_drop/features/analytics/presentation/analytics_screen.dart';
-import 'package:bucket_drop/features/calendar/presentation/calendar_screen.dart';
-import 'package:bucket_drop/features/export/presentation/export_screen.dart';
-import 'package:bucket_drop/features/home/presentation/home_screen.dart';
 import 'package:bucket_drop/features/navigation/presentation/app_navigation_bar.dart';
 import 'package:bucket_drop/features/navigation/presentation/index_controller.dart';
-import 'package:bucket_drop/features/settings/presentation/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -53,11 +48,11 @@ class MainPage extends ConsumerWidget {
     final currentIndex = ref.watch(indexProvider);
 
     final List<Widget> pages = [
-      const HomeScreen(),
-      const CalendarScreen(),
-      const AnalyticsScreen(),
-      const ExportScreen(),
-      const SettingsScreen(),
+      // const HomeScreen(),
+      // const CalendarScreen(),
+      // const AnalyticsScreen(),
+      // const ExportScreen(),
+      // const SettingsScreen(),
     ];
 
     return GestureDetector(
