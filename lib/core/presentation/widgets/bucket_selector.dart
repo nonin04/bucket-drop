@@ -5,12 +5,10 @@ import 'package:bucket_drop/features/bucket/data/bucket_repository.dart';
 import 'package:bucket_drop/features/bucket/domain/bucket.dart';
 import 'package:bucket_drop/features/drop/presentation/transaction_input_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// 支出元・入金先バケットを選択するセレクター（振替スワップギミック付き）
-class BucketSelector extends HookConsumerWidget {
+/// 収入・支出・振替に応じたバケット選択コンポーネント
+class BucketSelector extends ConsumerWidget {
   const BucketSelector({super.key});
 
   @override
@@ -20,9 +18,6 @@ class BucketSelector extends HookConsumerWidget {
     final bucketsAsync = ref.watch(bucketListStreamProvider);
 
     final buckets = bucketsAsync.value ?? <Bucket>[];
-
-    // スワップ時の回転アニメーション用状態
-    final swapTurns = useState<double>(0);
 
     // 初回ロード時のみデフォルトバケットを適用
     ref.listen<AsyncValue<List<Bucket>>>(bucketListStreamProvider, (_, next) {
@@ -63,7 +58,6 @@ class BucketSelector extends HookConsumerWidget {
                 fromBucket: fromBucket,
                 toBucket: toBucket,
                 buckets: buckets,
-                swapTurns: swapTurns,
               )
             : _buildSingleSelector(
                 context,
@@ -76,19 +70,17 @@ class BucketSelector extends HookConsumerWidget {
     );
   }
 
-  /// 振替（出金元 ⇄ 入金先、真ん中にスワップボタン）
+  /// 振替（2つのバケット選択：出金元 → 入金先）
   Widget _buildTransferSelector(
     BuildContext context,
     WidgetRef ref, {
     required Bucket? fromBucket,
     required Bucket? toBucket,
     required List<Bucket> buckets,
-    required ValueNotifier<double> swapTurns,
   }) {
     return Row(
       key: const ValueKey('transfer_selector'),
       children: [
-        // 出金元バケット
         Expanded(
           child: _buildBucketCard(
             context,
@@ -107,38 +99,14 @@ class BucketSelector extends HookConsumerWidget {
             ),
           ),
         ),
-
-        // ⭐️ スワップ（反転）ボタン
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Material(
-            color: const Color.fromARGB(255, 235, 238, 245),
-            shape: const CircleBorder(),
-            child: InkWell(
-              customBorder: const CircleBorder(),
-              onTap: () {
-                unawaited(HapticFeedback.lightImpact());
-                swapTurns.value += 0.5; // 180度回転
-                ref.read(transactionInputControllerProvider.notifier).swapBuckets();
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: AnimatedRotation(
-                  turns: swapTurns.value,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOutBack,
-                  child: const Icon(
-                    Icons.swap_horiz_rounded,
-                    size: 20,
-                    color: Color(0xFF2E7D5B), // 渋い緑
-                  ),
-                ),
-              ),
-            ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 6),
+          child: Icon(
+            Icons.arrow_forward_rounded,
+            size: 18,
+            color: Color.fromARGB(255, 140, 140, 145),
           ),
         ),
-
-        // 入金先バケット
         Expanded(
           child: _buildBucketCard(
             context,
@@ -173,13 +141,13 @@ class BucketSelector extends HookConsumerWidget {
 
     return _buildBucketCard(
       context,
+      key: const ValueKey('single_selector'),
       label: label,
       bucket: selectedBucket,
-      isCompact: false,
       onTap: () => _showBucketPicker(
         context,
         ref,
-        title: label,
+        title: '$labelを選択',
         currentId: selectedBucket?.id,
         buckets: buckets,
         onSelected: (id) => ref
@@ -189,64 +157,76 @@ class BucketSelector extends HookConsumerWidget {
     );
   }
 
-  /// バケット選択カード
+  /// バケット選択カードの共通UI
   Widget _buildBucketCard(
     BuildContext context, {
     required String label,
     required Bucket? bucket,
-    required bool isCompact,
     required VoidCallback onTap,
+    bool isCompact = false,
+    Key? key,
   }) {
-    final isSelected = bucket != null;
-
-    return Material(
-      color: const Color.fromARGB(255, 245, 245, 247),
-      borderRadius: BorderRadius.circular(12),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          height: 48,
-          padding: EdgeInsets.symmetric(
-            horizontal: isCompact ? 10 : 14,
+    return GestureDetector(
+      key: key,
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          horizontal: isCompact ? 10 : 16,
+          vertical: 10,
+        ),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 245, 245, 247),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: const Color.fromARGB(255, 230, 230, 235),
           ),
-          decoration: BoxDecoration(
-            border: isSelected
-                ? Border.all(color: const Color(0xFFD0D3DC))
-                : null,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.account_balance_wallet_outlined,
-                size: isCompact ? 16 : 18,
-                color: isSelected
-                    ? const Color.fromARGB(255, 50, 50, 50)
-                    : Colors.grey,
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  bucket?.name ?? label,
-                  style: TextStyle(
-                    fontSize: isCompact ? 13 : 14,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                    color: isSelected
-                        ? const Color.fromARGB(255, 30, 30, 30)
-                        : Colors.grey,
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              Icons.shopping_bag_outlined,
+              size: 20,
+              color: Color.fromARGB(255, 100, 100, 110),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                  const SizedBox(height: 2),
+                  Text(
+                    bucket?.name ?? '選択',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: bucket != null
+                          ? const Color.fromARGB(255, 30, 30, 30)
+                          : const Color.fromARGB(255, 160, 160, 165),
+                    ),
+                  ),
+                ],
               ),
-              const Icon(
-                Icons.unfold_more_rounded,
-                size: 18,
-                color: Colors.grey,
-              ),
-            ],
-          ),
+            ),
+            const Icon(
+              Icons.unfold_more_rounded,
+              size: 20,
+              color: Color.fromARGB(255, 160, 160, 170),
+            ),
+          ],
         ),
       ),
     );
@@ -307,23 +287,17 @@ class BucketSelector extends HookConsumerWidget {
                               onSelected(null);
                               Navigator.of(context).pop();
                             },
-                            child: const Text(
-                              'クリア',
-                              style: TextStyle(
-                                color: Colors.redAccent,
-                                fontSize: 13,
-                              ),
-                            ),
+                            child: const Text('クリア'),
                           ),
                       ],
                     ),
                   ),
-                  const Divider(height: 1, color: Color(0xFFEEEEEE)),
+                  const Divider(),
                   if (buckets.isEmpty)
                     Padding(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(32),
                       child: Text(
-                        'バケットが登録されていません',
+                        '登録されているバケットがありません',
                         style: TextStyle(color: Colors.grey[600]),
                       ),
                     )
@@ -340,7 +314,7 @@ class BucketSelector extends HookConsumerWidget {
                               backgroundColor:
                                   Color.fromARGB(255, 240, 240, 245),
                               child: Icon(
-                                Icons.account_balance_wallet_outlined,
+                                Icons.shopping_bag_outlined,
                                 size: 18,
                                 color: Colors.black87,
                               ),
