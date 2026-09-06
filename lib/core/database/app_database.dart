@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:bucket_drop/core/database/seed.dart';
 import 'package:bucket_drop/core/database/tables/bucket_categories.dart';
-import 'package:bucket_drop/core/database/tables/bucket_snapshots.dart';
+import 'package:bucket_drop/core/database/tables/bucket_snaps.dart';
 import 'package:bucket_drop/core/database/tables/buckets.dart';
 import 'package:bucket_drop/core/database/tables/drop_categories.dart';
 import 'package:bucket_drop/core/database/tables/drops.dart';
-import 'package:bucket_drop/core/database/tables/icons.dart';
+import 'package:bucket_drop/core/database/tables/subscribed_drops.dart';
 import 'package:bucket_drop/core/enums/balance_type.dart';
 import 'package:bucket_drop/core/enums/drop_type.dart';
+import 'package:bucket_drop/core/enums/frequency.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
@@ -21,11 +22,11 @@ part 'app_database.g.dart';
 @DriftDatabase(
   tables: [
     Buckets,
-    BucketSnapshots,
     BucketCategories,
     DropCategories,
     Drops,
-    Icons,
+    BucketSnaps,
+    SubscribedDrops,
   ],
 )
 class AppDatabase extends _$AppDatabase {

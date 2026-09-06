@@ -31,6 +31,15 @@ class $BucketCategoriesTable extends BucketCategories
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
+  @override
+  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
+    'icon',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   late final GeneratedColumnWithTypeConverter<BalanceType, String> balanceType =
       GeneratedColumn<String>(
@@ -49,8 +58,7 @@ class $BucketCategoriesTable extends BucketCategories
     aliasedName,
     false,
     type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
@@ -80,6 +88,7 @@ class $BucketCategoriesTable extends BucketCategories
   List<GeneratedColumn> get $columns => [
     id,
     name,
+    icon,
     balanceType,
     sort,
     createdAt,
@@ -108,11 +117,21 @@ class $BucketCategoriesTable extends BucketCategories
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('icon')) {
+      context.handle(
+        _iconMeta,
+        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_iconMeta);
+    }
     if (data.containsKey('sort')) {
       context.handle(
         _sortMeta,
         sort.isAcceptableOrUnknown(data['sort']!, _sortMeta),
       );
+    } else if (isInserting) {
+      context.missing(_sortMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -142,6 +161,10 @@ class $BucketCategoriesTable extends BucketCategories
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
+      )!,
+      icon: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon'],
       )!,
       balanceType: $BucketCategoriesTable.$converterbalanceType.fromSql(
         attachedDatabase.typeMapping.read(
@@ -177,6 +200,7 @@ class BucketCategoryTable extends DataClass
     implements Insertable<BucketCategoryTable> {
   final int id;
   final String name;
+  final String icon;
   final BalanceType balanceType;
   final int sort;
   final DateTime createdAt;
@@ -184,6 +208,7 @@ class BucketCategoryTable extends DataClass
   const BucketCategoryTable({
     required this.id,
     required this.name,
+    required this.icon,
     required this.balanceType,
     required this.sort,
     required this.createdAt,
@@ -194,6 +219,7 @@ class BucketCategoryTable extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
+    map['icon'] = Variable<String>(icon);
     {
       map['balance_type'] = Variable<String>(
         $BucketCategoriesTable.$converterbalanceType.toSql(balanceType),
@@ -209,6 +235,7 @@ class BucketCategoryTable extends DataClass
     return BucketCategoriesCompanion(
       id: Value(id),
       name: Value(name),
+      icon: Value(icon),
       balanceType: Value(balanceType),
       sort: Value(sort),
       createdAt: Value(createdAt),
@@ -224,6 +251,7 @@ class BucketCategoryTable extends DataClass
     return BucketCategoryTable(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      icon: serializer.fromJson<String>(json['icon']),
       balanceType: $BucketCategoriesTable.$converterbalanceType.fromJson(
         serializer.fromJson<String>(json['balanceType']),
       ),
@@ -238,6 +266,7 @@ class BucketCategoryTable extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
+      'icon': serializer.toJson<String>(icon),
       'balanceType': serializer.toJson<String>(
         $BucketCategoriesTable.$converterbalanceType.toJson(balanceType),
       ),
@@ -250,6 +279,7 @@ class BucketCategoryTable extends DataClass
   BucketCategoryTable copyWith({
     int? id,
     String? name,
+    String? icon,
     BalanceType? balanceType,
     int? sort,
     DateTime? createdAt,
@@ -257,6 +287,7 @@ class BucketCategoryTable extends DataClass
   }) => BucketCategoryTable(
     id: id ?? this.id,
     name: name ?? this.name,
+    icon: icon ?? this.icon,
     balanceType: balanceType ?? this.balanceType,
     sort: sort ?? this.sort,
     createdAt: createdAt ?? this.createdAt,
@@ -266,6 +297,7 @@ class BucketCategoryTable extends DataClass
     return BucketCategoryTable(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
+      icon: data.icon.present ? data.icon.value : this.icon,
       balanceType: data.balanceType.present
           ? data.balanceType.value
           : this.balanceType,
@@ -280,6 +312,7 @@ class BucketCategoryTable extends DataClass
     return (StringBuffer('BucketCategoryTable(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('icon: $icon, ')
           ..write('balanceType: $balanceType, ')
           ..write('sort: $sort, ')
           ..write('createdAt: $createdAt, ')
@@ -290,13 +323,14 @@ class BucketCategoryTable extends DataClass
 
   @override
   int get hashCode =>
-      Object.hash(id, name, balanceType, sort, createdAt, updatedAt);
+      Object.hash(id, name, icon, balanceType, sort, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is BucketCategoryTable &&
           other.id == this.id &&
           other.name == this.name &&
+          other.icon == this.icon &&
           other.balanceType == this.balanceType &&
           other.sort == this.sort &&
           other.createdAt == this.createdAt &&
@@ -306,6 +340,7 @@ class BucketCategoryTable extends DataClass
 class BucketCategoriesCompanion extends UpdateCompanion<BucketCategoryTable> {
   final Value<int> id;
   final Value<String> name;
+  final Value<String> icon;
   final Value<BalanceType> balanceType;
   final Value<int> sort;
   final Value<DateTime> createdAt;
@@ -313,6 +348,7 @@ class BucketCategoriesCompanion extends UpdateCompanion<BucketCategoryTable> {
   const BucketCategoriesCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.icon = const Value.absent(),
     this.balanceType = const Value.absent(),
     this.sort = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -321,15 +357,19 @@ class BucketCategoriesCompanion extends UpdateCompanion<BucketCategoryTable> {
   BucketCategoriesCompanion.insert({
     this.id = const Value.absent(),
     required String name,
+    required String icon,
     required BalanceType balanceType,
-    this.sort = const Value.absent(),
+    required int sort,
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : name = Value(name),
-       balanceType = Value(balanceType);
+       icon = Value(icon),
+       balanceType = Value(balanceType),
+       sort = Value(sort);
   static Insertable<BucketCategoryTable> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<String>? icon,
     Expression<String>? balanceType,
     Expression<int>? sort,
     Expression<DateTime>? createdAt,
@@ -338,6 +378,7 @@ class BucketCategoriesCompanion extends UpdateCompanion<BucketCategoryTable> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (icon != null) 'icon': icon,
       if (balanceType != null) 'balance_type': balanceType,
       if (sort != null) 'sort': sort,
       if (createdAt != null) 'created_at': createdAt,
@@ -348,6 +389,7 @@ class BucketCategoriesCompanion extends UpdateCompanion<BucketCategoryTable> {
   BucketCategoriesCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
+    Value<String>? icon,
     Value<BalanceType>? balanceType,
     Value<int>? sort,
     Value<DateTime>? createdAt,
@@ -356,6 +398,7 @@ class BucketCategoriesCompanion extends UpdateCompanion<BucketCategoryTable> {
     return BucketCategoriesCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      icon: icon ?? this.icon,
       balanceType: balanceType ?? this.balanceType,
       sort: sort ?? this.sort,
       createdAt: createdAt ?? this.createdAt,
@@ -371,6 +414,9 @@ class BucketCategoriesCompanion extends UpdateCompanion<BucketCategoryTable> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (icon.present) {
+      map['icon'] = Variable<String>(icon.value);
     }
     if (balanceType.present) {
       map['balance_type'] = Variable<String>(
@@ -394,306 +440,11 @@ class BucketCategoriesCompanion extends UpdateCompanion<BucketCategoryTable> {
     return (StringBuffer('BucketCategoriesCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('icon: $icon, ')
           ..write('balanceType: $balanceType, ')
           ..write('sort: $sort, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $IconsTable extends Icons with TableInfo<$IconsTable, IconTable> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $IconsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _codePointMeta = const VerificationMeta(
-    'codePoint',
-  );
-  @override
-  late final GeneratedColumn<int> codePoint = GeneratedColumn<int>(
-    'code_point',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _fontFamilyMeta = const VerificationMeta(
-    'fontFamily',
-  );
-  @override
-  late final GeneratedColumn<String> fontFamily = GeneratedColumn<String>(
-    'font_family',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultValue: const Constant('MaterialIcons'),
-  );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [id, codePoint, fontFamily, name];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'icons';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<IconTable> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('code_point')) {
-      context.handle(
-        _codePointMeta,
-        codePoint.isAcceptableOrUnknown(data['code_point']!, _codePointMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_codePointMeta);
-    }
-    if (data.containsKey('font_family')) {
-      context.handle(
-        _fontFamilyMeta,
-        fontFamily.isAcceptableOrUnknown(data['font_family']!, _fontFamilyMeta),
-      );
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  IconTable map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return IconTable(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      codePoint: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}code_point'],
-      )!,
-      fontFamily: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}font_family'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      ),
-    );
-  }
-
-  @override
-  $IconsTable createAlias(String alias) {
-    return $IconsTable(attachedDatabase, alias);
-  }
-}
-
-class IconTable extends DataClass implements Insertable<IconTable> {
-  final int id;
-  final int codePoint;
-  final String fontFamily;
-  final String? name;
-  const IconTable({
-    required this.id,
-    required this.codePoint,
-    required this.fontFamily,
-    this.name,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['code_point'] = Variable<int>(codePoint);
-    map['font_family'] = Variable<String>(fontFamily);
-    if (!nullToAbsent || name != null) {
-      map['name'] = Variable<String>(name);
-    }
-    return map;
-  }
-
-  IconsCompanion toCompanion(bool nullToAbsent) {
-    return IconsCompanion(
-      id: Value(id),
-      codePoint: Value(codePoint),
-      fontFamily: Value(fontFamily),
-      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
-    );
-  }
-
-  factory IconTable.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return IconTable(
-      id: serializer.fromJson<int>(json['id']),
-      codePoint: serializer.fromJson<int>(json['codePoint']),
-      fontFamily: serializer.fromJson<String>(json['fontFamily']),
-      name: serializer.fromJson<String?>(json['name']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'codePoint': serializer.toJson<int>(codePoint),
-      'fontFamily': serializer.toJson<String>(fontFamily),
-      'name': serializer.toJson<String?>(name),
-    };
-  }
-
-  IconTable copyWith({
-    int? id,
-    int? codePoint,
-    String? fontFamily,
-    Value<String?> name = const Value.absent(),
-  }) => IconTable(
-    id: id ?? this.id,
-    codePoint: codePoint ?? this.codePoint,
-    fontFamily: fontFamily ?? this.fontFamily,
-    name: name.present ? name.value : this.name,
-  );
-  IconTable copyWithCompanion(IconsCompanion data) {
-    return IconTable(
-      id: data.id.present ? data.id.value : this.id,
-      codePoint: data.codePoint.present ? data.codePoint.value : this.codePoint,
-      fontFamily: data.fontFamily.present
-          ? data.fontFamily.value
-          : this.fontFamily,
-      name: data.name.present ? data.name.value : this.name,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('IconTable(')
-          ..write('id: $id, ')
-          ..write('codePoint: $codePoint, ')
-          ..write('fontFamily: $fontFamily, ')
-          ..write('name: $name')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, codePoint, fontFamily, name);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is IconTable &&
-          other.id == this.id &&
-          other.codePoint == this.codePoint &&
-          other.fontFamily == this.fontFamily &&
-          other.name == this.name);
-}
-
-class IconsCompanion extends UpdateCompanion<IconTable> {
-  final Value<int> id;
-  final Value<int> codePoint;
-  final Value<String> fontFamily;
-  final Value<String?> name;
-  const IconsCompanion({
-    this.id = const Value.absent(),
-    this.codePoint = const Value.absent(),
-    this.fontFamily = const Value.absent(),
-    this.name = const Value.absent(),
-  });
-  IconsCompanion.insert({
-    this.id = const Value.absent(),
-    required int codePoint,
-    this.fontFamily = const Value.absent(),
-    this.name = const Value.absent(),
-  }) : codePoint = Value(codePoint);
-  static Insertable<IconTable> custom({
-    Expression<int>? id,
-    Expression<int>? codePoint,
-    Expression<String>? fontFamily,
-    Expression<String>? name,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (codePoint != null) 'code_point': codePoint,
-      if (fontFamily != null) 'font_family': fontFamily,
-      if (name != null) 'name': name,
-    });
-  }
-
-  IconsCompanion copyWith({
-    Value<int>? id,
-    Value<int>? codePoint,
-    Value<String>? fontFamily,
-    Value<String?>? name,
-  }) {
-    return IconsCompanion(
-      id: id ?? this.id,
-      codePoint: codePoint ?? this.codePoint,
-      fontFamily: fontFamily ?? this.fontFamily,
-      name: name ?? this.name,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (codePoint.present) {
-      map['code_point'] = Variable<int>(codePoint.value);
-    }
-    if (fontFamily.present) {
-      map['font_family'] = Variable<String>(fontFamily.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('IconsCompanion(')
-          ..write('id: $id, ')
-          ..write('codePoint: $codePoint, ')
-          ..write('fontFamily: $fontFamily, ')
-          ..write('name: $name')
           ..write(')'))
         .toString();
   }
@@ -726,6 +477,36 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _isIncomeDefaultMeta = const VerificationMeta(
+    'isIncomeDefault',
+  );
+  @override
+  late final GeneratedColumn<bool> isIncomeDefault = GeneratedColumn<bool>(
+    'is_income_default',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_income_default" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isExpenseDefaultMeta = const VerificationMeta(
+    'isExpenseDefault',
+  );
+  @override
+  late final GeneratedColumn<bool> isExpenseDefault = GeneratedColumn<bool>(
+    'is_expense_default',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_expense_default" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _bucketCategoryIdMeta = const VerificationMeta(
     'bucketCategoryId',
   );
@@ -737,29 +518,8 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES bucket_categories (id)',
+      'REFERENCES bucket_categories (id) ON DELETE RESTRICT',
     ),
-  );
-  static const VerificationMeta _iconIdMeta = const VerificationMeta('iconId');
-  @override
-  late final GeneratedColumn<int> iconId = GeneratedColumn<int>(
-    'icon_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES icons (id)',
-    ),
-  );
-  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
-  @override
-  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
-    'notes',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
   );
   static const VerificationMeta _sortMeta = const VerificationMeta('sort');
   @override
@@ -768,36 +528,7 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     aliasedName,
     false,
     type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _isDefaultExpenseMeta = const VerificationMeta(
-    'isDefaultExpense',
-  );
-  @override
-  late final GeneratedColumn<bool> isDefaultExpense = GeneratedColumn<bool>(
-    'is_default_expense',
-    aliasedName,
-    true,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_default_expense" IN (0, 1))',
-    ),
-  );
-  static const VerificationMeta _isDefaultIncomeMeta = const VerificationMeta(
-    'isDefaultIncome',
-  );
-  @override
-  late final GeneratedColumn<bool> isDefaultIncome = GeneratedColumn<bool>(
-    'is_default_income',
-    aliasedName,
-    true,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_default_income" IN (0, 1))',
-    ),
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
@@ -827,12 +558,10 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
   List<GeneratedColumn> get $columns => [
     id,
     name,
+    isIncomeDefault,
+    isExpenseDefault,
     bucketCategoryId,
-    iconId,
-    notes,
     sort,
-    isDefaultExpense,
-    isDefaultIncome,
     createdAt,
     updatedAt,
   ];
@@ -859,6 +588,24 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
+    if (data.containsKey('is_income_default')) {
+      context.handle(
+        _isIncomeDefaultMeta,
+        isIncomeDefault.isAcceptableOrUnknown(
+          data['is_income_default']!,
+          _isIncomeDefaultMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_expense_default')) {
+      context.handle(
+        _isExpenseDefaultMeta,
+        isExpenseDefault.isAcceptableOrUnknown(
+          data['is_expense_default']!,
+          _isExpenseDefaultMeta,
+        ),
+      );
+    }
     if (data.containsKey('bucket_category_id')) {
       context.handle(
         _bucketCategoryIdMeta,
@@ -870,41 +617,13 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     } else if (isInserting) {
       context.missing(_bucketCategoryIdMeta);
     }
-    if (data.containsKey('icon_id')) {
-      context.handle(
-        _iconIdMeta,
-        iconId.isAcceptableOrUnknown(data['icon_id']!, _iconIdMeta),
-      );
-    }
-    if (data.containsKey('notes')) {
-      context.handle(
-        _notesMeta,
-        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
-      );
-    }
     if (data.containsKey('sort')) {
       context.handle(
         _sortMeta,
         sort.isAcceptableOrUnknown(data['sort']!, _sortMeta),
       );
-    }
-    if (data.containsKey('is_default_expense')) {
-      context.handle(
-        _isDefaultExpenseMeta,
-        isDefaultExpense.isAcceptableOrUnknown(
-          data['is_default_expense']!,
-          _isDefaultExpenseMeta,
-        ),
-      );
-    }
-    if (data.containsKey('is_default_income')) {
-      context.handle(
-        _isDefaultIncomeMeta,
-        isDefaultIncome.isAcceptableOrUnknown(
-          data['is_default_income']!,
-          _isDefaultIncomeMeta,
-        ),
-      );
+    } else if (isInserting) {
+      context.missing(_sortMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -935,30 +654,22 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      isIncomeDefault: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_income_default'],
+      )!,
+      isExpenseDefault: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_expense_default'],
+      )!,
       bucketCategoryId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}bucket_category_id'],
       )!,
-      iconId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}icon_id'],
-      ),
-      notes: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}notes'],
-      ),
       sort: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}sort'],
       )!,
-      isDefaultExpense: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_default_expense'],
-      ),
-      isDefaultIncome: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_default_income'],
-      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -979,23 +690,19 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
 class BucketTable extends DataClass implements Insertable<BucketTable> {
   final int id;
   final String name;
+  final bool isIncomeDefault;
+  final bool isExpenseDefault;
   final int bucketCategoryId;
-  final int? iconId;
-  final String? notes;
   final int sort;
-  final bool? isDefaultExpense;
-  final bool? isDefaultIncome;
   final DateTime createdAt;
   final DateTime updatedAt;
   const BucketTable({
     required this.id,
     required this.name,
+    required this.isIncomeDefault,
+    required this.isExpenseDefault,
     required this.bucketCategoryId,
-    this.iconId,
-    this.notes,
     required this.sort,
-    this.isDefaultExpense,
-    this.isDefaultIncome,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -1004,20 +711,10 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
+    map['is_income_default'] = Variable<bool>(isIncomeDefault);
+    map['is_expense_default'] = Variable<bool>(isExpenseDefault);
     map['bucket_category_id'] = Variable<int>(bucketCategoryId);
-    if (!nullToAbsent || iconId != null) {
-      map['icon_id'] = Variable<int>(iconId);
-    }
-    if (!nullToAbsent || notes != null) {
-      map['notes'] = Variable<String>(notes);
-    }
     map['sort'] = Variable<int>(sort);
-    if (!nullToAbsent || isDefaultExpense != null) {
-      map['is_default_expense'] = Variable<bool>(isDefaultExpense);
-    }
-    if (!nullToAbsent || isDefaultIncome != null) {
-      map['is_default_income'] = Variable<bool>(isDefaultIncome);
-    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -1027,20 +724,10 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     return BucketsCompanion(
       id: Value(id),
       name: Value(name),
+      isIncomeDefault: Value(isIncomeDefault),
+      isExpenseDefault: Value(isExpenseDefault),
       bucketCategoryId: Value(bucketCategoryId),
-      iconId: iconId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(iconId),
-      notes: notes == null && nullToAbsent
-          ? const Value.absent()
-          : Value(notes),
       sort: Value(sort),
-      isDefaultExpense: isDefaultExpense == null && nullToAbsent
-          ? const Value.absent()
-          : Value(isDefaultExpense),
-      isDefaultIncome: isDefaultIncome == null && nullToAbsent
-          ? const Value.absent()
-          : Value(isDefaultIncome),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -1054,12 +741,10 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     return BucketTable(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      isIncomeDefault: serializer.fromJson<bool>(json['isIncomeDefault']),
+      isExpenseDefault: serializer.fromJson<bool>(json['isExpenseDefault']),
       bucketCategoryId: serializer.fromJson<int>(json['bucketCategoryId']),
-      iconId: serializer.fromJson<int?>(json['iconId']),
-      notes: serializer.fromJson<String?>(json['notes']),
       sort: serializer.fromJson<int>(json['sort']),
-      isDefaultExpense: serializer.fromJson<bool?>(json['isDefaultExpense']),
-      isDefaultIncome: serializer.fromJson<bool?>(json['isDefaultIncome']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -1070,12 +755,10 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
+      'isIncomeDefault': serializer.toJson<bool>(isIncomeDefault),
+      'isExpenseDefault': serializer.toJson<bool>(isExpenseDefault),
       'bucketCategoryId': serializer.toJson<int>(bucketCategoryId),
-      'iconId': serializer.toJson<int?>(iconId),
-      'notes': serializer.toJson<String?>(notes),
       'sort': serializer.toJson<int>(sort),
-      'isDefaultExpense': serializer.toJson<bool?>(isDefaultExpense),
-      'isDefaultIncome': serializer.toJson<bool?>(isDefaultIncome),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -1084,27 +767,19 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
   BucketTable copyWith({
     int? id,
     String? name,
+    bool? isIncomeDefault,
+    bool? isExpenseDefault,
     int? bucketCategoryId,
-    Value<int?> iconId = const Value.absent(),
-    Value<String?> notes = const Value.absent(),
     int? sort,
-    Value<bool?> isDefaultExpense = const Value.absent(),
-    Value<bool?> isDefaultIncome = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => BucketTable(
     id: id ?? this.id,
     name: name ?? this.name,
+    isIncomeDefault: isIncomeDefault ?? this.isIncomeDefault,
+    isExpenseDefault: isExpenseDefault ?? this.isExpenseDefault,
     bucketCategoryId: bucketCategoryId ?? this.bucketCategoryId,
-    iconId: iconId.present ? iconId.value : this.iconId,
-    notes: notes.present ? notes.value : this.notes,
     sort: sort ?? this.sort,
-    isDefaultExpense: isDefaultExpense.present
-        ? isDefaultExpense.value
-        : this.isDefaultExpense,
-    isDefaultIncome: isDefaultIncome.present
-        ? isDefaultIncome.value
-        : this.isDefaultIncome,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -1112,18 +787,16 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     return BucketTable(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
+      isIncomeDefault: data.isIncomeDefault.present
+          ? data.isIncomeDefault.value
+          : this.isIncomeDefault,
+      isExpenseDefault: data.isExpenseDefault.present
+          ? data.isExpenseDefault.value
+          : this.isExpenseDefault,
       bucketCategoryId: data.bucketCategoryId.present
           ? data.bucketCategoryId.value
           : this.bucketCategoryId,
-      iconId: data.iconId.present ? data.iconId.value : this.iconId,
-      notes: data.notes.present ? data.notes.value : this.notes,
       sort: data.sort.present ? data.sort.value : this.sort,
-      isDefaultExpense: data.isDefaultExpense.present
-          ? data.isDefaultExpense.value
-          : this.isDefaultExpense,
-      isDefaultIncome: data.isDefaultIncome.present
-          ? data.isDefaultIncome.value
-          : this.isDefaultIncome,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1134,12 +807,10 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     return (StringBuffer('BucketTable(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('isIncomeDefault: $isIncomeDefault, ')
+          ..write('isExpenseDefault: $isExpenseDefault, ')
           ..write('bucketCategoryId: $bucketCategoryId, ')
-          ..write('iconId: $iconId, ')
-          ..write('notes: $notes, ')
           ..write('sort: $sort, ')
-          ..write('isDefaultExpense: $isDefaultExpense, ')
-          ..write('isDefaultIncome: $isDefaultIncome, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1150,12 +821,10 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
   int get hashCode => Object.hash(
     id,
     name,
+    isIncomeDefault,
+    isExpenseDefault,
     bucketCategoryId,
-    iconId,
-    notes,
     sort,
-    isDefaultExpense,
-    isDefaultIncome,
     createdAt,
     updatedAt,
   );
@@ -1165,12 +834,10 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       (other is BucketTable &&
           other.id == this.id &&
           other.name == this.name &&
+          other.isIncomeDefault == this.isIncomeDefault &&
+          other.isExpenseDefault == this.isExpenseDefault &&
           other.bucketCategoryId == this.bucketCategoryId &&
-          other.iconId == this.iconId &&
-          other.notes == this.notes &&
           other.sort == this.sort &&
-          other.isDefaultExpense == this.isDefaultExpense &&
-          other.isDefaultIncome == this.isDefaultIncome &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1178,60 +845,51 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
 class BucketsCompanion extends UpdateCompanion<BucketTable> {
   final Value<int> id;
   final Value<String> name;
+  final Value<bool> isIncomeDefault;
+  final Value<bool> isExpenseDefault;
   final Value<int> bucketCategoryId;
-  final Value<int?> iconId;
-  final Value<String?> notes;
   final Value<int> sort;
-  final Value<bool?> isDefaultExpense;
-  final Value<bool?> isDefaultIncome;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const BucketsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.isIncomeDefault = const Value.absent(),
+    this.isExpenseDefault = const Value.absent(),
     this.bucketCategoryId = const Value.absent(),
-    this.iconId = const Value.absent(),
-    this.notes = const Value.absent(),
     this.sort = const Value.absent(),
-    this.isDefaultExpense = const Value.absent(),
-    this.isDefaultIncome = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
   BucketsCompanion.insert({
     this.id = const Value.absent(),
     required String name,
+    this.isIncomeDefault = const Value.absent(),
+    this.isExpenseDefault = const Value.absent(),
     required int bucketCategoryId,
-    this.iconId = const Value.absent(),
-    this.notes = const Value.absent(),
-    this.sort = const Value.absent(),
-    this.isDefaultExpense = const Value.absent(),
-    this.isDefaultIncome = const Value.absent(),
+    required int sort,
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : name = Value(name),
-       bucketCategoryId = Value(bucketCategoryId);
+       bucketCategoryId = Value(bucketCategoryId),
+       sort = Value(sort);
   static Insertable<BucketTable> custom({
     Expression<int>? id,
     Expression<String>? name,
+    Expression<bool>? isIncomeDefault,
+    Expression<bool>? isExpenseDefault,
     Expression<int>? bucketCategoryId,
-    Expression<int>? iconId,
-    Expression<String>? notes,
     Expression<int>? sort,
-    Expression<bool>? isDefaultExpense,
-    Expression<bool>? isDefaultIncome,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (isIncomeDefault != null) 'is_income_default': isIncomeDefault,
+      if (isExpenseDefault != null) 'is_expense_default': isExpenseDefault,
       if (bucketCategoryId != null) 'bucket_category_id': bucketCategoryId,
-      if (iconId != null) 'icon_id': iconId,
-      if (notes != null) 'notes': notes,
       if (sort != null) 'sort': sort,
-      if (isDefaultExpense != null) 'is_default_expense': isDefaultExpense,
-      if (isDefaultIncome != null) 'is_default_income': isDefaultIncome,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -1240,24 +898,20 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
   BucketsCompanion copyWith({
     Value<int>? id,
     Value<String>? name,
+    Value<bool>? isIncomeDefault,
+    Value<bool>? isExpenseDefault,
     Value<int>? bucketCategoryId,
-    Value<int?>? iconId,
-    Value<String?>? notes,
     Value<int>? sort,
-    Value<bool?>? isDefaultExpense,
-    Value<bool?>? isDefaultIncome,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
   }) {
     return BucketsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      isIncomeDefault: isIncomeDefault ?? this.isIncomeDefault,
+      isExpenseDefault: isExpenseDefault ?? this.isExpenseDefault,
       bucketCategoryId: bucketCategoryId ?? this.bucketCategoryId,
-      iconId: iconId ?? this.iconId,
-      notes: notes ?? this.notes,
       sort: sort ?? this.sort,
-      isDefaultExpense: isDefaultExpense ?? this.isDefaultExpense,
-      isDefaultIncome: isDefaultIncome ?? this.isDefaultIncome,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -1272,23 +926,17 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (isIncomeDefault.present) {
+      map['is_income_default'] = Variable<bool>(isIncomeDefault.value);
+    }
+    if (isExpenseDefault.present) {
+      map['is_expense_default'] = Variable<bool>(isExpenseDefault.value);
+    }
     if (bucketCategoryId.present) {
       map['bucket_category_id'] = Variable<int>(bucketCategoryId.value);
     }
-    if (iconId.present) {
-      map['icon_id'] = Variable<int>(iconId.value);
-    }
-    if (notes.present) {
-      map['notes'] = Variable<String>(notes.value);
-    }
     if (sort.present) {
       map['sort'] = Variable<int>(sort.value);
-    }
-    if (isDefaultExpense.present) {
-      map['is_default_expense'] = Variable<bool>(isDefaultExpense.value);
-    }
-    if (isDefaultIncome.present) {
-      map['is_default_income'] = Variable<bool>(isDefaultIncome.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -1304,410 +952,10 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     return (StringBuffer('BucketsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('isIncomeDefault: $isIncomeDefault, ')
+          ..write('isExpenseDefault: $isExpenseDefault, ')
           ..write('bucketCategoryId: $bucketCategoryId, ')
-          ..write('iconId: $iconId, ')
-          ..write('notes: $notes, ')
           ..write('sort: $sort, ')
-          ..write('isDefaultExpense: $isDefaultExpense, ')
-          ..write('isDefaultIncome: $isDefaultIncome, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $BucketSnapshotsTable extends BucketSnapshots
-    with TableInfo<$BucketSnapshotsTable, BucketSnapshotTable> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $BucketSnapshotsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _bucketIdMeta = const VerificationMeta(
-    'bucketId',
-  );
-  @override
-  late final GeneratedColumn<int> bucketId = GeneratedColumn<int>(
-    'bucket_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES buckets (id)',
-    ),
-  );
-  static const VerificationMeta _balanceMeta = const VerificationMeta(
-    'balance',
-  );
-  @override
-  late final GeneratedColumn<int> balance = GeneratedColumn<int>(
-    'balance',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
-  @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
-    'date',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    bucketId,
-    balance,
-    date,
-    createdAt,
-    updatedAt,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'bucket_snapshots';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<BucketSnapshotTable> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('bucket_id')) {
-      context.handle(
-        _bucketIdMeta,
-        bucketId.isAcceptableOrUnknown(data['bucket_id']!, _bucketIdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_bucketIdMeta);
-    }
-    if (data.containsKey('balance')) {
-      context.handle(
-        _balanceMeta,
-        balance.isAcceptableOrUnknown(data['balance']!, _balanceMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_balanceMeta);
-    }
-    if (data.containsKey('date')) {
-      context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_dateMeta);
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  BucketSnapshotTable map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BucketSnapshotTable(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      bucketId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}bucket_id'],
-      )!,
-      balance: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}balance'],
-      )!,
-      date: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}date'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
-      )!,
-    );
-  }
-
-  @override
-  $BucketSnapshotsTable createAlias(String alias) {
-    return $BucketSnapshotsTable(attachedDatabase, alias);
-  }
-}
-
-class BucketSnapshotTable extends DataClass
-    implements Insertable<BucketSnapshotTable> {
-  final int id;
-  final int bucketId;
-  final int balance;
-  final DateTime date;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  const BucketSnapshotTable({
-    required this.id,
-    required this.bucketId,
-    required this.balance,
-    required this.date,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['bucket_id'] = Variable<int>(bucketId);
-    map['balance'] = Variable<int>(balance);
-    map['date'] = Variable<DateTime>(date);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
-    return map;
-  }
-
-  BucketSnapshotsCompanion toCompanion(bool nullToAbsent) {
-    return BucketSnapshotsCompanion(
-      id: Value(id),
-      bucketId: Value(bucketId),
-      balance: Value(balance),
-      date: Value(date),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
-    );
-  }
-
-  factory BucketSnapshotTable.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BucketSnapshotTable(
-      id: serializer.fromJson<int>(json['id']),
-      bucketId: serializer.fromJson<int>(json['bucketId']),
-      balance: serializer.fromJson<int>(json['balance']),
-      date: serializer.fromJson<DateTime>(json['date']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'bucketId': serializer.toJson<int>(bucketId),
-      'balance': serializer.toJson<int>(balance),
-      'date': serializer.toJson<DateTime>(date),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
-    };
-  }
-
-  BucketSnapshotTable copyWith({
-    int? id,
-    int? bucketId,
-    int? balance,
-    DateTime? date,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) => BucketSnapshotTable(
-    id: id ?? this.id,
-    bucketId: bucketId ?? this.bucketId,
-    balance: balance ?? this.balance,
-    date: date ?? this.date,
-    createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
-  );
-  BucketSnapshotTable copyWithCompanion(BucketSnapshotsCompanion data) {
-    return BucketSnapshotTable(
-      id: data.id.present ? data.id.value : this.id,
-      bucketId: data.bucketId.present ? data.bucketId.value : this.bucketId,
-      balance: data.balance.present ? data.balance.value : this.balance,
-      date: data.date.present ? data.date.value : this.date,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('BucketSnapshotTable(')
-          ..write('id: $id, ')
-          ..write('bucketId: $bucketId, ')
-          ..write('balance: $balance, ')
-          ..write('date: $date, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(id, bucketId, balance, date, createdAt, updatedAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is BucketSnapshotTable &&
-          other.id == this.id &&
-          other.bucketId == this.bucketId &&
-          other.balance == this.balance &&
-          other.date == this.date &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
-}
-
-class BucketSnapshotsCompanion extends UpdateCompanion<BucketSnapshotTable> {
-  final Value<int> id;
-  final Value<int> bucketId;
-  final Value<int> balance;
-  final Value<DateTime> date;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
-  const BucketSnapshotsCompanion({
-    this.id = const Value.absent(),
-    this.bucketId = const Value.absent(),
-    this.balance = const Value.absent(),
-    this.date = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-  });
-  BucketSnapshotsCompanion.insert({
-    this.id = const Value.absent(),
-    required int bucketId,
-    required int balance,
-    required DateTime date,
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-  }) : bucketId = Value(bucketId),
-       balance = Value(balance),
-       date = Value(date);
-  static Insertable<BucketSnapshotTable> custom({
-    Expression<int>? id,
-    Expression<int>? bucketId,
-    Expression<int>? balance,
-    Expression<DateTime>? date,
-    Expression<DateTime>? createdAt,
-    Expression<DateTime>? updatedAt,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (bucketId != null) 'bucket_id': bucketId,
-      if (balance != null) 'balance': balance,
-      if (date != null) 'date': date,
-      if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
-    });
-  }
-
-  BucketSnapshotsCompanion copyWith({
-    Value<int>? id,
-    Value<int>? bucketId,
-    Value<int>? balance,
-    Value<DateTime>? date,
-    Value<DateTime>? createdAt,
-    Value<DateTime>? updatedAt,
-  }) {
-    return BucketSnapshotsCompanion(
-      id: id ?? this.id,
-      bucketId: bucketId ?? this.bucketId,
-      balance: balance ?? this.balance,
-      date: date ?? this.date,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (bucketId.present) {
-      map['bucket_id'] = Variable<int>(bucketId.value);
-    }
-    if (balance.present) {
-      map['balance'] = Variable<int>(balance.value);
-    }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('BucketSnapshotsCompanion(')
-          ..write('id: $id, ')
-          ..write('bucketId: $bucketId, ')
-          ..write('balance: $balance, ')
-          ..write('date: $date, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1734,22 +982,19 @@ class $DropCategoriesTable extends DropCategories
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _iconIdMeta = const VerificationMeta('iconId');
-  @override
-  late final GeneratedColumn<int> iconId = GeneratedColumn<int>(
-    'icon_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES icons (id)',
-    ),
-  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
     'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
+  @override
+  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
+    'icon',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -1764,14 +1009,15 @@ class $DropCategoriesTable extends DropCategories
         type: DriftSqlType.string,
         requiredDuringInsert: true,
       ).withConverter<DropType>($DropCategoriesTable.$converterdropType);
-  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  static const VerificationMeta _budgetMeta = const VerificationMeta('budget');
   @override
-  late final GeneratedColumn<String> note = GeneratedColumn<String>(
-    'note',
+  late final GeneratedColumn<int> budget = GeneratedColumn<int>(
+    'budget',
     aliasedName,
-    true,
-    type: DriftSqlType.string,
+    false,
+    type: DriftSqlType.int,
     requiredDuringInsert: false,
+    defaultValue: const Constant(0),
   );
   static const VerificationMeta _sortMeta = const VerificationMeta('sort');
   @override
@@ -1780,8 +1026,7 @@ class $DropCategoriesTable extends DropCategories
     aliasedName,
     false,
     type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
+    requiredDuringInsert: true,
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
@@ -1810,10 +1055,10 @@ class $DropCategoriesTable extends DropCategories
   @override
   List<GeneratedColumn> get $columns => [
     id,
-    iconId,
     name,
+    icon,
     dropType,
-    note,
+    budget,
     sort,
     createdAt,
     updatedAt,
@@ -1833,14 +1078,6 @@ class $DropCategoriesTable extends DropCategories
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('icon_id')) {
-      context.handle(
-        _iconIdMeta,
-        iconId.isAcceptableOrUnknown(data['icon_id']!, _iconIdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_iconIdMeta);
-    }
     if (data.containsKey('name')) {
       context.handle(
         _nameMeta,
@@ -1849,10 +1086,18 @@ class $DropCategoriesTable extends DropCategories
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    if (data.containsKey('note')) {
+    if (data.containsKey('icon')) {
       context.handle(
-        _noteMeta,
-        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+        _iconMeta,
+        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_iconMeta);
+    }
+    if (data.containsKey('budget')) {
+      context.handle(
+        _budgetMeta,
+        budget.isAcceptableOrUnknown(data['budget']!, _budgetMeta),
       );
     }
     if (data.containsKey('sort')) {
@@ -1860,6 +1105,8 @@ class $DropCategoriesTable extends DropCategories
         _sortMeta,
         sort.isAcceptableOrUnknown(data['sort']!, _sortMeta),
       );
+    } else if (isInserting) {
+      context.missing(_sortMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -1886,13 +1133,13 @@ class $DropCategoriesTable extends DropCategories
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      iconId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}icon_id'],
-      )!,
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
+      )!,
+      icon: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon'],
       )!,
       dropType: $DropCategoriesTable.$converterdropType.fromSql(
         attachedDatabase.typeMapping.read(
@@ -1900,10 +1147,10 @@ class $DropCategoriesTable extends DropCategories
           data['${effectivePrefix}drop_type'],
         )!,
       ),
-      note: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}note'],
-      ),
+      budget: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}budget'],
+      )!,
       sort: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}sort'],
@@ -1931,19 +1178,19 @@ class $DropCategoriesTable extends DropCategories
 class DropCategoryTable extends DataClass
     implements Insertable<DropCategoryTable> {
   final int id;
-  final int iconId;
   final String name;
+  final String icon;
   final DropType dropType;
-  final String? note;
+  final int budget;
   final int sort;
   final DateTime createdAt;
   final DateTime updatedAt;
   const DropCategoryTable({
     required this.id,
-    required this.iconId,
     required this.name,
+    required this.icon,
     required this.dropType,
-    this.note,
+    required this.budget,
     required this.sort,
     required this.createdAt,
     required this.updatedAt,
@@ -1952,16 +1199,14 @@ class DropCategoryTable extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['icon_id'] = Variable<int>(iconId);
     map['name'] = Variable<String>(name);
+    map['icon'] = Variable<String>(icon);
     {
       map['drop_type'] = Variable<String>(
         $DropCategoriesTable.$converterdropType.toSql(dropType),
       );
     }
-    if (!nullToAbsent || note != null) {
-      map['note'] = Variable<String>(note);
-    }
+    map['budget'] = Variable<int>(budget);
     map['sort'] = Variable<int>(sort);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -1971,10 +1216,10 @@ class DropCategoryTable extends DataClass
   DropCategoriesCompanion toCompanion(bool nullToAbsent) {
     return DropCategoriesCompanion(
       id: Value(id),
-      iconId: Value(iconId),
       name: Value(name),
+      icon: Value(icon),
       dropType: Value(dropType),
-      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+      budget: Value(budget),
       sort: Value(sort),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -1988,12 +1233,12 @@ class DropCategoryTable extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DropCategoryTable(
       id: serializer.fromJson<int>(json['id']),
-      iconId: serializer.fromJson<int>(json['iconId']),
       name: serializer.fromJson<String>(json['name']),
+      icon: serializer.fromJson<String>(json['icon']),
       dropType: $DropCategoriesTable.$converterdropType.fromJson(
         serializer.fromJson<String>(json['dropType']),
       ),
-      note: serializer.fromJson<String?>(json['note']),
+      budget: serializer.fromJson<int>(json['budget']),
       sort: serializer.fromJson<int>(json['sort']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -2004,12 +1249,12 @@ class DropCategoryTable extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'iconId': serializer.toJson<int>(iconId),
       'name': serializer.toJson<String>(name),
+      'icon': serializer.toJson<String>(icon),
       'dropType': serializer.toJson<String>(
         $DropCategoriesTable.$converterdropType.toJson(dropType),
       ),
-      'note': serializer.toJson<String?>(note),
+      'budget': serializer.toJson<int>(budget),
       'sort': serializer.toJson<int>(sort),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -2018,19 +1263,19 @@ class DropCategoryTable extends DataClass
 
   DropCategoryTable copyWith({
     int? id,
-    int? iconId,
     String? name,
+    String? icon,
     DropType? dropType,
-    Value<String?> note = const Value.absent(),
+    int? budget,
     int? sort,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => DropCategoryTable(
     id: id ?? this.id,
-    iconId: iconId ?? this.iconId,
     name: name ?? this.name,
+    icon: icon ?? this.icon,
     dropType: dropType ?? this.dropType,
-    note: note.present ? note.value : this.note,
+    budget: budget ?? this.budget,
     sort: sort ?? this.sort,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -2038,10 +1283,10 @@ class DropCategoryTable extends DataClass
   DropCategoryTable copyWithCompanion(DropCategoriesCompanion data) {
     return DropCategoryTable(
       id: data.id.present ? data.id.value : this.id,
-      iconId: data.iconId.present ? data.iconId.value : this.iconId,
       name: data.name.present ? data.name.value : this.name,
+      icon: data.icon.present ? data.icon.value : this.icon,
       dropType: data.dropType.present ? data.dropType.value : this.dropType,
-      note: data.note.present ? data.note.value : this.note,
+      budget: data.budget.present ? data.budget.value : this.budget,
       sort: data.sort.present ? data.sort.value : this.sort,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -2052,10 +1297,10 @@ class DropCategoryTable extends DataClass
   String toString() {
     return (StringBuffer('DropCategoryTable(')
           ..write('id: $id, ')
-          ..write('iconId: $iconId, ')
           ..write('name: $name, ')
+          ..write('icon: $icon, ')
           ..write('dropType: $dropType, ')
-          ..write('note: $note, ')
+          ..write('budget: $budget, ')
           ..write('sort: $sort, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -2065,16 +1310,16 @@ class DropCategoryTable extends DataClass
 
   @override
   int get hashCode =>
-      Object.hash(id, iconId, name, dropType, note, sort, createdAt, updatedAt);
+      Object.hash(id, name, icon, dropType, budget, sort, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is DropCategoryTable &&
           other.id == this.id &&
-          other.iconId == this.iconId &&
           other.name == this.name &&
+          other.icon == this.icon &&
           other.dropType == this.dropType &&
-          other.note == this.note &&
+          other.budget == this.budget &&
           other.sort == this.sort &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -2082,51 +1327,52 @@ class DropCategoryTable extends DataClass
 
 class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
   final Value<int> id;
-  final Value<int> iconId;
   final Value<String> name;
+  final Value<String> icon;
   final Value<DropType> dropType;
-  final Value<String?> note;
+  final Value<int> budget;
   final Value<int> sort;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const DropCategoriesCompanion({
     this.id = const Value.absent(),
-    this.iconId = const Value.absent(),
     this.name = const Value.absent(),
+    this.icon = const Value.absent(),
     this.dropType = const Value.absent(),
-    this.note = const Value.absent(),
+    this.budget = const Value.absent(),
     this.sort = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
   DropCategoriesCompanion.insert({
     this.id = const Value.absent(),
-    required int iconId,
     required String name,
+    required String icon,
     required DropType dropType,
-    this.note = const Value.absent(),
-    this.sort = const Value.absent(),
+    this.budget = const Value.absent(),
+    required int sort,
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-  }) : iconId = Value(iconId),
-       name = Value(name),
-       dropType = Value(dropType);
+  }) : name = Value(name),
+       icon = Value(icon),
+       dropType = Value(dropType),
+       sort = Value(sort);
   static Insertable<DropCategoryTable> custom({
     Expression<int>? id,
-    Expression<int>? iconId,
     Expression<String>? name,
+    Expression<String>? icon,
     Expression<String>? dropType,
-    Expression<String>? note,
+    Expression<int>? budget,
     Expression<int>? sort,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (iconId != null) 'icon_id': iconId,
       if (name != null) 'name': name,
+      if (icon != null) 'icon': icon,
       if (dropType != null) 'drop_type': dropType,
-      if (note != null) 'note': note,
+      if (budget != null) 'budget': budget,
       if (sort != null) 'sort': sort,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -2135,20 +1381,20 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
 
   DropCategoriesCompanion copyWith({
     Value<int>? id,
-    Value<int>? iconId,
     Value<String>? name,
+    Value<String>? icon,
     Value<DropType>? dropType,
-    Value<String?>? note,
+    Value<int>? budget,
     Value<int>? sort,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
   }) {
     return DropCategoriesCompanion(
       id: id ?? this.id,
-      iconId: iconId ?? this.iconId,
       name: name ?? this.name,
+      icon: icon ?? this.icon,
       dropType: dropType ?? this.dropType,
-      note: note ?? this.note,
+      budget: budget ?? this.budget,
       sort: sort ?? this.sort,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -2161,19 +1407,19 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (iconId.present) {
-      map['icon_id'] = Variable<int>(iconId.value);
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (icon.present) {
+      map['icon'] = Variable<String>(icon.value);
     }
     if (dropType.present) {
       map['drop_type'] = Variable<String>(
         $DropCategoriesTable.$converterdropType.toSql(dropType.value),
       );
     }
-    if (note.present) {
-      map['note'] = Variable<String>(note.value);
+    if (budget.present) {
+      map['budget'] = Variable<int>(budget.value);
     }
     if (sort.present) {
       map['sort'] = Variable<int>(sort.value);
@@ -2191,10 +1437,10 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
   String toString() {
     return (StringBuffer('DropCategoriesCompanion(')
           ..write('id: $id, ')
-          ..write('iconId: $iconId, ')
           ..write('name: $name, ')
+          ..write('icon: $icon, ')
           ..write('dropType: $dropType, ')
-          ..write('note: $note, ')
+          ..write('budget: $budget, ')
           ..write('sort: $sort, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -2203,11 +1449,12 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
   }
 }
 
-class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
+class $SubscribedDropsTable extends SubscribedDrops
+    with TableInfo<$SubscribedDropsTable, SubscribedDropTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DropsTable(this.attachedDatabase, [this._alias]);
+  $SubscribedDropsTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -2219,6 +1466,48 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _fromBucketIdMeta = const VerificationMeta(
+    'fromBucketId',
+  );
+  @override
+  late final GeneratedColumn<int> fromBucketId = GeneratedColumn<int>(
+    'from_bucket_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES buckets (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _toBucketIdMeta = const VerificationMeta(
+    'toBucketId',
+  );
+  @override
+  late final GeneratedColumn<int> toBucketId = GeneratedColumn<int>(
+    'to_bucket_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES buckets (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _dropCategoryIdMeta = const VerificationMeta(
+    'dropCategoryId',
+  );
+  @override
+  late final GeneratedColumn<int> dropCategoryId = GeneratedColumn<int>(
+    'drop_category_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES drop_categories (id) ON DELETE SET NULL',
     ),
   );
   static const VerificationMeta _titleMeta = const VerificationMeta('title');
@@ -2239,56 +1528,61 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _dropCategoryIdMeta = const VerificationMeta(
-    'dropCategoryId',
+  @override
+  late final GeneratedColumnWithTypeConverter<Frequency, String> frequency =
+      GeneratedColumn<String>(
+        'frequency',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<Frequency>($SubscribedDropsTable.$converterfrequency);
+  static const VerificationMeta _repeatIntervalMeta = const VerificationMeta(
+    'repeatInterval',
   );
   @override
-  late final GeneratedColumn<int> dropCategoryId = GeneratedColumn<int>(
-    'drop_category_id',
+  late final GeneratedColumn<int> repeatInterval = GeneratedColumn<int>(
+    'repeat_interval',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES drop_categories (id)',
-    ),
+    defaultValue: const Constant(1),
   );
-  static const VerificationMeta _bucketIdMeta = const VerificationMeta(
-    'bucketId',
+  static const VerificationMeta _startsOnMeta = const VerificationMeta(
+    'startsOn',
   );
   @override
-  late final GeneratedColumn<int> bucketId = GeneratedColumn<int>(
-    'bucket_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES buckets (id)',
-    ),
-  );
-  static const VerificationMeta _toBucketIdMeta = const VerificationMeta(
-    'toBucketId',
-  );
-  @override
-  late final GeneratedColumn<int> toBucketId = GeneratedColumn<int>(
-    'to_bucket_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES buckets (id)',
-    ),
-  );
-  static const VerificationMeta _dateMeta = const VerificationMeta('date');
-  @override
-  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
-    'date',
+  late final GeneratedColumn<DateTime> startsOn = GeneratedColumn<DateTime>(
+    'starts_on',
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endsOnMeta = const VerificationMeta('endsOn');
+  @override
+  late final GeneratedColumn<DateTime> endsOn = GeneratedColumn<DateTime>(
+    'ends_on',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
   );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
@@ -2298,20 +1592,6 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-  );
-  static const VerificationMeta _parentDropIdMeta = const VerificationMeta(
-    'parentDropId',
-  );
-  @override
-  late final GeneratedColumn<int> parentDropId = GeneratedColumn<int>(
-    'parent_drop_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES drops (id)',
-    ),
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
@@ -2340,14 +1620,816 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    fromBucketId,
+    toBucketId,
+    dropCategoryId,
     title,
     amount,
-    dropCategoryId,
-    bucketId,
-    toBucketId,
-    date,
+    frequency,
+    repeatInterval,
+    startsOn,
+    endsOn,
+    isActive,
     notes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'subscribed_drops';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SubscribedDropTable> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('from_bucket_id')) {
+      context.handle(
+        _fromBucketIdMeta,
+        fromBucketId.isAcceptableOrUnknown(
+          data['from_bucket_id']!,
+          _fromBucketIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('to_bucket_id')) {
+      context.handle(
+        _toBucketIdMeta,
+        toBucketId.isAcceptableOrUnknown(
+          data['to_bucket_id']!,
+          _toBucketIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('drop_category_id')) {
+      context.handle(
+        _dropCategoryIdMeta,
+        dropCategoryId.isAcceptableOrUnknown(
+          data['drop_category_id']!,
+          _dropCategoryIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('repeat_interval')) {
+      context.handle(
+        _repeatIntervalMeta,
+        repeatInterval.isAcceptableOrUnknown(
+          data['repeat_interval']!,
+          _repeatIntervalMeta,
+        ),
+      );
+    }
+    if (data.containsKey('starts_on')) {
+      context.handle(
+        _startsOnMeta,
+        startsOn.isAcceptableOrUnknown(data['starts_on']!, _startsOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startsOnMeta);
+    }
+    if (data.containsKey('ends_on')) {
+      context.handle(
+        _endsOnMeta,
+        endsOn.isAcceptableOrUnknown(data['ends_on']!, _endsOnMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SubscribedDropTable map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SubscribedDropTable(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      fromBucketId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}from_bucket_id'],
+      ),
+      toBucketId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}to_bucket_id'],
+      ),
+      dropCategoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}drop_category_id'],
+      ),
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount'],
+      )!,
+      frequency: $SubscribedDropsTable.$converterfrequency.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}frequency'],
+        )!,
+      ),
+      repeatInterval: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}repeat_interval'],
+      )!,
+      startsOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}starts_on'],
+      )!,
+      endsOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}ends_on'],
+      ),
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SubscribedDropsTable createAlias(String alias) {
+    return $SubscribedDropsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<Frequency, String, String> $converterfrequency =
+      const EnumNameConverter<Frequency>(Frequency.values);
+}
+
+class SubscribedDropTable extends DataClass
+    implements Insertable<SubscribedDropTable> {
+  final int id;
+  final int? fromBucketId;
+  final int? toBucketId;
+  final int? dropCategoryId;
+  final String title;
+  final int amount;
+  final Frequency frequency;
+  final int repeatInterval;
+  final DateTime startsOn;
+  final DateTime? endsOn;
+  final bool isActive;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const SubscribedDropTable({
+    required this.id,
+    this.fromBucketId,
+    this.toBucketId,
+    this.dropCategoryId,
+    required this.title,
+    required this.amount,
+    required this.frequency,
+    required this.repeatInterval,
+    required this.startsOn,
+    this.endsOn,
+    required this.isActive,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || fromBucketId != null) {
+      map['from_bucket_id'] = Variable<int>(fromBucketId);
+    }
+    if (!nullToAbsent || toBucketId != null) {
+      map['to_bucket_id'] = Variable<int>(toBucketId);
+    }
+    if (!nullToAbsent || dropCategoryId != null) {
+      map['drop_category_id'] = Variable<int>(dropCategoryId);
+    }
+    map['title'] = Variable<String>(title);
+    map['amount'] = Variable<int>(amount);
+    {
+      map['frequency'] = Variable<String>(
+        $SubscribedDropsTable.$converterfrequency.toSql(frequency),
+      );
+    }
+    map['repeat_interval'] = Variable<int>(repeatInterval);
+    map['starts_on'] = Variable<DateTime>(startsOn);
+    if (!nullToAbsent || endsOn != null) {
+      map['ends_on'] = Variable<DateTime>(endsOn);
+    }
+    map['is_active'] = Variable<bool>(isActive);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  SubscribedDropsCompanion toCompanion(bool nullToAbsent) {
+    return SubscribedDropsCompanion(
+      id: Value(id),
+      fromBucketId: fromBucketId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fromBucketId),
+      toBucketId: toBucketId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toBucketId),
+      dropCategoryId: dropCategoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dropCategoryId),
+      title: Value(title),
+      amount: Value(amount),
+      frequency: Value(frequency),
+      repeatInterval: Value(repeatInterval),
+      startsOn: Value(startsOn),
+      endsOn: endsOn == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endsOn),
+      isActive: Value(isActive),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory SubscribedDropTable.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SubscribedDropTable(
+      id: serializer.fromJson<int>(json['id']),
+      fromBucketId: serializer.fromJson<int?>(json['fromBucketId']),
+      toBucketId: serializer.fromJson<int?>(json['toBucketId']),
+      dropCategoryId: serializer.fromJson<int?>(json['dropCategoryId']),
+      title: serializer.fromJson<String>(json['title']),
+      amount: serializer.fromJson<int>(json['amount']),
+      frequency: $SubscribedDropsTable.$converterfrequency.fromJson(
+        serializer.fromJson<String>(json['frequency']),
+      ),
+      repeatInterval: serializer.fromJson<int>(json['repeatInterval']),
+      startsOn: serializer.fromJson<DateTime>(json['startsOn']),
+      endsOn: serializer.fromJson<DateTime?>(json['endsOn']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'fromBucketId': serializer.toJson<int?>(fromBucketId),
+      'toBucketId': serializer.toJson<int?>(toBucketId),
+      'dropCategoryId': serializer.toJson<int?>(dropCategoryId),
+      'title': serializer.toJson<String>(title),
+      'amount': serializer.toJson<int>(amount),
+      'frequency': serializer.toJson<String>(
+        $SubscribedDropsTable.$converterfrequency.toJson(frequency),
+      ),
+      'repeatInterval': serializer.toJson<int>(repeatInterval),
+      'startsOn': serializer.toJson<DateTime>(startsOn),
+      'endsOn': serializer.toJson<DateTime?>(endsOn),
+      'isActive': serializer.toJson<bool>(isActive),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  SubscribedDropTable copyWith({
+    int? id,
+    Value<int?> fromBucketId = const Value.absent(),
+    Value<int?> toBucketId = const Value.absent(),
+    Value<int?> dropCategoryId = const Value.absent(),
+    String? title,
+    int? amount,
+    Frequency? frequency,
+    int? repeatInterval,
+    DateTime? startsOn,
+    Value<DateTime?> endsOn = const Value.absent(),
+    bool? isActive,
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => SubscribedDropTable(
+    id: id ?? this.id,
+    fromBucketId: fromBucketId.present ? fromBucketId.value : this.fromBucketId,
+    toBucketId: toBucketId.present ? toBucketId.value : this.toBucketId,
+    dropCategoryId: dropCategoryId.present
+        ? dropCategoryId.value
+        : this.dropCategoryId,
+    title: title ?? this.title,
+    amount: amount ?? this.amount,
+    frequency: frequency ?? this.frequency,
+    repeatInterval: repeatInterval ?? this.repeatInterval,
+    startsOn: startsOn ?? this.startsOn,
+    endsOn: endsOn.present ? endsOn.value : this.endsOn,
+    isActive: isActive ?? this.isActive,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  SubscribedDropTable copyWithCompanion(SubscribedDropsCompanion data) {
+    return SubscribedDropTable(
+      id: data.id.present ? data.id.value : this.id,
+      fromBucketId: data.fromBucketId.present
+          ? data.fromBucketId.value
+          : this.fromBucketId,
+      toBucketId: data.toBucketId.present
+          ? data.toBucketId.value
+          : this.toBucketId,
+      dropCategoryId: data.dropCategoryId.present
+          ? data.dropCategoryId.value
+          : this.dropCategoryId,
+      title: data.title.present ? data.title.value : this.title,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      frequency: data.frequency.present ? data.frequency.value : this.frequency,
+      repeatInterval: data.repeatInterval.present
+          ? data.repeatInterval.value
+          : this.repeatInterval,
+      startsOn: data.startsOn.present ? data.startsOn.value : this.startsOn,
+      endsOn: data.endsOn.present ? data.endsOn.value : this.endsOn,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubscribedDropTable(')
+          ..write('id: $id, ')
+          ..write('fromBucketId: $fromBucketId, ')
+          ..write('toBucketId: $toBucketId, ')
+          ..write('dropCategoryId: $dropCategoryId, ')
+          ..write('title: $title, ')
+          ..write('amount: $amount, ')
+          ..write('frequency: $frequency, ')
+          ..write('repeatInterval: $repeatInterval, ')
+          ..write('startsOn: $startsOn, ')
+          ..write('endsOn: $endsOn, ')
+          ..write('isActive: $isActive, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    fromBucketId,
+    toBucketId,
+    dropCategoryId,
+    title,
+    amount,
+    frequency,
+    repeatInterval,
+    startsOn,
+    endsOn,
+    isActive,
+    notes,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SubscribedDropTable &&
+          other.id == this.id &&
+          other.fromBucketId == this.fromBucketId &&
+          other.toBucketId == this.toBucketId &&
+          other.dropCategoryId == this.dropCategoryId &&
+          other.title == this.title &&
+          other.amount == this.amount &&
+          other.frequency == this.frequency &&
+          other.repeatInterval == this.repeatInterval &&
+          other.startsOn == this.startsOn &&
+          other.endsOn == this.endsOn &&
+          other.isActive == this.isActive &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
+  final Value<int> id;
+  final Value<int?> fromBucketId;
+  final Value<int?> toBucketId;
+  final Value<int?> dropCategoryId;
+  final Value<String> title;
+  final Value<int> amount;
+  final Value<Frequency> frequency;
+  final Value<int> repeatInterval;
+  final Value<DateTime> startsOn;
+  final Value<DateTime?> endsOn;
+  final Value<bool> isActive;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const SubscribedDropsCompanion({
+    this.id = const Value.absent(),
+    this.fromBucketId = const Value.absent(),
+    this.toBucketId = const Value.absent(),
+    this.dropCategoryId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.frequency = const Value.absent(),
+    this.repeatInterval = const Value.absent(),
+    this.startsOn = const Value.absent(),
+    this.endsOn = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  SubscribedDropsCompanion.insert({
+    this.id = const Value.absent(),
+    this.fromBucketId = const Value.absent(),
+    this.toBucketId = const Value.absent(),
+    this.dropCategoryId = const Value.absent(),
+    required String title,
+    required int amount,
+    required Frequency frequency,
+    this.repeatInterval = const Value.absent(),
+    required DateTime startsOn,
+    this.endsOn = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : title = Value(title),
+       amount = Value(amount),
+       frequency = Value(frequency),
+       startsOn = Value(startsOn);
+  static Insertable<SubscribedDropTable> custom({
+    Expression<int>? id,
+    Expression<int>? fromBucketId,
+    Expression<int>? toBucketId,
+    Expression<int>? dropCategoryId,
+    Expression<String>? title,
+    Expression<int>? amount,
+    Expression<String>? frequency,
+    Expression<int>? repeatInterval,
+    Expression<DateTime>? startsOn,
+    Expression<DateTime>? endsOn,
+    Expression<bool>? isActive,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (fromBucketId != null) 'from_bucket_id': fromBucketId,
+      if (toBucketId != null) 'to_bucket_id': toBucketId,
+      if (dropCategoryId != null) 'drop_category_id': dropCategoryId,
+      if (title != null) 'title': title,
+      if (amount != null) 'amount': amount,
+      if (frequency != null) 'frequency': frequency,
+      if (repeatInterval != null) 'repeat_interval': repeatInterval,
+      if (startsOn != null) 'starts_on': startsOn,
+      if (endsOn != null) 'ends_on': endsOn,
+      if (isActive != null) 'is_active': isActive,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  SubscribedDropsCompanion copyWith({
+    Value<int>? id,
+    Value<int?>? fromBucketId,
+    Value<int?>? toBucketId,
+    Value<int?>? dropCategoryId,
+    Value<String>? title,
+    Value<int>? amount,
+    Value<Frequency>? frequency,
+    Value<int>? repeatInterval,
+    Value<DateTime>? startsOn,
+    Value<DateTime?>? endsOn,
+    Value<bool>? isActive,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return SubscribedDropsCompanion(
+      id: id ?? this.id,
+      fromBucketId: fromBucketId ?? this.fromBucketId,
+      toBucketId: toBucketId ?? this.toBucketId,
+      dropCategoryId: dropCategoryId ?? this.dropCategoryId,
+      title: title ?? this.title,
+      amount: amount ?? this.amount,
+      frequency: frequency ?? this.frequency,
+      repeatInterval: repeatInterval ?? this.repeatInterval,
+      startsOn: startsOn ?? this.startsOn,
+      endsOn: endsOn ?? this.endsOn,
+      isActive: isActive ?? this.isActive,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (fromBucketId.present) {
+      map['from_bucket_id'] = Variable<int>(fromBucketId.value);
+    }
+    if (toBucketId.present) {
+      map['to_bucket_id'] = Variable<int>(toBucketId.value);
+    }
+    if (dropCategoryId.present) {
+      map['drop_category_id'] = Variable<int>(dropCategoryId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (frequency.present) {
+      map['frequency'] = Variable<String>(
+        $SubscribedDropsTable.$converterfrequency.toSql(frequency.value),
+      );
+    }
+    if (repeatInterval.present) {
+      map['repeat_interval'] = Variable<int>(repeatInterval.value);
+    }
+    if (startsOn.present) {
+      map['starts_on'] = Variable<DateTime>(startsOn.value);
+    }
+    if (endsOn.present) {
+      map['ends_on'] = Variable<DateTime>(endsOn.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SubscribedDropsCompanion(')
+          ..write('id: $id, ')
+          ..write('fromBucketId: $fromBucketId, ')
+          ..write('toBucketId: $toBucketId, ')
+          ..write('dropCategoryId: $dropCategoryId, ')
+          ..write('title: $title, ')
+          ..write('amount: $amount, ')
+          ..write('frequency: $frequency, ')
+          ..write('repeatInterval: $repeatInterval, ')
+          ..write('startsOn: $startsOn, ')
+          ..write('endsOn: $endsOn, ')
+          ..write('isActive: $isActive, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DropsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _fromBucketIdMeta = const VerificationMeta(
+    'fromBucketId',
+  );
+  @override
+  late final GeneratedColumn<int> fromBucketId = GeneratedColumn<int>(
+    'from_bucket_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES buckets (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _toBucketIdMeta = const VerificationMeta(
+    'toBucketId',
+  );
+  @override
+  late final GeneratedColumn<int> toBucketId = GeneratedColumn<int>(
+    'to_bucket_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES buckets (id) ON DELETE RESTRICT',
+    ),
+  );
+  static const VerificationMeta _dropCategoryIdMeta = const VerificationMeta(
+    'dropCategoryId',
+  );
+  @override
+  late final GeneratedColumn<int> dropCategoryId = GeneratedColumn<int>(
+    'drop_category_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES drop_categories (id) ON DELETE SET NULL',
+    ),
+  );
+  static const VerificationMeta _subscribedDropIdMeta = const VerificationMeta(
+    'subscribedDropId',
+  );
+  @override
+  late final GeneratedColumn<int> subscribedDropId = GeneratedColumn<int>(
+    'subscribed_drop_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES subscribed_drops (id) ON DELETE SET NULL',
+    ),
+  );
+  static const VerificationMeta _parentDropIdMeta = const VerificationMeta(
+    'parentDropId',
+  );
+  @override
+  late final GeneratedColumn<int> parentDropId = GeneratedColumn<int>(
+    'parent_drop_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES drops (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _droppedOnMeta = const VerificationMeta(
+    'droppedOn',
+  );
+  @override
+  late final GeneratedColumn<DateTime> droppedOn = GeneratedColumn<DateTime>(
+    'dropped_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    fromBucketId,
+    toBucketId,
+    dropCategoryId,
+    subscribedDropId,
     parentDropId,
+    title,
+    amount,
+    droppedOn,
+    notes,
     createdAt,
     updatedAt,
   ];
@@ -2366,6 +2448,51 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
+    if (data.containsKey('from_bucket_id')) {
+      context.handle(
+        _fromBucketIdMeta,
+        fromBucketId.isAcceptableOrUnknown(
+          data['from_bucket_id']!,
+          _fromBucketIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('to_bucket_id')) {
+      context.handle(
+        _toBucketIdMeta,
+        toBucketId.isAcceptableOrUnknown(
+          data['to_bucket_id']!,
+          _toBucketIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('drop_category_id')) {
+      context.handle(
+        _dropCategoryIdMeta,
+        dropCategoryId.isAcceptableOrUnknown(
+          data['drop_category_id']!,
+          _dropCategoryIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('subscribed_drop_id')) {
+      context.handle(
+        _subscribedDropIdMeta,
+        subscribedDropId.isAcceptableOrUnknown(
+          data['subscribed_drop_id']!,
+          _subscribedDropIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('parent_drop_id')) {
+      context.handle(
+        _parentDropIdMeta,
+        parentDropId.isAcceptableOrUnknown(
+          data['parent_drop_id']!,
+          _parentDropIdMeta,
+        ),
+      );
+    }
     if (data.containsKey('title')) {
       context.handle(
         _titleMeta,
@@ -2382,51 +2509,18 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
     } else if (isInserting) {
       context.missing(_amountMeta);
     }
-    if (data.containsKey('drop_category_id')) {
+    if (data.containsKey('dropped_on')) {
       context.handle(
-        _dropCategoryIdMeta,
-        dropCategoryId.isAcceptableOrUnknown(
-          data['drop_category_id']!,
-          _dropCategoryIdMeta,
-        ),
-      );
-    }
-    if (data.containsKey('bucket_id')) {
-      context.handle(
-        _bucketIdMeta,
-        bucketId.isAcceptableOrUnknown(data['bucket_id']!, _bucketIdMeta),
-      );
-    }
-    if (data.containsKey('to_bucket_id')) {
-      context.handle(
-        _toBucketIdMeta,
-        toBucketId.isAcceptableOrUnknown(
-          data['to_bucket_id']!,
-          _toBucketIdMeta,
-        ),
-      );
-    }
-    if (data.containsKey('date')) {
-      context.handle(
-        _dateMeta,
-        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+        _droppedOnMeta,
+        droppedOn.isAcceptableOrUnknown(data['dropped_on']!, _droppedOnMeta),
       );
     } else if (isInserting) {
-      context.missing(_dateMeta);
+      context.missing(_droppedOnMeta);
     }
     if (data.containsKey('notes')) {
       context.handle(
         _notesMeta,
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
-      );
-    }
-    if (data.containsKey('parent_drop_id')) {
-      context.handle(
-        _parentDropIdMeta,
-        parentDropId.isAcceptableOrUnknown(
-          data['parent_drop_id']!,
-          _parentDropIdMeta,
-        ),
       );
     }
     if (data.containsKey('created_at')) {
@@ -2454,6 +2548,26 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      fromBucketId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}from_bucket_id'],
+      ),
+      toBucketId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}to_bucket_id'],
+      ),
+      dropCategoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}drop_category_id'],
+      ),
+      subscribedDropId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}subscribed_drop_id'],
+      ),
+      parentDropId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}parent_drop_id'],
+      ),
       title: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}title'],
@@ -2462,29 +2576,13 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
         DriftSqlType.int,
         data['${effectivePrefix}amount'],
       )!,
-      dropCategoryId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}drop_category_id'],
-      ),
-      bucketId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}bucket_id'],
-      ),
-      toBucketId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}to_bucket_id'],
-      ),
-      date: attachedDatabase.typeMapping.read(
+      droppedOn: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
-        data['${effectivePrefix}date'],
+        data['${effectivePrefix}dropped_on'],
       )!,
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
-      ),
-      parentDropId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}parent_drop_id'],
       ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
@@ -2505,26 +2603,28 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
 
 class DropTable extends DataClass implements Insertable<DropTable> {
   final int id;
+  final int? fromBucketId;
+  final int? toBucketId;
+  final int? dropCategoryId;
+  final int? subscribedDropId;
+  final int? parentDropId;
   final String title;
   final int amount;
-  final int? dropCategoryId;
-  final int? bucketId;
-  final int? toBucketId;
-  final DateTime date;
+  final DateTime droppedOn;
   final String? notes;
-  final int? parentDropId;
   final DateTime createdAt;
   final DateTime updatedAt;
   const DropTable({
     required this.id,
+    this.fromBucketId,
+    this.toBucketId,
+    this.dropCategoryId,
+    this.subscribedDropId,
+    this.parentDropId,
     required this.title,
     required this.amount,
-    this.dropCategoryId,
-    this.bucketId,
-    this.toBucketId,
-    required this.date,
+    required this.droppedOn,
     this.notes,
-    this.parentDropId,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -2532,23 +2632,26 @@ class DropTable extends DataClass implements Insertable<DropTable> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['title'] = Variable<String>(title);
-    map['amount'] = Variable<int>(amount);
-    if (!nullToAbsent || dropCategoryId != null) {
-      map['drop_category_id'] = Variable<int>(dropCategoryId);
-    }
-    if (!nullToAbsent || bucketId != null) {
-      map['bucket_id'] = Variable<int>(bucketId);
+    if (!nullToAbsent || fromBucketId != null) {
+      map['from_bucket_id'] = Variable<int>(fromBucketId);
     }
     if (!nullToAbsent || toBucketId != null) {
       map['to_bucket_id'] = Variable<int>(toBucketId);
     }
-    map['date'] = Variable<DateTime>(date);
-    if (!nullToAbsent || notes != null) {
-      map['notes'] = Variable<String>(notes);
+    if (!nullToAbsent || dropCategoryId != null) {
+      map['drop_category_id'] = Variable<int>(dropCategoryId);
+    }
+    if (!nullToAbsent || subscribedDropId != null) {
+      map['subscribed_drop_id'] = Variable<int>(subscribedDropId);
     }
     if (!nullToAbsent || parentDropId != null) {
       map['parent_drop_id'] = Variable<int>(parentDropId);
+    }
+    map['title'] = Variable<String>(title);
+    map['amount'] = Variable<int>(amount);
+    map['dropped_on'] = Variable<DateTime>(droppedOn);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -2558,24 +2661,27 @@ class DropTable extends DataClass implements Insertable<DropTable> {
   DropsCompanion toCompanion(bool nullToAbsent) {
     return DropsCompanion(
       id: Value(id),
-      title: Value(title),
-      amount: Value(amount),
-      dropCategoryId: dropCategoryId == null && nullToAbsent
+      fromBucketId: fromBucketId == null && nullToAbsent
           ? const Value.absent()
-          : Value(dropCategoryId),
-      bucketId: bucketId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(bucketId),
+          : Value(fromBucketId),
       toBucketId: toBucketId == null && nullToAbsent
           ? const Value.absent()
           : Value(toBucketId),
-      date: Value(date),
-      notes: notes == null && nullToAbsent
+      dropCategoryId: dropCategoryId == null && nullToAbsent
           ? const Value.absent()
-          : Value(notes),
+          : Value(dropCategoryId),
+      subscribedDropId: subscribedDropId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subscribedDropId),
       parentDropId: parentDropId == null && nullToAbsent
           ? const Value.absent()
           : Value(parentDropId),
+      title: Value(title),
+      amount: Value(amount),
+      droppedOn: Value(droppedOn),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -2588,14 +2694,15 @@ class DropTable extends DataClass implements Insertable<DropTable> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DropTable(
       id: serializer.fromJson<int>(json['id']),
+      fromBucketId: serializer.fromJson<int?>(json['fromBucketId']),
+      toBucketId: serializer.fromJson<int?>(json['toBucketId']),
+      dropCategoryId: serializer.fromJson<int?>(json['dropCategoryId']),
+      subscribedDropId: serializer.fromJson<int?>(json['subscribedDropId']),
+      parentDropId: serializer.fromJson<int?>(json['parentDropId']),
       title: serializer.fromJson<String>(json['title']),
       amount: serializer.fromJson<int>(json['amount']),
-      dropCategoryId: serializer.fromJson<int?>(json['dropCategoryId']),
-      bucketId: serializer.fromJson<int?>(json['bucketId']),
-      toBucketId: serializer.fromJson<int?>(json['toBucketId']),
-      date: serializer.fromJson<DateTime>(json['date']),
+      droppedOn: serializer.fromJson<DateTime>(json['droppedOn']),
       notes: serializer.fromJson<String?>(json['notes']),
-      parentDropId: serializer.fromJson<int?>(json['parentDropId']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -2605,14 +2712,15 @@ class DropTable extends DataClass implements Insertable<DropTable> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'fromBucketId': serializer.toJson<int?>(fromBucketId),
+      'toBucketId': serializer.toJson<int?>(toBucketId),
+      'dropCategoryId': serializer.toJson<int?>(dropCategoryId),
+      'subscribedDropId': serializer.toJson<int?>(subscribedDropId),
+      'parentDropId': serializer.toJson<int?>(parentDropId),
       'title': serializer.toJson<String>(title),
       'amount': serializer.toJson<int>(amount),
-      'dropCategoryId': serializer.toJson<int?>(dropCategoryId),
-      'bucketId': serializer.toJson<int?>(bucketId),
-      'toBucketId': serializer.toJson<int?>(toBucketId),
-      'date': serializer.toJson<DateTime>(date),
+      'droppedOn': serializer.toJson<DateTime>(droppedOn),
       'notes': serializer.toJson<String?>(notes),
-      'parentDropId': serializer.toJson<int?>(parentDropId),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -2620,48 +2728,57 @@ class DropTable extends DataClass implements Insertable<DropTable> {
 
   DropTable copyWith({
     int? id,
+    Value<int?> fromBucketId = const Value.absent(),
+    Value<int?> toBucketId = const Value.absent(),
+    Value<int?> dropCategoryId = const Value.absent(),
+    Value<int?> subscribedDropId = const Value.absent(),
+    Value<int?> parentDropId = const Value.absent(),
     String? title,
     int? amount,
-    Value<int?> dropCategoryId = const Value.absent(),
-    Value<int?> bucketId = const Value.absent(),
-    Value<int?> toBucketId = const Value.absent(),
-    DateTime? date,
+    DateTime? droppedOn,
     Value<String?> notes = const Value.absent(),
-    Value<int?> parentDropId = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => DropTable(
     id: id ?? this.id,
-    title: title ?? this.title,
-    amount: amount ?? this.amount,
+    fromBucketId: fromBucketId.present ? fromBucketId.value : this.fromBucketId,
+    toBucketId: toBucketId.present ? toBucketId.value : this.toBucketId,
     dropCategoryId: dropCategoryId.present
         ? dropCategoryId.value
         : this.dropCategoryId,
-    bucketId: bucketId.present ? bucketId.value : this.bucketId,
-    toBucketId: toBucketId.present ? toBucketId.value : this.toBucketId,
-    date: date ?? this.date,
-    notes: notes.present ? notes.value : this.notes,
+    subscribedDropId: subscribedDropId.present
+        ? subscribedDropId.value
+        : this.subscribedDropId,
     parentDropId: parentDropId.present ? parentDropId.value : this.parentDropId,
+    title: title ?? this.title,
+    amount: amount ?? this.amount,
+    droppedOn: droppedOn ?? this.droppedOn,
+    notes: notes.present ? notes.value : this.notes,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
   DropTable copyWithCompanion(DropsCompanion data) {
     return DropTable(
       id: data.id.present ? data.id.value : this.id,
-      title: data.title.present ? data.title.value : this.title,
-      amount: data.amount.present ? data.amount.value : this.amount,
-      dropCategoryId: data.dropCategoryId.present
-          ? data.dropCategoryId.value
-          : this.dropCategoryId,
-      bucketId: data.bucketId.present ? data.bucketId.value : this.bucketId,
+      fromBucketId: data.fromBucketId.present
+          ? data.fromBucketId.value
+          : this.fromBucketId,
       toBucketId: data.toBucketId.present
           ? data.toBucketId.value
           : this.toBucketId,
-      date: data.date.present ? data.date.value : this.date,
-      notes: data.notes.present ? data.notes.value : this.notes,
+      dropCategoryId: data.dropCategoryId.present
+          ? data.dropCategoryId.value
+          : this.dropCategoryId,
+      subscribedDropId: data.subscribedDropId.present
+          ? data.subscribedDropId.value
+          : this.subscribedDropId,
       parentDropId: data.parentDropId.present
           ? data.parentDropId.value
           : this.parentDropId,
+      title: data.title.present ? data.title.value : this.title,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      droppedOn: data.droppedOn.present ? data.droppedOn.value : this.droppedOn,
+      notes: data.notes.present ? data.notes.value : this.notes,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -2671,14 +2788,15 @@ class DropTable extends DataClass implements Insertable<DropTable> {
   String toString() {
     return (StringBuffer('DropTable(')
           ..write('id: $id, ')
+          ..write('fromBucketId: $fromBucketId, ')
+          ..write('toBucketId: $toBucketId, ')
+          ..write('dropCategoryId: $dropCategoryId, ')
+          ..write('subscribedDropId: $subscribedDropId, ')
+          ..write('parentDropId: $parentDropId, ')
           ..write('title: $title, ')
           ..write('amount: $amount, ')
-          ..write('dropCategoryId: $dropCategoryId, ')
-          ..write('bucketId: $bucketId, ')
-          ..write('toBucketId: $toBucketId, ')
-          ..write('date: $date, ')
+          ..write('droppedOn: $droppedOn, ')
           ..write('notes: $notes, ')
-          ..write('parentDropId: $parentDropId, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -2688,14 +2806,15 @@ class DropTable extends DataClass implements Insertable<DropTable> {
   @override
   int get hashCode => Object.hash(
     id,
+    fromBucketId,
+    toBucketId,
+    dropCategoryId,
+    subscribedDropId,
+    parentDropId,
     title,
     amount,
-    dropCategoryId,
-    bucketId,
-    toBucketId,
-    date,
+    droppedOn,
     notes,
-    parentDropId,
     createdAt,
     updatedAt,
   );
@@ -2704,81 +2823,87 @@ class DropTable extends DataClass implements Insertable<DropTable> {
       identical(this, other) ||
       (other is DropTable &&
           other.id == this.id &&
+          other.fromBucketId == this.fromBucketId &&
+          other.toBucketId == this.toBucketId &&
+          other.dropCategoryId == this.dropCategoryId &&
+          other.subscribedDropId == this.subscribedDropId &&
+          other.parentDropId == this.parentDropId &&
           other.title == this.title &&
           other.amount == this.amount &&
-          other.dropCategoryId == this.dropCategoryId &&
-          other.bucketId == this.bucketId &&
-          other.toBucketId == this.toBucketId &&
-          other.date == this.date &&
+          other.droppedOn == this.droppedOn &&
           other.notes == this.notes &&
-          other.parentDropId == this.parentDropId &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
 
 class DropsCompanion extends UpdateCompanion<DropTable> {
   final Value<int> id;
+  final Value<int?> fromBucketId;
+  final Value<int?> toBucketId;
+  final Value<int?> dropCategoryId;
+  final Value<int?> subscribedDropId;
+  final Value<int?> parentDropId;
   final Value<String> title;
   final Value<int> amount;
-  final Value<int?> dropCategoryId;
-  final Value<int?> bucketId;
-  final Value<int?> toBucketId;
-  final Value<DateTime> date;
+  final Value<DateTime> droppedOn;
   final Value<String?> notes;
-  final Value<int?> parentDropId;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const DropsCompanion({
     this.id = const Value.absent(),
+    this.fromBucketId = const Value.absent(),
+    this.toBucketId = const Value.absent(),
+    this.dropCategoryId = const Value.absent(),
+    this.subscribedDropId = const Value.absent(),
+    this.parentDropId = const Value.absent(),
     this.title = const Value.absent(),
     this.amount = const Value.absent(),
-    this.dropCategoryId = const Value.absent(),
-    this.bucketId = const Value.absent(),
-    this.toBucketId = const Value.absent(),
-    this.date = const Value.absent(),
+    this.droppedOn = const Value.absent(),
     this.notes = const Value.absent(),
-    this.parentDropId = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
   DropsCompanion.insert({
     this.id = const Value.absent(),
+    this.fromBucketId = const Value.absent(),
+    this.toBucketId = const Value.absent(),
+    this.dropCategoryId = const Value.absent(),
+    this.subscribedDropId = const Value.absent(),
+    this.parentDropId = const Value.absent(),
     required String title,
     required int amount,
-    this.dropCategoryId = const Value.absent(),
-    this.bucketId = const Value.absent(),
-    this.toBucketId = const Value.absent(),
-    required DateTime date,
+    required DateTime droppedOn,
     this.notes = const Value.absent(),
-    this.parentDropId = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : title = Value(title),
        amount = Value(amount),
-       date = Value(date);
+       droppedOn = Value(droppedOn);
   static Insertable<DropTable> custom({
     Expression<int>? id,
+    Expression<int>? fromBucketId,
+    Expression<int>? toBucketId,
+    Expression<int>? dropCategoryId,
+    Expression<int>? subscribedDropId,
+    Expression<int>? parentDropId,
     Expression<String>? title,
     Expression<int>? amount,
-    Expression<int>? dropCategoryId,
-    Expression<int>? bucketId,
-    Expression<int>? toBucketId,
-    Expression<DateTime>? date,
+    Expression<DateTime>? droppedOn,
     Expression<String>? notes,
-    Expression<int>? parentDropId,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (fromBucketId != null) 'from_bucket_id': fromBucketId,
+      if (toBucketId != null) 'to_bucket_id': toBucketId,
+      if (dropCategoryId != null) 'drop_category_id': dropCategoryId,
+      if (subscribedDropId != null) 'subscribed_drop_id': subscribedDropId,
+      if (parentDropId != null) 'parent_drop_id': parentDropId,
       if (title != null) 'title': title,
       if (amount != null) 'amount': amount,
-      if (dropCategoryId != null) 'drop_category_id': dropCategoryId,
-      if (bucketId != null) 'bucket_id': bucketId,
-      if (toBucketId != null) 'to_bucket_id': toBucketId,
-      if (date != null) 'date': date,
+      if (droppedOn != null) 'dropped_on': droppedOn,
       if (notes != null) 'notes': notes,
-      if (parentDropId != null) 'parent_drop_id': parentDropId,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -2786,27 +2911,29 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
 
   DropsCompanion copyWith({
     Value<int>? id,
+    Value<int?>? fromBucketId,
+    Value<int?>? toBucketId,
+    Value<int?>? dropCategoryId,
+    Value<int?>? subscribedDropId,
+    Value<int?>? parentDropId,
     Value<String>? title,
     Value<int>? amount,
-    Value<int?>? dropCategoryId,
-    Value<int?>? bucketId,
-    Value<int?>? toBucketId,
-    Value<DateTime>? date,
+    Value<DateTime>? droppedOn,
     Value<String?>? notes,
-    Value<int?>? parentDropId,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
   }) {
     return DropsCompanion(
       id: id ?? this.id,
+      fromBucketId: fromBucketId ?? this.fromBucketId,
+      toBucketId: toBucketId ?? this.toBucketId,
+      dropCategoryId: dropCategoryId ?? this.dropCategoryId,
+      subscribedDropId: subscribedDropId ?? this.subscribedDropId,
+      parentDropId: parentDropId ?? this.parentDropId,
       title: title ?? this.title,
       amount: amount ?? this.amount,
-      dropCategoryId: dropCategoryId ?? this.dropCategoryId,
-      bucketId: bucketId ?? this.bucketId,
-      toBucketId: toBucketId ?? this.toBucketId,
-      date: date ?? this.date,
+      droppedOn: droppedOn ?? this.droppedOn,
       notes: notes ?? this.notes,
-      parentDropId: parentDropId ?? this.parentDropId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -2818,29 +2945,32 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
+    if (fromBucketId.present) {
+      map['from_bucket_id'] = Variable<int>(fromBucketId.value);
+    }
+    if (toBucketId.present) {
+      map['to_bucket_id'] = Variable<int>(toBucketId.value);
+    }
+    if (dropCategoryId.present) {
+      map['drop_category_id'] = Variable<int>(dropCategoryId.value);
+    }
+    if (subscribedDropId.present) {
+      map['subscribed_drop_id'] = Variable<int>(subscribedDropId.value);
+    }
+    if (parentDropId.present) {
+      map['parent_drop_id'] = Variable<int>(parentDropId.value);
+    }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
     }
     if (amount.present) {
       map['amount'] = Variable<int>(amount.value);
     }
-    if (dropCategoryId.present) {
-      map['drop_category_id'] = Variable<int>(dropCategoryId.value);
-    }
-    if (bucketId.present) {
-      map['bucket_id'] = Variable<int>(bucketId.value);
-    }
-    if (toBucketId.present) {
-      map['to_bucket_id'] = Variable<int>(toBucketId.value);
-    }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
+    if (droppedOn.present) {
+      map['dropped_on'] = Variable<DateTime>(droppedOn.value);
     }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
-    }
-    if (parentDropId.present) {
-      map['parent_drop_id'] = Variable<int>(parentDropId.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
@@ -2855,14 +2985,412 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
   String toString() {
     return (StringBuffer('DropsCompanion(')
           ..write('id: $id, ')
+          ..write('fromBucketId: $fromBucketId, ')
+          ..write('toBucketId: $toBucketId, ')
+          ..write('dropCategoryId: $dropCategoryId, ')
+          ..write('subscribedDropId: $subscribedDropId, ')
+          ..write('parentDropId: $parentDropId, ')
           ..write('title: $title, ')
           ..write('amount: $amount, ')
-          ..write('dropCategoryId: $dropCategoryId, ')
-          ..write('bucketId: $bucketId, ')
-          ..write('toBucketId: $toBucketId, ')
-          ..write('date: $date, ')
+          ..write('droppedOn: $droppedOn, ')
           ..write('notes: $notes, ')
-          ..write('parentDropId: $parentDropId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BucketSnapsTable extends BucketSnaps
+    with TableInfo<$BucketSnapsTable, BucketSnapTable> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BucketSnapsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _bucketIdMeta = const VerificationMeta(
+    'bucketId',
+  );
+  @override
+  late final GeneratedColumn<int> bucketId = GeneratedColumn<int>(
+    'bucket_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES buckets (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _snappedOnMeta = const VerificationMeta(
+    'snappedOn',
+  );
+  @override
+  late final GeneratedColumn<DateTime> snappedOn = GeneratedColumn<DateTime>(
+    'snapped_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    bucketId,
+    amount,
+    snappedOn,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'bucket_snaps';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BucketSnapTable> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('bucket_id')) {
+      context.handle(
+        _bucketIdMeta,
+        bucketId.isAcceptableOrUnknown(data['bucket_id']!, _bucketIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_bucketIdMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('snapped_on')) {
+      context.handle(
+        _snappedOnMeta,
+        snappedOn.isAcceptableOrUnknown(data['snapped_on']!, _snappedOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_snappedOnMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BucketSnapTable map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BucketSnapTable(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      bucketId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bucket_id'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount'],
+      )!,
+      snappedOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}snapped_on'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $BucketSnapsTable createAlias(String alias) {
+    return $BucketSnapsTable(attachedDatabase, alias);
+  }
+}
+
+class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
+  final int id;
+  final int bucketId;
+  final int amount;
+  final DateTime snappedOn;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const BucketSnapTable({
+    required this.id,
+    required this.bucketId,
+    required this.amount,
+    required this.snappedOn,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['bucket_id'] = Variable<int>(bucketId);
+    map['amount'] = Variable<int>(amount);
+    map['snapped_on'] = Variable<DateTime>(snappedOn);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  BucketSnapsCompanion toCompanion(bool nullToAbsent) {
+    return BucketSnapsCompanion(
+      id: Value(id),
+      bucketId: Value(bucketId),
+      amount: Value(amount),
+      snappedOn: Value(snappedOn),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory BucketSnapTable.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BucketSnapTable(
+      id: serializer.fromJson<int>(json['id']),
+      bucketId: serializer.fromJson<int>(json['bucketId']),
+      amount: serializer.fromJson<int>(json['amount']),
+      snappedOn: serializer.fromJson<DateTime>(json['snappedOn']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'bucketId': serializer.toJson<int>(bucketId),
+      'amount': serializer.toJson<int>(amount),
+      'snappedOn': serializer.toJson<DateTime>(snappedOn),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  BucketSnapTable copyWith({
+    int? id,
+    int? bucketId,
+    int? amount,
+    DateTime? snappedOn,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => BucketSnapTable(
+    id: id ?? this.id,
+    bucketId: bucketId ?? this.bucketId,
+    amount: amount ?? this.amount,
+    snappedOn: snappedOn ?? this.snappedOn,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  BucketSnapTable copyWithCompanion(BucketSnapsCompanion data) {
+    return BucketSnapTable(
+      id: data.id.present ? data.id.value : this.id,
+      bucketId: data.bucketId.present ? data.bucketId.value : this.bucketId,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      snappedOn: data.snappedOn.present ? data.snappedOn.value : this.snappedOn,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BucketSnapTable(')
+          ..write('id: $id, ')
+          ..write('bucketId: $bucketId, ')
+          ..write('amount: $amount, ')
+          ..write('snappedOn: $snappedOn, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, bucketId, amount, snappedOn, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BucketSnapTable &&
+          other.id == this.id &&
+          other.bucketId == this.bucketId &&
+          other.amount == this.amount &&
+          other.snappedOn == this.snappedOn &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
+  final Value<int> id;
+  final Value<int> bucketId;
+  final Value<int> amount;
+  final Value<DateTime> snappedOn;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const BucketSnapsCompanion({
+    this.id = const Value.absent(),
+    this.bucketId = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.snappedOn = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  BucketSnapsCompanion.insert({
+    this.id = const Value.absent(),
+    required int bucketId,
+    required int amount,
+    required DateTime snappedOn,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : bucketId = Value(bucketId),
+       amount = Value(amount),
+       snappedOn = Value(snappedOn);
+  static Insertable<BucketSnapTable> custom({
+    Expression<int>? id,
+    Expression<int>? bucketId,
+    Expression<int>? amount,
+    Expression<DateTime>? snappedOn,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (bucketId != null) 'bucket_id': bucketId,
+      if (amount != null) 'amount': amount,
+      if (snappedOn != null) 'snapped_on': snappedOn,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  BucketSnapsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? bucketId,
+    Value<int>? amount,
+    Value<DateTime>? snappedOn,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return BucketSnapsCompanion(
+      id: id ?? this.id,
+      bucketId: bucketId ?? this.bucketId,
+      amount: amount ?? this.amount,
+      snappedOn: snappedOn ?? this.snappedOn,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (bucketId.present) {
+      map['bucket_id'] = Variable<int>(bucketId.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (snappedOn.present) {
+      map['snapped_on'] = Variable<DateTime>(snappedOn.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BucketSnapsCompanion(')
+          ..write('id: $id, ')
+          ..write('bucketId: $bucketId, ')
+          ..write('amount: $amount, ')
+          ..write('snappedOn: $snappedOn, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -2872,2854 +3400,64 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-  $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $BucketCategoriesTable bucketCategories = $BucketCategoriesTable(
     this,
   );
-  late final $IconsTable icons = $IconsTable(this);
   late final $BucketsTable buckets = $BucketsTable(this);
-  late final $BucketSnapshotsTable bucketSnapshots = $BucketSnapshotsTable(
+  late final $DropCategoriesTable dropCategories = $DropCategoriesTable(this);
+  late final $SubscribedDropsTable subscribedDrops = $SubscribedDropsTable(
     this,
   );
-  late final $DropCategoriesTable dropCategories = $DropCategoriesTable(this);
   late final $DropsTable drops = $DropsTable(this);
+  late final $BucketSnapsTable bucketSnaps = $BucketSnapsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     bucketCategories,
-    icons,
     buckets,
-    bucketSnapshots,
     dropCategories,
+    subscribedDrops,
     drops,
+    bucketSnaps,
   ];
-}
-
-typedef $$BucketCategoriesTableCreateCompanionBuilder =
-    BucketCategoriesCompanion Function({
-      Value<int> id,
-      required String name,
-      required BalanceType balanceType,
-      Value<int> sort,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-    });
-typedef $$BucketCategoriesTableUpdateCompanionBuilder =
-    BucketCategoriesCompanion Function({
-      Value<int> id,
-      Value<String> name,
-      Value<BalanceType> balanceType,
-      Value<int> sort,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-    });
-
-final class $$BucketCategoriesTableReferences
-    extends
-        BaseReferences<
-          _$AppDatabase,
-          $BucketCategoriesTable,
-          BucketCategoryTable
-        > {
-  $$BucketCategoriesTableReferences(
-    super.$_db,
-    super.$_table,
-    super.$_typedResult,
-  );
-
-  static MultiTypedResultKey<$BucketsTable, List<BucketTable>>
-  _bucketsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.buckets,
-    aliasName: 'bucket_categories__id__buckets__bucket_category_id',
-  );
-
-  $$BucketsTableProcessedTableManager get bucketsRefs {
-    final manager = $$BucketsTableTableManager(
-      $_db,
-      $_db.buckets,
-    ).filter((f) => f.bucketCategoryId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_bucketsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$BucketCategoriesTableFilterComposer
-    extends Composer<_$AppDatabase, $BucketCategoriesTable> {
-  $$BucketCategoriesTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnWithTypeConverterFilters<BalanceType, BalanceType, String>
-  get balanceType => $composableBuilder(
-    column: $table.balanceType,
-    builder: (column) => ColumnWithTypeConverterFilters(column),
-  );
-
-  ColumnFilters<int> get sort => $composableBuilder(
-    column: $table.sort,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  Expression<bool> bucketsRefs(
-    Expression<bool> Function($$BucketsTableFilterComposer f) f,
-  ) {
-    final $$BucketsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.bucketCategoryId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableFilterComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$BucketCategoriesTableOrderingComposer
-    extends Composer<_$AppDatabase, $BucketCategoriesTable> {
-  $$BucketCategoriesTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get balanceType => $composableBuilder(
-    column: $table.balanceType,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get sort => $composableBuilder(
-    column: $table.sort,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$BucketCategoriesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $BucketCategoriesTable> {
-  $$BucketCategoriesTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<BalanceType, String> get balanceType =>
-      $composableBuilder(
-        column: $table.balanceType,
-        builder: (column) => column,
-      );
-
-  GeneratedColumn<int> get sort =>
-      $composableBuilder(column: $table.sort, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  Expression<T> bucketsRefs<T extends Object>(
-    Expression<T> Function($$BucketsTableAnnotationComposer a) f,
-  ) {
-    final $$BucketsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.bucketCategoryId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$BucketCategoriesTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $BucketCategoriesTable,
-          BucketCategoryTable,
-          $$BucketCategoriesTableFilterComposer,
-          $$BucketCategoriesTableOrderingComposer,
-          $$BucketCategoriesTableAnnotationComposer,
-          $$BucketCategoriesTableCreateCompanionBuilder,
-          $$BucketCategoriesTableUpdateCompanionBuilder,
-          (BucketCategoryTable, $$BucketCategoriesTableReferences),
-          BucketCategoryTable,
-          PrefetchHooks Function({bool bucketsRefs})
-        > {
-  $$BucketCategoriesTableTableManager(
-    _$AppDatabase db,
-    $BucketCategoriesTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$BucketCategoriesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$BucketCategoriesTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$BucketCategoriesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> name = const Value.absent(),
-                Value<BalanceType> balanceType = const Value.absent(),
-                Value<int> sort = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-              }) => BucketCategoriesCompanion(
-                id: id,
-                name: name,
-                balanceType: balanceType,
-                sort: sort,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String name,
-                required BalanceType balanceType,
-                Value<int> sort = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-              }) => BucketCategoriesCompanion.insert(
-                id: id,
-                name: name,
-                balanceType: balanceType,
-                sort: sort,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$BucketCategoriesTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback: ({bucketsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (bucketsRefs) db.buckets],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (bucketsRefs)
-                    await $_getPrefetchedData<
-                      BucketCategoryTable,
-                      $BucketCategoriesTable,
-                      BucketTable
-                    >(
-                      currentTable: table,
-                      referencedTable: $$BucketCategoriesTableReferences
-                          ._bucketsRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$BucketCategoriesTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).bucketsRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.bucketCategoryId == item.id,
-                          ),
-                      typedResults: items,
-                    ),
-                ];
-              },
-            );
-          },
-        ),
-      );
-}
-
-typedef $$BucketCategoriesTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $BucketCategoriesTable,
-      BucketCategoryTable,
-      $$BucketCategoriesTableFilterComposer,
-      $$BucketCategoriesTableOrderingComposer,
-      $$BucketCategoriesTableAnnotationComposer,
-      $$BucketCategoriesTableCreateCompanionBuilder,
-      $$BucketCategoriesTableUpdateCompanionBuilder,
-      (BucketCategoryTable, $$BucketCategoriesTableReferences),
-      BucketCategoryTable,
-      PrefetchHooks Function({bool bucketsRefs})
-    >;
-typedef $$IconsTableCreateCompanionBuilder =
-    IconsCompanion Function({
-      Value<int> id,
-      required int codePoint,
-      Value<String> fontFamily,
-      Value<String?> name,
-    });
-typedef $$IconsTableUpdateCompanionBuilder =
-    IconsCompanion Function({
-      Value<int> id,
-      Value<int> codePoint,
-      Value<String> fontFamily,
-      Value<String?> name,
-    });
-
-final class $$IconsTableReferences
-    extends BaseReferences<_$AppDatabase, $IconsTable, IconTable> {
-  $$IconsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static MultiTypedResultKey<$BucketsTable, List<BucketTable>>
-  _bucketsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.buckets,
-    aliasName: 'icons__id__buckets__icon_id',
-  );
-
-  $$BucketsTableProcessedTableManager get bucketsRefs {
-    final manager = $$BucketsTableTableManager(
-      $_db,
-      $_db.buckets,
-    ).filter((f) => f.iconId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_bucketsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-
-  static MultiTypedResultKey<$DropCategoriesTable, List<DropCategoryTable>>
-  _dropCategoriesRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.dropCategories,
-    aliasName: 'icons__id__drop_categories__icon_id',
-  );
-
-  $$DropCategoriesTableProcessedTableManager get dropCategoriesRefs {
-    final manager = $$DropCategoriesTableTableManager(
-      $_db,
-      $_db.dropCategories,
-    ).filter((f) => f.iconId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_dropCategoriesRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$IconsTableFilterComposer extends Composer<_$AppDatabase, $IconsTable> {
-  $$IconsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get codePoint => $composableBuilder(
-    column: $table.codePoint,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get fontFamily => $composableBuilder(
-    column: $table.fontFamily,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  Expression<bool> bucketsRefs(
-    Expression<bool> Function($$BucketsTableFilterComposer f) f,
-  ) {
-    final $$BucketsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.iconId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableFilterComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<bool> dropCategoriesRefs(
-    Expression<bool> Function($$DropCategoriesTableFilterComposer f) f,
-  ) {
-    final $$DropCategoriesTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.dropCategories,
-      getReferencedColumn: (t) => t.iconId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DropCategoriesTableFilterComposer(
-            $db: $db,
-            $table: $db.dropCategories,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$IconsTableOrderingComposer
-    extends Composer<_$AppDatabase, $IconsTable> {
-  $$IconsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get codePoint => $composableBuilder(
-    column: $table.codePoint,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get fontFamily => $composableBuilder(
-    column: $table.fontFamily,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$IconsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $IconsTable> {
-  $$IconsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<int> get codePoint =>
-      $composableBuilder(column: $table.codePoint, builder: (column) => column);
-
-  GeneratedColumn<String> get fontFamily => $composableBuilder(
-    column: $table.fontFamily,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  Expression<T> bucketsRefs<T extends Object>(
-    Expression<T> Function($$BucketsTableAnnotationComposer a) f,
-  ) {
-    final $$BucketsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.iconId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-
-  Expression<T> dropCategoriesRefs<T extends Object>(
-    Expression<T> Function($$DropCategoriesTableAnnotationComposer a) f,
-  ) {
-    final $$DropCategoriesTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.dropCategories,
-      getReferencedColumn: (t) => t.iconId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DropCategoriesTableAnnotationComposer(
-            $db: $db,
-            $table: $db.dropCategories,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$IconsTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $IconsTable,
-          IconTable,
-          $$IconsTableFilterComposer,
-          $$IconsTableOrderingComposer,
-          $$IconsTableAnnotationComposer,
-          $$IconsTableCreateCompanionBuilder,
-          $$IconsTableUpdateCompanionBuilder,
-          (IconTable, $$IconsTableReferences),
-          IconTable,
-          PrefetchHooks Function({bool bucketsRefs, bool dropCategoriesRefs})
-        > {
-  $$IconsTableTableManager(_$AppDatabase db, $IconsTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$IconsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$IconsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$IconsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<int> codePoint = const Value.absent(),
-                Value<String> fontFamily = const Value.absent(),
-                Value<String?> name = const Value.absent(),
-              }) => IconsCompanion(
-                id: id,
-                codePoint: codePoint,
-                fontFamily: fontFamily,
-                name: name,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required int codePoint,
-                Value<String> fontFamily = const Value.absent(),
-                Value<String?> name = const Value.absent(),
-              }) => IconsCompanion.insert(
-                id: id,
-                codePoint: codePoint,
-                fontFamily: fontFamily,
-                name: name,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) =>
-                    (e.readTable(table), $$IconsTableReferences(db, table, e)),
-              )
-              .toList(),
-          prefetchHooksCallback:
-              ({bucketsRefs = false, dropCategoriesRefs = false}) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [
-                    if (bucketsRefs) db.buckets,
-                    if (dropCategoriesRefs) db.dropCategories,
-                  ],
-                  addJoins: null,
-                  getPrefetchedDataCallback: (items) async {
-                    return [
-                      if (bucketsRefs)
-                        await $_getPrefetchedData<
-                          IconTable,
-                          $IconsTable,
-                          BucketTable
-                        >(
-                          currentTable: table,
-                          referencedTable: $$IconsTableReferences
-                              ._bucketsRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$IconsTableReferences(db, table, p0).bucketsRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.iconId == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                      if (dropCategoriesRefs)
-                        await $_getPrefetchedData<
-                          IconTable,
-                          $IconsTable,
-                          DropCategoryTable
-                        >(
-                          currentTable: table,
-                          referencedTable: $$IconsTableReferences
-                              ._dropCategoriesRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$IconsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).dropCategoriesRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.iconId == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                    ];
-                  },
-                );
-              },
-        ),
-      );
-}
-
-typedef $$IconsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $IconsTable,
-      IconTable,
-      $$IconsTableFilterComposer,
-      $$IconsTableOrderingComposer,
-      $$IconsTableAnnotationComposer,
-      $$IconsTableCreateCompanionBuilder,
-      $$IconsTableUpdateCompanionBuilder,
-      (IconTable, $$IconsTableReferences),
-      IconTable,
-      PrefetchHooks Function({bool bucketsRefs, bool dropCategoriesRefs})
-    >;
-typedef $$BucketsTableCreateCompanionBuilder =
-    BucketsCompanion Function({
-      Value<int> id,
-      required String name,
-      required int bucketCategoryId,
-      Value<int?> iconId,
-      Value<String?> notes,
-      Value<int> sort,
-      Value<bool?> isDefaultExpense,
-      Value<bool?> isDefaultIncome,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-    });
-typedef $$BucketsTableUpdateCompanionBuilder =
-    BucketsCompanion Function({
-      Value<int> id,
-      Value<String> name,
-      Value<int> bucketCategoryId,
-      Value<int?> iconId,
-      Value<String?> notes,
-      Value<int> sort,
-      Value<bool?> isDefaultExpense,
-      Value<bool?> isDefaultIncome,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-    });
-
-final class $$BucketsTableReferences
-    extends BaseReferences<_$AppDatabase, $BucketsTable, BucketTable> {
-  $$BucketsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $BucketCategoriesTable _bucketCategoryIdTable(_$AppDatabase db) => db
-      .bucketCategories
-      .createAlias('buckets__bucket_category_id__bucket_categories__id');
-
-  $$BucketCategoriesTableProcessedTableManager get bucketCategoryId {
-    final $_column = $_itemColumn<int>('bucket_category_id')!;
-
-    final manager = $$BucketCategoriesTableTableManager(
-      $_db,
-      $_db.bucketCategories,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_bucketCategoryIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $IconsTable _iconIdTable(_$AppDatabase db) =>
-      db.icons.createAlias('buckets__icon_id__icons__id');
-
-  $$IconsTableProcessedTableManager? get iconId {
-    final $_column = $_itemColumn<int>('icon_id');
-    if ($_column == null) return null;
-    final manager = $$IconsTableTableManager(
-      $_db,
-      $_db.icons,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_iconIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static MultiTypedResultKey<$BucketSnapshotsTable, List<BucketSnapshotTable>>
-  _bucketSnapshotsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.bucketSnapshots,
-    aliasName: 'buckets__id__bucket_snapshots__bucket_id',
-  );
-
-  $$BucketSnapshotsTableProcessedTableManager get bucketSnapshotsRefs {
-    final manager = $$BucketSnapshotsTableTableManager(
-      $_db,
-      $_db.bucketSnapshots,
-    ).filter((f) => f.bucketId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(
-      _bucketSnapshotsRefsTable($_db),
-    );
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$BucketsTableFilterComposer
-    extends Composer<_$AppDatabase, $BucketsTable> {
-  $$BucketsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get notes => $composableBuilder(
-    column: $table.notes,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get sort => $composableBuilder(
-    column: $table.sort,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<bool> get isDefaultExpense => $composableBuilder(
-    column: $table.isDefaultExpense,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<bool> get isDefaultIncome => $composableBuilder(
-    column: $table.isDefaultIncome,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$BucketCategoriesTableFilterComposer get bucketCategoryId {
-    final $$BucketCategoriesTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bucketCategoryId,
-      referencedTable: $db.bucketCategories,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketCategoriesTableFilterComposer(
-            $db: $db,
-            $table: $db.bucketCategories,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$IconsTableFilterComposer get iconId {
-    final $$IconsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.iconId,
-      referencedTable: $db.icons,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$IconsTableFilterComposer(
-            $db: $db,
-            $table: $db.icons,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<bool> bucketSnapshotsRefs(
-    Expression<bool> Function($$BucketSnapshotsTableFilterComposer f) f,
-  ) {
-    final $$BucketSnapshotsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.bucketSnapshots,
-      getReferencedColumn: (t) => t.bucketId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketSnapshotsTableFilterComposer(
-            $db: $db,
-            $table: $db.bucketSnapshots,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$BucketsTableOrderingComposer
-    extends Composer<_$AppDatabase, $BucketsTable> {
-  $$BucketsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get notes => $composableBuilder(
-    column: $table.notes,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get sort => $composableBuilder(
-    column: $table.sort,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<bool> get isDefaultExpense => $composableBuilder(
-    column: $table.isDefaultExpense,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<bool> get isDefaultIncome => $composableBuilder(
-    column: $table.isDefaultIncome,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$BucketCategoriesTableOrderingComposer get bucketCategoryId {
-    final $$BucketCategoriesTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bucketCategoryId,
-      referencedTable: $db.bucketCategories,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketCategoriesTableOrderingComposer(
-            $db: $db,
-            $table: $db.bucketCategories,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$IconsTableOrderingComposer get iconId {
-    final $$IconsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.iconId,
-      referencedTable: $db.icons,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$IconsTableOrderingComposer(
-            $db: $db,
-            $table: $db.icons,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$BucketsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $BucketsTable> {
-  $$BucketsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumn<String> get notes =>
-      $composableBuilder(column: $table.notes, builder: (column) => column);
-
-  GeneratedColumn<int> get sort =>
-      $composableBuilder(column: $table.sort, builder: (column) => column);
-
-  GeneratedColumn<bool> get isDefaultExpense => $composableBuilder(
-    column: $table.isDefaultExpense,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<bool> get isDefaultIncome => $composableBuilder(
-    column: $table.isDefaultIncome,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  $$BucketCategoriesTableAnnotationComposer get bucketCategoryId {
-    final $$BucketCategoriesTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bucketCategoryId,
-      referencedTable: $db.bucketCategories,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketCategoriesTableAnnotationComposer(
-            $db: $db,
-            $table: $db.bucketCategories,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$IconsTableAnnotationComposer get iconId {
-    final $$IconsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.iconId,
-      referencedTable: $db.icons,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$IconsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.icons,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<T> bucketSnapshotsRefs<T extends Object>(
-    Expression<T> Function($$BucketSnapshotsTableAnnotationComposer a) f,
-  ) {
-    final $$BucketSnapshotsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.bucketSnapshots,
-      getReferencedColumn: (t) => t.bucketId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketSnapshotsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.bucketSnapshots,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$BucketsTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $BucketsTable,
-          BucketTable,
-          $$BucketsTableFilterComposer,
-          $$BucketsTableOrderingComposer,
-          $$BucketsTableAnnotationComposer,
-          $$BucketsTableCreateCompanionBuilder,
-          $$BucketsTableUpdateCompanionBuilder,
-          (BucketTable, $$BucketsTableReferences),
-          BucketTable,
-          PrefetchHooks Function({
-            bool bucketCategoryId,
-            bool iconId,
-            bool bucketSnapshotsRefs,
-          })
-        > {
-  $$BucketsTableTableManager(_$AppDatabase db, $BucketsTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$BucketsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$BucketsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$BucketsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> name = const Value.absent(),
-                Value<int> bucketCategoryId = const Value.absent(),
-                Value<int?> iconId = const Value.absent(),
-                Value<String?> notes = const Value.absent(),
-                Value<int> sort = const Value.absent(),
-                Value<bool?> isDefaultExpense = const Value.absent(),
-                Value<bool?> isDefaultIncome = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-              }) => BucketsCompanion(
-                id: id,
-                name: name,
-                bucketCategoryId: bucketCategoryId,
-                iconId: iconId,
-                notes: notes,
-                sort: sort,
-                isDefaultExpense: isDefaultExpense,
-                isDefaultIncome: isDefaultIncome,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String name,
-                required int bucketCategoryId,
-                Value<int?> iconId = const Value.absent(),
-                Value<String?> notes = const Value.absent(),
-                Value<int> sort = const Value.absent(),
-                Value<bool?> isDefaultExpense = const Value.absent(),
-                Value<bool?> isDefaultIncome = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-              }) => BucketsCompanion.insert(
-                id: id,
-                name: name,
-                bucketCategoryId: bucketCategoryId,
-                iconId: iconId,
-                notes: notes,
-                sort: sort,
-                isDefaultExpense: isDefaultExpense,
-                isDefaultIncome: isDefaultIncome,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$BucketsTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback:
-              ({
-                bucketCategoryId = false,
-                iconId = false,
-                bucketSnapshotsRefs = false,
-              }) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [
-                    if (bucketSnapshotsRefs) db.bucketSnapshots,
-                  ],
-                  addJoins:
-                      <
-                        T extends TableManagerState<
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic
-                        >
-                      >(state) {
-                        if (bucketCategoryId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.bucketCategoryId,
-                                    referencedTable: $$BucketsTableReferences
-                                        ._bucketCategoryIdTable(db),
-                                    referencedColumn: $$BucketsTableReferences
-                                        ._bucketCategoryIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
-                        }
-                        if (iconId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.iconId,
-                                    referencedTable: $$BucketsTableReferences
-                                        ._iconIdTable(db),
-                                    referencedColumn: $$BucketsTableReferences
-                                        ._iconIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
-                        }
-
-                        return state;
-                      },
-                  getPrefetchedDataCallback: (items) async {
-                    return [
-                      if (bucketSnapshotsRefs)
-                        await $_getPrefetchedData<
-                          BucketTable,
-                          $BucketsTable,
-                          BucketSnapshotTable
-                        >(
-                          currentTable: table,
-                          referencedTable: $$BucketsTableReferences
-                              ._bucketSnapshotsRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$BucketsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).bucketSnapshotsRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.bucketId == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                    ];
-                  },
-                );
-              },
-        ),
-      );
-}
-
-typedef $$BucketsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $BucketsTable,
-      BucketTable,
-      $$BucketsTableFilterComposer,
-      $$BucketsTableOrderingComposer,
-      $$BucketsTableAnnotationComposer,
-      $$BucketsTableCreateCompanionBuilder,
-      $$BucketsTableUpdateCompanionBuilder,
-      (BucketTable, $$BucketsTableReferences),
-      BucketTable,
-      PrefetchHooks Function({
-        bool bucketCategoryId,
-        bool iconId,
-        bool bucketSnapshotsRefs,
-      })
-    >;
-typedef $$BucketSnapshotsTableCreateCompanionBuilder =
-    BucketSnapshotsCompanion Function({
-      Value<int> id,
-      required int bucketId,
-      required int balance,
-      required DateTime date,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-    });
-typedef $$BucketSnapshotsTableUpdateCompanionBuilder =
-    BucketSnapshotsCompanion Function({
-      Value<int> id,
-      Value<int> bucketId,
-      Value<int> balance,
-      Value<DateTime> date,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-    });
-
-final class $$BucketSnapshotsTableReferences
-    extends
-        BaseReferences<
-          _$AppDatabase,
-          $BucketSnapshotsTable,
-          BucketSnapshotTable
-        > {
-  $$BucketSnapshotsTableReferences(
-    super.$_db,
-    super.$_table,
-    super.$_typedResult,
-  );
-
-  static $BucketsTable _bucketIdTable(_$AppDatabase db) =>
-      db.buckets.createAlias('bucket_snapshots__bucket_id__buckets__id');
-
-  $$BucketsTableProcessedTableManager get bucketId {
-    final $_column = $_itemColumn<int>('bucket_id')!;
-
-    final manager = $$BucketsTableTableManager(
-      $_db,
-      $_db.buckets,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_bucketIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-}
-
-class $$BucketSnapshotsTableFilterComposer
-    extends Composer<_$AppDatabase, $BucketSnapshotsTable> {
-  $$BucketSnapshotsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get balance => $composableBuilder(
-    column: $table.balance,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$BucketsTableFilterComposer get bucketId {
-    final $$BucketsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bucketId,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableFilterComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$BucketSnapshotsTableOrderingComposer
-    extends Composer<_$AppDatabase, $BucketSnapshotsTable> {
-  $$BucketSnapshotsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get balance => $composableBuilder(
-    column: $table.balance,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$BucketsTableOrderingComposer get bucketId {
-    final $$BucketsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bucketId,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableOrderingComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$BucketSnapshotsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $BucketSnapshotsTable> {
-  $$BucketSnapshotsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<int> get balance =>
-      $composableBuilder(column: $table.balance, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  $$BucketsTableAnnotationComposer get bucketId {
-    final $$BucketsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bucketId,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$BucketSnapshotsTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $BucketSnapshotsTable,
-          BucketSnapshotTable,
-          $$BucketSnapshotsTableFilterComposer,
-          $$BucketSnapshotsTableOrderingComposer,
-          $$BucketSnapshotsTableAnnotationComposer,
-          $$BucketSnapshotsTableCreateCompanionBuilder,
-          $$BucketSnapshotsTableUpdateCompanionBuilder,
-          (BucketSnapshotTable, $$BucketSnapshotsTableReferences),
-          BucketSnapshotTable,
-          PrefetchHooks Function({bool bucketId})
-        > {
-  $$BucketSnapshotsTableTableManager(
-    _$AppDatabase db,
-    $BucketSnapshotsTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$BucketSnapshotsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$BucketSnapshotsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$BucketSnapshotsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<int> bucketId = const Value.absent(),
-                Value<int> balance = const Value.absent(),
-                Value<DateTime> date = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-              }) => BucketSnapshotsCompanion(
-                id: id,
-                bucketId: bucketId,
-                balance: balance,
-                date: date,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required int bucketId,
-                required int balance,
-                required DateTime date,
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-              }) => BucketSnapshotsCompanion.insert(
-                id: id,
-                bucketId: bucketId,
-                balance: balance,
-                date: date,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$BucketSnapshotsTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback: ({bucketId = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (bucketId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.bucketId,
-                                referencedTable:
-                                    $$BucketSnapshotsTableReferences
-                                        ._bucketIdTable(db),
-                                referencedColumn:
-                                    $$BucketSnapshotsTableReferences
-                                        ._bucketIdTable(db)
-                                        .id,
-                              )
-                              as T;
-                    }
-
-                    return state;
-                  },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
-        ),
-      );
-}
-
-typedef $$BucketSnapshotsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $BucketSnapshotsTable,
-      BucketSnapshotTable,
-      $$BucketSnapshotsTableFilterComposer,
-      $$BucketSnapshotsTableOrderingComposer,
-      $$BucketSnapshotsTableAnnotationComposer,
-      $$BucketSnapshotsTableCreateCompanionBuilder,
-      $$BucketSnapshotsTableUpdateCompanionBuilder,
-      (BucketSnapshotTable, $$BucketSnapshotsTableReferences),
-      BucketSnapshotTable,
-      PrefetchHooks Function({bool bucketId})
-    >;
-typedef $$DropCategoriesTableCreateCompanionBuilder =
-    DropCategoriesCompanion Function({
-      Value<int> id,
-      required int iconId,
-      required String name,
-      required DropType dropType,
-      Value<String?> note,
-      Value<int> sort,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-    });
-typedef $$DropCategoriesTableUpdateCompanionBuilder =
-    DropCategoriesCompanion Function({
-      Value<int> id,
-      Value<int> iconId,
-      Value<String> name,
-      Value<DropType> dropType,
-      Value<String?> note,
-      Value<int> sort,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-    });
-
-final class $$DropCategoriesTableReferences
-    extends
-        BaseReferences<_$AppDatabase, $DropCategoriesTable, DropCategoryTable> {
-  $$DropCategoriesTableReferences(
-    super.$_db,
-    super.$_table,
-    super.$_typedResult,
-  );
-
-  static $IconsTable _iconIdTable(_$AppDatabase db) =>
-      db.icons.createAlias('drop_categories__icon_id__icons__id');
-
-  $$IconsTableProcessedTableManager get iconId {
-    final $_column = $_itemColumn<int>('icon_id')!;
-
-    final manager = $$IconsTableTableManager(
-      $_db,
-      $_db.icons,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_iconIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static MultiTypedResultKey<$DropsTable, List<DropTable>> _dropsRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.drops,
-    aliasName: 'drop_categories__id__drops__drop_category_id',
-  );
-
-  $$DropsTableProcessedTableManager get dropsRefs {
-    final manager = $$DropsTableTableManager(
-      $_db,
-      $_db.drops,
-    ).filter((f) => f.dropCategoryId.id.sqlEquals($_itemColumn<int>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_dropsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$DropCategoriesTableFilterComposer
-    extends Composer<_$AppDatabase, $DropCategoriesTable> {
-  $$DropCategoriesTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnWithTypeConverterFilters<DropType, DropType, String> get dropType =>
-      $composableBuilder(
-        column: $table.dropType,
-        builder: (column) => ColumnWithTypeConverterFilters(column),
-      );
-
-  ColumnFilters<String> get note => $composableBuilder(
-    column: $table.note,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get sort => $composableBuilder(
-    column: $table.sort,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$IconsTableFilterComposer get iconId {
-    final $$IconsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.iconId,
-      referencedTable: $db.icons,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$IconsTableFilterComposer(
-            $db: $db,
-            $table: $db.icons,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<bool> dropsRefs(
-    Expression<bool> Function($$DropsTableFilterComposer f) f,
-  ) {
-    final $$DropsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.drops,
-      getReferencedColumn: (t) => t.dropCategoryId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DropsTableFilterComposer(
-            $db: $db,
-            $table: $db.drops,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$DropCategoriesTableOrderingComposer
-    extends Composer<_$AppDatabase, $DropCategoriesTable> {
-  $$DropCategoriesTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get name => $composableBuilder(
-    column: $table.name,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get dropType => $composableBuilder(
-    column: $table.dropType,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get note => $composableBuilder(
-    column: $table.note,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get sort => $composableBuilder(
-    column: $table.sort,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$IconsTableOrderingComposer get iconId {
-    final $$IconsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.iconId,
-      referencedTable: $db.icons,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$IconsTableOrderingComposer(
-            $db: $db,
-            $table: $db.icons,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$DropCategoriesTableAnnotationComposer
-    extends Composer<_$AppDatabase, $DropCategoriesTable> {
-  $$DropCategoriesTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get name =>
-      $composableBuilder(column: $table.name, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<DropType, String> get dropType =>
-      $composableBuilder(column: $table.dropType, builder: (column) => column);
-
-  GeneratedColumn<String> get note =>
-      $composableBuilder(column: $table.note, builder: (column) => column);
-
-  GeneratedColumn<int> get sort =>
-      $composableBuilder(column: $table.sort, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  $$IconsTableAnnotationComposer get iconId {
-    final $$IconsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.iconId,
-      referencedTable: $db.icons,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$IconsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.icons,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<T> dropsRefs<T extends Object>(
-    Expression<T> Function($$DropsTableAnnotationComposer a) f,
-  ) {
-    final $$DropsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.drops,
-      getReferencedColumn: (t) => t.dropCategoryId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DropsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.drops,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$DropCategoriesTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $DropCategoriesTable,
-          DropCategoryTable,
-          $$DropCategoriesTableFilterComposer,
-          $$DropCategoriesTableOrderingComposer,
-          $$DropCategoriesTableAnnotationComposer,
-          $$DropCategoriesTableCreateCompanionBuilder,
-          $$DropCategoriesTableUpdateCompanionBuilder,
-          (DropCategoryTable, $$DropCategoriesTableReferences),
-          DropCategoryTable,
-          PrefetchHooks Function({bool iconId, bool dropsRefs})
-        > {
-  $$DropCategoriesTableTableManager(
-    _$AppDatabase db,
-    $DropCategoriesTable table,
-  ) : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$DropCategoriesTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$DropCategoriesTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$DropCategoriesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<int> iconId = const Value.absent(),
-                Value<String> name = const Value.absent(),
-                Value<DropType> dropType = const Value.absent(),
-                Value<String?> note = const Value.absent(),
-                Value<int> sort = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-              }) => DropCategoriesCompanion(
-                id: id,
-                iconId: iconId,
-                name: name,
-                dropType: dropType,
-                note: note,
-                sort: sort,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required int iconId,
-                required String name,
-                required DropType dropType,
-                Value<String?> note = const Value.absent(),
-                Value<int> sort = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-              }) => DropCategoriesCompanion.insert(
-                id: id,
-                iconId: iconId,
-                name: name,
-                dropType: dropType,
-                note: note,
-                sort: sort,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$DropCategoriesTableReferences(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback: ({iconId = false, dropsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (dropsRefs) db.drops],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (iconId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.iconId,
-                                referencedTable: $$DropCategoriesTableReferences
-                                    ._iconIdTable(db),
-                                referencedColumn:
-                                    $$DropCategoriesTableReferences
-                                        ._iconIdTable(db)
-                                        .id,
-                              )
-                              as T;
-                    }
-
-                    return state;
-                  },
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (dropsRefs)
-                    await $_getPrefetchedData<
-                      DropCategoryTable,
-                      $DropCategoriesTable,
-                      DropTable
-                    >(
-                      currentTable: table,
-                      referencedTable: $$DropCategoriesTableReferences
-                          ._dropsRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$DropCategoriesTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).dropsRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.dropCategoryId == item.id,
-                          ),
-                      typedResults: items,
-                    ),
-                ];
-              },
-            );
-          },
-        ),
-      );
-}
-
-typedef $$DropCategoriesTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $DropCategoriesTable,
-      DropCategoryTable,
-      $$DropCategoriesTableFilterComposer,
-      $$DropCategoriesTableOrderingComposer,
-      $$DropCategoriesTableAnnotationComposer,
-      $$DropCategoriesTableCreateCompanionBuilder,
-      $$DropCategoriesTableUpdateCompanionBuilder,
-      (DropCategoryTable, $$DropCategoriesTableReferences),
-      DropCategoryTable,
-      PrefetchHooks Function({bool iconId, bool dropsRefs})
-    >;
-typedef $$DropsTableCreateCompanionBuilder =
-    DropsCompanion Function({
-      Value<int> id,
-      required String title,
-      required int amount,
-      Value<int?> dropCategoryId,
-      Value<int?> bucketId,
-      Value<int?> toBucketId,
-      required DateTime date,
-      Value<String?> notes,
-      Value<int?> parentDropId,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-    });
-typedef $$DropsTableUpdateCompanionBuilder =
-    DropsCompanion Function({
-      Value<int> id,
-      Value<String> title,
-      Value<int> amount,
-      Value<int?> dropCategoryId,
-      Value<int?> bucketId,
-      Value<int?> toBucketId,
-      Value<DateTime> date,
-      Value<String?> notes,
-      Value<int?> parentDropId,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-    });
-
-final class $$DropsTableReferences
-    extends BaseReferences<_$AppDatabase, $DropsTable, DropTable> {
-  $$DropsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $DropCategoriesTable _dropCategoryIdTable(_$AppDatabase db) => db
-      .dropCategories
-      .createAlias('drops__drop_category_id__drop_categories__id');
-
-  $$DropCategoriesTableProcessedTableManager? get dropCategoryId {
-    final $_column = $_itemColumn<int>('drop_category_id');
-    if ($_column == null) return null;
-    final manager = $$DropCategoriesTableTableManager(
-      $_db,
-      $_db.dropCategories,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_dropCategoryIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $BucketsTable _bucketIdTable(_$AppDatabase db) =>
-      db.buckets.createAlias('drops__bucket_id__buckets__id');
-
-  $$BucketsTableProcessedTableManager? get bucketId {
-    final $_column = $_itemColumn<int>('bucket_id');
-    if ($_column == null) return null;
-    final manager = $$BucketsTableTableManager(
-      $_db,
-      $_db.buckets,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_bucketIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $BucketsTable _toBucketIdTable(_$AppDatabase db) =>
-      db.buckets.createAlias('drops__to_bucket_id__buckets__id');
-
-  $$BucketsTableProcessedTableManager? get toBucketId {
-    final $_column = $_itemColumn<int>('to_bucket_id');
-    if ($_column == null) return null;
-    final manager = $$BucketsTableTableManager(
-      $_db,
-      $_db.buckets,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_toBucketIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $DropsTable _parentDropIdTable(_$AppDatabase db) =>
-      db.drops.createAlias('drops__parent_drop_id__drops__id');
-
-  $$DropsTableProcessedTableManager? get parentDropId {
-    final $_column = $_itemColumn<int>('parent_drop_id');
-    if ($_column == null) return null;
-    final manager = $$DropsTableTableManager(
-      $_db,
-      $_db.drops,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_parentDropIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-}
-
-class $$DropsTableFilterComposer extends Composer<_$AppDatabase, $DropsTable> {
-  $$DropsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get amount => $composableBuilder(
-    column: $table.amount,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get notes => $composableBuilder(
-    column: $table.notes,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$DropCategoriesTableFilterComposer get dropCategoryId {
-    final $$DropCategoriesTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.dropCategoryId,
-      referencedTable: $db.dropCategories,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DropCategoriesTableFilterComposer(
-            $db: $db,
-            $table: $db.dropCategories,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$BucketsTableFilterComposer get bucketId {
-    final $$BucketsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bucketId,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableFilterComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$BucketsTableFilterComposer get toBucketId {
-    final $$BucketsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.toBucketId,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableFilterComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$DropsTableFilterComposer get parentDropId {
-    final $$DropsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.parentDropId,
-      referencedTable: $db.drops,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DropsTableFilterComposer(
-            $db: $db,
-            $table: $db.drops,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$DropsTableOrderingComposer
-    extends Composer<_$AppDatabase, $DropsTable> {
-  $$DropsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get amount => $composableBuilder(
-    column: $table.amount,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get date => $composableBuilder(
-    column: $table.date,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get notes => $composableBuilder(
-    column: $table.notes,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$DropCategoriesTableOrderingComposer get dropCategoryId {
-    final $$DropCategoriesTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.dropCategoryId,
-      referencedTable: $db.dropCategories,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DropCategoriesTableOrderingComposer(
-            $db: $db,
-            $table: $db.dropCategories,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$BucketsTableOrderingComposer get bucketId {
-    final $$BucketsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bucketId,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableOrderingComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$BucketsTableOrderingComposer get toBucketId {
-    final $$BucketsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.toBucketId,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableOrderingComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$DropsTableOrderingComposer get parentDropId {
-    final $$DropsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.parentDropId,
-      referencedTable: $db.drops,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DropsTableOrderingComposer(
-            $db: $db,
-            $table: $db.drops,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$DropsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $DropsTable> {
-  $$DropsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get title =>
-      $composableBuilder(column: $table.title, builder: (column) => column);
-
-  GeneratedColumn<int> get amount =>
-      $composableBuilder(column: $table.amount, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get date =>
-      $composableBuilder(column: $table.date, builder: (column) => column);
-
-  GeneratedColumn<String> get notes =>
-      $composableBuilder(column: $table.notes, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  $$DropCategoriesTableAnnotationComposer get dropCategoryId {
-    final $$DropCategoriesTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.dropCategoryId,
-      referencedTable: $db.dropCategories,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DropCategoriesTableAnnotationComposer(
-            $db: $db,
-            $table: $db.dropCategories,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$BucketsTableAnnotationComposer get bucketId {
-    final $$BucketsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bucketId,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$BucketsTableAnnotationComposer get toBucketId {
-    final $$BucketsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.toBucketId,
-      referencedTable: $db.buckets,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BucketsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.buckets,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$DropsTableAnnotationComposer get parentDropId {
-    final $$DropsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.parentDropId,
-      referencedTable: $db.drops,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$DropsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.drops,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$DropsTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $DropsTable,
-          DropTable,
-          $$DropsTableFilterComposer,
-          $$DropsTableOrderingComposer,
-          $$DropsTableAnnotationComposer,
-          $$DropsTableCreateCompanionBuilder,
-          $$DropsTableUpdateCompanionBuilder,
-          (DropTable, $$DropsTableReferences),
-          DropTable,
-          PrefetchHooks Function({
-            bool dropCategoryId,
-            bool bucketId,
-            bool toBucketId,
-            bool parentDropId,
-          })
-        > {
-  $$DropsTableTableManager(_$AppDatabase db, $DropsTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$DropsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$DropsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$DropsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> title = const Value.absent(),
-                Value<int> amount = const Value.absent(),
-                Value<int?> dropCategoryId = const Value.absent(),
-                Value<int?> bucketId = const Value.absent(),
-                Value<int?> toBucketId = const Value.absent(),
-                Value<DateTime> date = const Value.absent(),
-                Value<String?> notes = const Value.absent(),
-                Value<int?> parentDropId = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-              }) => DropsCompanion(
-                id: id,
-                title: title,
-                amount: amount,
-                dropCategoryId: dropCategoryId,
-                bucketId: bucketId,
-                toBucketId: toBucketId,
-                date: date,
-                notes: notes,
-                parentDropId: parentDropId,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String title,
-                required int amount,
-                Value<int?> dropCategoryId = const Value.absent(),
-                Value<int?> bucketId = const Value.absent(),
-                Value<int?> toBucketId = const Value.absent(),
-                required DateTime date,
-                Value<String?> notes = const Value.absent(),
-                Value<int?> parentDropId = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-              }) => DropsCompanion.insert(
-                id: id,
-                title: title,
-                amount: amount,
-                dropCategoryId: dropCategoryId,
-                bucketId: bucketId,
-                toBucketId: toBucketId,
-                date: date,
-                notes: notes,
-                parentDropId: parentDropId,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) =>
-                    (e.readTable(table), $$DropsTableReferences(db, table, e)),
-              )
-              .toList(),
-          prefetchHooksCallback:
-              ({
-                dropCategoryId = false,
-                bucketId = false,
-                toBucketId = false,
-                parentDropId = false,
-              }) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [],
-                  addJoins:
-                      <
-                        T extends TableManagerState<
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic
-                        >
-                      >(state) {
-                        if (dropCategoryId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.dropCategoryId,
-                                    referencedTable: $$DropsTableReferences
-                                        ._dropCategoryIdTable(db),
-                                    referencedColumn: $$DropsTableReferences
-                                        ._dropCategoryIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
-                        }
-                        if (bucketId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.bucketId,
-                                    referencedTable: $$DropsTableReferences
-                                        ._bucketIdTable(db),
-                                    referencedColumn: $$DropsTableReferences
-                                        ._bucketIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
-                        }
-                        if (toBucketId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.toBucketId,
-                                    referencedTable: $$DropsTableReferences
-                                        ._toBucketIdTable(db),
-                                    referencedColumn: $$DropsTableReferences
-                                        ._toBucketIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
-                        }
-                        if (parentDropId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.parentDropId,
-                                    referencedTable: $$DropsTableReferences
-                                        ._parentDropIdTable(db),
-                                    referencedColumn: $$DropsTableReferences
-                                        ._parentDropIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
-                        }
-
-                        return state;
-                      },
-                  getPrefetchedDataCallback: (items) async {
-                    return [];
-                  },
-                );
-              },
-        ),
-      );
-}
-
-typedef $$DropsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $DropsTable,
-      DropTable,
-      $$DropsTableFilterComposer,
-      $$DropsTableOrderingComposer,
-      $$DropsTableAnnotationComposer,
-      $$DropsTableCreateCompanionBuilder,
-      $$DropsTableUpdateCompanionBuilder,
-      (DropTable, $$DropsTableReferences),
-      DropTable,
-      PrefetchHooks Function({
-        bool dropCategoryId,
-        bool bucketId,
-        bool toBucketId,
-        bool parentDropId,
-      })
-    >;
-
-class $AppDatabaseManager {
-  final _$AppDatabase _db;
-  $AppDatabaseManager(this._db);
-  $$BucketCategoriesTableTableManager get bucketCategories =>
-      $$BucketCategoriesTableTableManager(_db, _db.bucketCategories);
-  $$IconsTableTableManager get icons =>
-      $$IconsTableTableManager(_db, _db.icons);
-  $$BucketsTableTableManager get buckets =>
-      $$BucketsTableTableManager(_db, _db.buckets);
-  $$BucketSnapshotsTableTableManager get bucketSnapshots =>
-      $$BucketSnapshotsTableTableManager(_db, _db.bucketSnapshots);
-  $$DropCategoriesTableTableManager get dropCategories =>
-      $$DropCategoriesTableTableManager(_db, _db.dropCategories);
-  $$DropsTableTableManager get drops =>
-      $$DropsTableTableManager(_db, _db.drops);
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'drop_categories',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('subscribed_drops', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'drop_categories',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('drops', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'subscribed_drops',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('drops', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'drops',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('drops', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'buckets',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('bucket_snaps', kind: UpdateKind.delete)],
+    ),
+  ]);
 }
