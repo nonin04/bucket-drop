@@ -1,3 +1,4 @@
+// dart format off
 enum BalanceType {
   asset(
     label: 'asset',

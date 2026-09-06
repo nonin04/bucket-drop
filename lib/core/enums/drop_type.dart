@@ -1,3 +1,4 @@
+// dart format off
 enum DropType {
   income(
     label: '収入',
