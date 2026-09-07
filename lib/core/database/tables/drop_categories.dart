@@ -11,6 +11,7 @@ class DropCategories extends Table {
   TextColumn get dropType => textEnum<DropType>()();
   IntColumn get budget => integer().withDefault(const Constant(0))();
   IntColumn get sort => integer()();
+  BoolColumn get isSystem => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }

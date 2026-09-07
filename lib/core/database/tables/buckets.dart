@@ -1,5 +1,5 @@
 // dart format off
-import 'package:bucket_drop/core/database/tables/bucket_categories.dart';
+import 'package:bucket_drop/core/enums/bucket_category.dart';
 import 'package:drift/drift.dart';
 
 //バケット
@@ -9,7 +9,7 @@ class Buckets extends Table {
   TextColumn get name => text()();
   BoolColumn get isIncomeDefault => boolean().withDefault(const Constant(false))();
   BoolColumn get isExpenseDefault => boolean().withDefault(const Constant(false))();
-  IntColumn get bucketCategoryId => integer().references(BucketCategories, #id, onDelete: KeyAction.restrict)();
+  TextColumn get bucketCategory => textEnum<BucketCategory>()();
   IntColumn get sort => integer()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
