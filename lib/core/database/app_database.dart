@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:bucket_drop/core/database/seed.dart';
-import 'package:bucket_drop/core/database/tables/bucket_categories.dart';
+import 'package:bucket_drop/core/database/master_seed.dart';
 import 'package:bucket_drop/core/database/tables/bucket_snaps.dart';
 import 'package:bucket_drop/core/database/tables/buckets.dart';
 import 'package:bucket_drop/core/database/tables/drop_categories.dart';
 import 'package:bucket_drop/core/database/tables/drops.dart';
 import 'package:bucket_drop/core/database/tables/subscribed_drops.dart';
-import 'package:bucket_drop/core/enums/balance_type.dart';
+import 'package:bucket_drop/core/database/user_seed.dart';
+import 'package:bucket_drop/core/enums/bucket_category.dart';
 import 'package:bucket_drop/core/enums/drop_type.dart';
 import 'package:bucket_drop/core/enums/frequency.dart';
 import 'package:drift/drift.dart';
@@ -22,7 +22,6 @@ part 'app_database.g.dart';
 @DriftDatabase(
   tables: [
     Buckets,
-    BucketCategories,
     DropCategories,
     Drops,
     BucketSnaps,
@@ -39,14 +38,16 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
       await m.createAll();
-      await runSeed(this);
+      await runMasterSeed(this);
+      await runUserSeed(this);
       debugPrint('🌱 初回シードデータを投入しました');
     },
     beforeOpen: (details) async {
       // データベース起動時にバケットが0件なら確実にシードを実行
       final existingBuckets = await (select(buckets)..limit(1)).get();
       if (existingBuckets.isEmpty) {
-        await runSeed(this);
+        await runMasterSeed(this);
+        await runUserSeed(this);
         debugPrint('🌱 バケットが空だったためシードデータを自動投入しました');
       }
     },

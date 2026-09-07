@@ -3,453 +3,6 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
-class $BucketCategoriesTable extends BucketCategories
-    with TableInfo<$BucketCategoriesTable, BucketCategoryTable> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $BucketCategoriesTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
-  late final GeneratedColumn<String> name = GeneratedColumn<String>(
-    'name',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
-  @override
-  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
-    'icon',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  @override
-  late final GeneratedColumnWithTypeConverter<BalanceType, String> balanceType =
-      GeneratedColumn<String>(
-        'balance_type',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<BalanceType>(
-        $BucketCategoriesTable.$converterbalanceType,
-      );
-  static const VerificationMeta _sortMeta = const VerificationMeta('sort');
-  @override
-  late final GeneratedColumn<int> sort = GeneratedColumn<int>(
-    'sort',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    name,
-    icon,
-    balanceType,
-    sort,
-    createdAt,
-    updatedAt,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'bucket_categories';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<BucketCategoryTable> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_nameMeta);
-    }
-    if (data.containsKey('icon')) {
-      context.handle(
-        _iconMeta,
-        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_iconMeta);
-    }
-    if (data.containsKey('sort')) {
-      context.handle(
-        _sortMeta,
-        sort.isAcceptableOrUnknown(data['sort']!, _sortMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_sortMeta);
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  BucketCategoryTable map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BucketCategoryTable(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-      icon: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}icon'],
-      )!,
-      balanceType: $BucketCategoriesTable.$converterbalanceType.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}balance_type'],
-        )!,
-      ),
-      sort: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}sort'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
-      )!,
-    );
-  }
-
-  @override
-  $BucketCategoriesTable createAlias(String alias) {
-    return $BucketCategoriesTable(attachedDatabase, alias);
-  }
-
-  static JsonTypeConverter2<BalanceType, String, String> $converterbalanceType =
-      const EnumNameConverter<BalanceType>(BalanceType.values);
-}
-
-class BucketCategoryTable extends DataClass
-    implements Insertable<BucketCategoryTable> {
-  final int id;
-  final String name;
-  final String icon;
-  final BalanceType balanceType;
-  final int sort;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  const BucketCategoryTable({
-    required this.id,
-    required this.name,
-    required this.icon,
-    required this.balanceType,
-    required this.sort,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['name'] = Variable<String>(name);
-    map['icon'] = Variable<String>(icon);
-    {
-      map['balance_type'] = Variable<String>(
-        $BucketCategoriesTable.$converterbalanceType.toSql(balanceType),
-      );
-    }
-    map['sort'] = Variable<int>(sort);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
-    return map;
-  }
-
-  BucketCategoriesCompanion toCompanion(bool nullToAbsent) {
-    return BucketCategoriesCompanion(
-      id: Value(id),
-      name: Value(name),
-      icon: Value(icon),
-      balanceType: Value(balanceType),
-      sort: Value(sort),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
-    );
-  }
-
-  factory BucketCategoryTable.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BucketCategoryTable(
-      id: serializer.fromJson<int>(json['id']),
-      name: serializer.fromJson<String>(json['name']),
-      icon: serializer.fromJson<String>(json['icon']),
-      balanceType: $BucketCategoriesTable.$converterbalanceType.fromJson(
-        serializer.fromJson<String>(json['balanceType']),
-      ),
-      sort: serializer.fromJson<int>(json['sort']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'name': serializer.toJson<String>(name),
-      'icon': serializer.toJson<String>(icon),
-      'balanceType': serializer.toJson<String>(
-        $BucketCategoriesTable.$converterbalanceType.toJson(balanceType),
-      ),
-      'sort': serializer.toJson<int>(sort),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
-    };
-  }
-
-  BucketCategoryTable copyWith({
-    int? id,
-    String? name,
-    String? icon,
-    BalanceType? balanceType,
-    int? sort,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) => BucketCategoryTable(
-    id: id ?? this.id,
-    name: name ?? this.name,
-    icon: icon ?? this.icon,
-    balanceType: balanceType ?? this.balanceType,
-    sort: sort ?? this.sort,
-    createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
-  );
-  BucketCategoryTable copyWithCompanion(BucketCategoriesCompanion data) {
-    return BucketCategoryTable(
-      id: data.id.present ? data.id.value : this.id,
-      name: data.name.present ? data.name.value : this.name,
-      icon: data.icon.present ? data.icon.value : this.icon,
-      balanceType: data.balanceType.present
-          ? data.balanceType.value
-          : this.balanceType,
-      sort: data.sort.present ? data.sort.value : this.sort,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('BucketCategoryTable(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('icon: $icon, ')
-          ..write('balanceType: $balanceType, ')
-          ..write('sort: $sort, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode =>
-      Object.hash(id, name, icon, balanceType, sort, createdAt, updatedAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is BucketCategoryTable &&
-          other.id == this.id &&
-          other.name == this.name &&
-          other.icon == this.icon &&
-          other.balanceType == this.balanceType &&
-          other.sort == this.sort &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
-}
-
-class BucketCategoriesCompanion extends UpdateCompanion<BucketCategoryTable> {
-  final Value<int> id;
-  final Value<String> name;
-  final Value<String> icon;
-  final Value<BalanceType> balanceType;
-  final Value<int> sort;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
-  const BucketCategoriesCompanion({
-    this.id = const Value.absent(),
-    this.name = const Value.absent(),
-    this.icon = const Value.absent(),
-    this.balanceType = const Value.absent(),
-    this.sort = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-  });
-  BucketCategoriesCompanion.insert({
-    this.id = const Value.absent(),
-    required String name,
-    required String icon,
-    required BalanceType balanceType,
-    required int sort,
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-  }) : name = Value(name),
-       icon = Value(icon),
-       balanceType = Value(balanceType),
-       sort = Value(sort);
-  static Insertable<BucketCategoryTable> custom({
-    Expression<int>? id,
-    Expression<String>? name,
-    Expression<String>? icon,
-    Expression<String>? balanceType,
-    Expression<int>? sort,
-    Expression<DateTime>? createdAt,
-    Expression<DateTime>? updatedAt,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (name != null) 'name': name,
-      if (icon != null) 'icon': icon,
-      if (balanceType != null) 'balance_type': balanceType,
-      if (sort != null) 'sort': sort,
-      if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
-    });
-  }
-
-  BucketCategoriesCompanion copyWith({
-    Value<int>? id,
-    Value<String>? name,
-    Value<String>? icon,
-    Value<BalanceType>? balanceType,
-    Value<int>? sort,
-    Value<DateTime>? createdAt,
-    Value<DateTime>? updatedAt,
-  }) {
-    return BucketCategoriesCompanion(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      icon: icon ?? this.icon,
-      balanceType: balanceType ?? this.balanceType,
-      sort: sort ?? this.sort,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (name.present) {
-      map['name'] = Variable<String>(name.value);
-    }
-    if (icon.present) {
-      map['icon'] = Variable<String>(icon.value);
-    }
-    if (balanceType.present) {
-      map['balance_type'] = Variable<String>(
-        $BucketCategoriesTable.$converterbalanceType.toSql(balanceType.value),
-      );
-    }
-    if (sort.present) {
-      map['sort'] = Variable<int>(sort.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('BucketCategoriesCompanion(')
-          ..write('id: $id, ')
-          ..write('name: $name, ')
-          ..write('icon: $icon, ')
-          ..write('balanceType: $balanceType, ')
-          ..write('sort: $sort, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -507,20 +60,15 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     ),
     defaultValue: const Constant(false),
   );
-  static const VerificationMeta _bucketCategoryIdMeta = const VerificationMeta(
-    'bucketCategoryId',
-  );
   @override
-  late final GeneratedColumn<int> bucketCategoryId = GeneratedColumn<int>(
-    'bucket_category_id',
+  late final GeneratedColumnWithTypeConverter<BucketCategory, String>
+  bucketCategory = GeneratedColumn<String>(
+    'bucket_category',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES bucket_categories (id) ON DELETE RESTRICT',
-    ),
-  );
+  ).withConverter<BucketCategory>($BucketsTable.$converterbucketCategory);
   static const VerificationMeta _sortMeta = const VerificationMeta('sort');
   @override
   late final GeneratedColumn<int> sort = GeneratedColumn<int>(
@@ -560,7 +108,7 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     name,
     isIncomeDefault,
     isExpenseDefault,
-    bucketCategoryId,
+    bucketCategory,
     sort,
     createdAt,
     updatedAt,
@@ -605,17 +153,6 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
           _isExpenseDefaultMeta,
         ),
       );
-    }
-    if (data.containsKey('bucket_category_id')) {
-      context.handle(
-        _bucketCategoryIdMeta,
-        bucketCategoryId.isAcceptableOrUnknown(
-          data['bucket_category_id']!,
-          _bucketCategoryIdMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_bucketCategoryIdMeta);
     }
     if (data.containsKey('sort')) {
       context.handle(
@@ -662,10 +199,12 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
         DriftSqlType.bool,
         data['${effectivePrefix}is_expense_default'],
       )!,
-      bucketCategoryId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}bucket_category_id'],
-      )!,
+      bucketCategory: $BucketsTable.$converterbucketCategory.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}bucket_category'],
+        )!,
+      ),
       sort: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}sort'],
@@ -685,6 +224,11 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
   $BucketsTable createAlias(String alias) {
     return $BucketsTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<BucketCategory, String, String>
+  $converterbucketCategory = const EnumNameConverter<BucketCategory>(
+    BucketCategory.values,
+  );
 }
 
 class BucketTable extends DataClass implements Insertable<BucketTable> {
@@ -692,7 +236,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
   final String name;
   final bool isIncomeDefault;
   final bool isExpenseDefault;
-  final int bucketCategoryId;
+  final BucketCategory bucketCategory;
   final int sort;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -701,7 +245,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     required this.name,
     required this.isIncomeDefault,
     required this.isExpenseDefault,
-    required this.bucketCategoryId,
+    required this.bucketCategory,
     required this.sort,
     required this.createdAt,
     required this.updatedAt,
@@ -713,7 +257,11 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     map['name'] = Variable<String>(name);
     map['is_income_default'] = Variable<bool>(isIncomeDefault);
     map['is_expense_default'] = Variable<bool>(isExpenseDefault);
-    map['bucket_category_id'] = Variable<int>(bucketCategoryId);
+    {
+      map['bucket_category'] = Variable<String>(
+        $BucketsTable.$converterbucketCategory.toSql(bucketCategory),
+      );
+    }
     map['sort'] = Variable<int>(sort);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -726,7 +274,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       name: Value(name),
       isIncomeDefault: Value(isIncomeDefault),
       isExpenseDefault: Value(isExpenseDefault),
-      bucketCategoryId: Value(bucketCategoryId),
+      bucketCategory: Value(bucketCategory),
       sort: Value(sort),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -743,7 +291,9 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       name: serializer.fromJson<String>(json['name']),
       isIncomeDefault: serializer.fromJson<bool>(json['isIncomeDefault']),
       isExpenseDefault: serializer.fromJson<bool>(json['isExpenseDefault']),
-      bucketCategoryId: serializer.fromJson<int>(json['bucketCategoryId']),
+      bucketCategory: $BucketsTable.$converterbucketCategory.fromJson(
+        serializer.fromJson<String>(json['bucketCategory']),
+      ),
       sort: serializer.fromJson<int>(json['sort']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -757,7 +307,9 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       'name': serializer.toJson<String>(name),
       'isIncomeDefault': serializer.toJson<bool>(isIncomeDefault),
       'isExpenseDefault': serializer.toJson<bool>(isExpenseDefault),
-      'bucketCategoryId': serializer.toJson<int>(bucketCategoryId),
+      'bucketCategory': serializer.toJson<String>(
+        $BucketsTable.$converterbucketCategory.toJson(bucketCategory),
+      ),
       'sort': serializer.toJson<int>(sort),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -769,7 +321,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     String? name,
     bool? isIncomeDefault,
     bool? isExpenseDefault,
-    int? bucketCategoryId,
+    BucketCategory? bucketCategory,
     int? sort,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -778,7 +330,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     name: name ?? this.name,
     isIncomeDefault: isIncomeDefault ?? this.isIncomeDefault,
     isExpenseDefault: isExpenseDefault ?? this.isExpenseDefault,
-    bucketCategoryId: bucketCategoryId ?? this.bucketCategoryId,
+    bucketCategory: bucketCategory ?? this.bucketCategory,
     sort: sort ?? this.sort,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -793,9 +345,9 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       isExpenseDefault: data.isExpenseDefault.present
           ? data.isExpenseDefault.value
           : this.isExpenseDefault,
-      bucketCategoryId: data.bucketCategoryId.present
-          ? data.bucketCategoryId.value
-          : this.bucketCategoryId,
+      bucketCategory: data.bucketCategory.present
+          ? data.bucketCategory.value
+          : this.bucketCategory,
       sort: data.sort.present ? data.sort.value : this.sort,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -809,7 +361,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
           ..write('name: $name, ')
           ..write('isIncomeDefault: $isIncomeDefault, ')
           ..write('isExpenseDefault: $isExpenseDefault, ')
-          ..write('bucketCategoryId: $bucketCategoryId, ')
+          ..write('bucketCategory: $bucketCategory, ')
           ..write('sort: $sort, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -823,7 +375,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     name,
     isIncomeDefault,
     isExpenseDefault,
-    bucketCategoryId,
+    bucketCategory,
     sort,
     createdAt,
     updatedAt,
@@ -836,7 +388,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
           other.name == this.name &&
           other.isIncomeDefault == this.isIncomeDefault &&
           other.isExpenseDefault == this.isExpenseDefault &&
-          other.bucketCategoryId == this.bucketCategoryId &&
+          other.bucketCategory == this.bucketCategory &&
           other.sort == this.sort &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -847,7 +399,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
   final Value<String> name;
   final Value<bool> isIncomeDefault;
   final Value<bool> isExpenseDefault;
-  final Value<int> bucketCategoryId;
+  final Value<BucketCategory> bucketCategory;
   final Value<int> sort;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -856,7 +408,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     this.name = const Value.absent(),
     this.isIncomeDefault = const Value.absent(),
     this.isExpenseDefault = const Value.absent(),
-    this.bucketCategoryId = const Value.absent(),
+    this.bucketCategory = const Value.absent(),
     this.sort = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -866,19 +418,19 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     required String name,
     this.isIncomeDefault = const Value.absent(),
     this.isExpenseDefault = const Value.absent(),
-    required int bucketCategoryId,
+    required BucketCategory bucketCategory,
     required int sort,
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : name = Value(name),
-       bucketCategoryId = Value(bucketCategoryId),
+       bucketCategory = Value(bucketCategory),
        sort = Value(sort);
   static Insertable<BucketTable> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<bool>? isIncomeDefault,
     Expression<bool>? isExpenseDefault,
-    Expression<int>? bucketCategoryId,
+    Expression<String>? bucketCategory,
     Expression<int>? sort,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -888,7 +440,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
       if (name != null) 'name': name,
       if (isIncomeDefault != null) 'is_income_default': isIncomeDefault,
       if (isExpenseDefault != null) 'is_expense_default': isExpenseDefault,
-      if (bucketCategoryId != null) 'bucket_category_id': bucketCategoryId,
+      if (bucketCategory != null) 'bucket_category': bucketCategory,
       if (sort != null) 'sort': sort,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -900,7 +452,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     Value<String>? name,
     Value<bool>? isIncomeDefault,
     Value<bool>? isExpenseDefault,
-    Value<int>? bucketCategoryId,
+    Value<BucketCategory>? bucketCategory,
     Value<int>? sort,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -910,7 +462,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
       name: name ?? this.name,
       isIncomeDefault: isIncomeDefault ?? this.isIncomeDefault,
       isExpenseDefault: isExpenseDefault ?? this.isExpenseDefault,
-      bucketCategoryId: bucketCategoryId ?? this.bucketCategoryId,
+      bucketCategory: bucketCategory ?? this.bucketCategory,
       sort: sort ?? this.sort,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -932,8 +484,10 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     if (isExpenseDefault.present) {
       map['is_expense_default'] = Variable<bool>(isExpenseDefault.value);
     }
-    if (bucketCategoryId.present) {
-      map['bucket_category_id'] = Variable<int>(bucketCategoryId.value);
+    if (bucketCategory.present) {
+      map['bucket_category'] = Variable<String>(
+        $BucketsTable.$converterbucketCategory.toSql(bucketCategory.value),
+      );
     }
     if (sort.present) {
       map['sort'] = Variable<int>(sort.value);
@@ -954,7 +508,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
           ..write('name: $name, ')
           ..write('isIncomeDefault: $isIncomeDefault, ')
           ..write('isExpenseDefault: $isExpenseDefault, ')
-          ..write('bucketCategoryId: $bucketCategoryId, ')
+          ..write('bucketCategory: $bucketCategory, ')
           ..write('sort: $sort, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -1028,6 +582,21 @@ class $DropCategoriesTable extends DropCategories
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _isSystemMeta = const VerificationMeta(
+    'isSystem',
+  );
+  @override
+  late final GeneratedColumn<bool> isSystem = GeneratedColumn<bool>(
+    'is_system',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_system" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -1060,6 +629,7 @@ class $DropCategoriesTable extends DropCategories
     dropType,
     budget,
     sort,
+    isSystem,
     createdAt,
     updatedAt,
   ];
@@ -1108,6 +678,12 @@ class $DropCategoriesTable extends DropCategories
     } else if (isInserting) {
       context.missing(_sortMeta);
     }
+    if (data.containsKey('is_system')) {
+      context.handle(
+        _isSystemMeta,
+        isSystem.isAcceptableOrUnknown(data['is_system']!, _isSystemMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -1155,6 +731,10 @@ class $DropCategoriesTable extends DropCategories
         DriftSqlType.int,
         data['${effectivePrefix}sort'],
       )!,
+      isSystem: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_system'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1183,6 +763,7 @@ class DropCategoryTable extends DataClass
   final DropType dropType;
   final int budget;
   final int sort;
+  final bool isSystem;
   final DateTime createdAt;
   final DateTime updatedAt;
   const DropCategoryTable({
@@ -1192,6 +773,7 @@ class DropCategoryTable extends DataClass
     required this.dropType,
     required this.budget,
     required this.sort,
+    required this.isSystem,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -1208,6 +790,7 @@ class DropCategoryTable extends DataClass
     }
     map['budget'] = Variable<int>(budget);
     map['sort'] = Variable<int>(sort);
+    map['is_system'] = Variable<bool>(isSystem);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -1221,6 +804,7 @@ class DropCategoryTable extends DataClass
       dropType: Value(dropType),
       budget: Value(budget),
       sort: Value(sort),
+      isSystem: Value(isSystem),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -1240,6 +824,7 @@ class DropCategoryTable extends DataClass
       ),
       budget: serializer.fromJson<int>(json['budget']),
       sort: serializer.fromJson<int>(json['sort']),
+      isSystem: serializer.fromJson<bool>(json['isSystem']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
@@ -1256,6 +841,7 @@ class DropCategoryTable extends DataClass
       ),
       'budget': serializer.toJson<int>(budget),
       'sort': serializer.toJson<int>(sort),
+      'isSystem': serializer.toJson<bool>(isSystem),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
@@ -1268,6 +854,7 @@ class DropCategoryTable extends DataClass
     DropType? dropType,
     int? budget,
     int? sort,
+    bool? isSystem,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => DropCategoryTable(
@@ -1277,6 +864,7 @@ class DropCategoryTable extends DataClass
     dropType: dropType ?? this.dropType,
     budget: budget ?? this.budget,
     sort: sort ?? this.sort,
+    isSystem: isSystem ?? this.isSystem,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -1288,6 +876,7 @@ class DropCategoryTable extends DataClass
       dropType: data.dropType.present ? data.dropType.value : this.dropType,
       budget: data.budget.present ? data.budget.value : this.budget,
       sort: data.sort.present ? data.sort.value : this.sort,
+      isSystem: data.isSystem.present ? data.isSystem.value : this.isSystem,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1302,6 +891,7 @@ class DropCategoryTable extends DataClass
           ..write('dropType: $dropType, ')
           ..write('budget: $budget, ')
           ..write('sort: $sort, ')
+          ..write('isSystem: $isSystem, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1309,8 +899,17 @@ class DropCategoryTable extends DataClass
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, icon, dropType, budget, sort, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+    id,
+    name,
+    icon,
+    dropType,
+    budget,
+    sort,
+    isSystem,
+    createdAt,
+    updatedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1321,6 +920,7 @@ class DropCategoryTable extends DataClass
           other.dropType == this.dropType &&
           other.budget == this.budget &&
           other.sort == this.sort &&
+          other.isSystem == this.isSystem &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1332,6 +932,7 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
   final Value<DropType> dropType;
   final Value<int> budget;
   final Value<int> sort;
+  final Value<bool> isSystem;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const DropCategoriesCompanion({
@@ -1341,6 +942,7 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
     this.dropType = const Value.absent(),
     this.budget = const Value.absent(),
     this.sort = const Value.absent(),
+    this.isSystem = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -1351,6 +953,7 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
     required DropType dropType,
     this.budget = const Value.absent(),
     required int sort,
+    this.isSystem = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : name = Value(name),
@@ -1364,6 +967,7 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
     Expression<String>? dropType,
     Expression<int>? budget,
     Expression<int>? sort,
+    Expression<bool>? isSystem,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
@@ -1374,6 +978,7 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
       if (dropType != null) 'drop_type': dropType,
       if (budget != null) 'budget': budget,
       if (sort != null) 'sort': sort,
+      if (isSystem != null) 'is_system': isSystem,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -1386,6 +991,7 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
     Value<DropType>? dropType,
     Value<int>? budget,
     Value<int>? sort,
+    Value<bool>? isSystem,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
   }) {
@@ -1396,6 +1002,7 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
       dropType: dropType ?? this.dropType,
       budget: budget ?? this.budget,
       sort: sort ?? this.sort,
+      isSystem: isSystem ?? this.isSystem,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -1424,6 +1031,9 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
     if (sort.present) {
       map['sort'] = Variable<int>(sort.value);
     }
+    if (isSystem.present) {
+      map['is_system'] = Variable<bool>(isSystem.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1442,6 +1052,7 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
           ..write('dropType: $dropType, ')
           ..write('budget: $budget, ')
           ..write('sort: $sort, ')
+          ..write('isSystem: $isSystem, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -3400,9 +3011,6 @@ class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-  late final $BucketCategoriesTable bucketCategories = $BucketCategoriesTable(
-    this,
-  );
   late final $BucketsTable buckets = $BucketsTable(this);
   late final $DropCategoriesTable dropCategories = $DropCategoriesTable(this);
   late final $SubscribedDropsTable subscribedDrops = $SubscribedDropsTable(
@@ -3415,7 +3023,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-    bucketCategories,
     buckets,
     dropCategories,
     subscribedDrops,
