@@ -69,6 +69,18 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   ).withConverter<BucketCategory>($BucketsTable.$converterbucketCategory);
+  static const VerificationMeta _expectedRateMeta = const VerificationMeta(
+    'expectedRate',
+  );
+  @override
+  late final GeneratedColumn<double> expectedRate = GeneratedColumn<double>(
+    'expected_rate',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant<double>(0),
+  );
   static const VerificationMeta _sortMeta = const VerificationMeta('sort');
   @override
   late final GeneratedColumn<int> sort = GeneratedColumn<int>(
@@ -109,6 +121,7 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     isIncomeDefault,
     isExpenseDefault,
     bucketCategory,
+    expectedRate,
     sort,
     createdAt,
     updatedAt,
@@ -151,6 +164,15 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
         isExpenseDefault.isAcceptableOrUnknown(
           data['is_expense_default']!,
           _isExpenseDefaultMeta,
+        ),
+      );
+    }
+    if (data.containsKey('expected_rate')) {
+      context.handle(
+        _expectedRateMeta,
+        expectedRate.isAcceptableOrUnknown(
+          data['expected_rate']!,
+          _expectedRateMeta,
         ),
       );
     }
@@ -205,6 +227,10 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
           data['${effectivePrefix}bucket_category'],
         )!,
       ),
+      expectedRate: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}expected_rate'],
+      )!,
       sort: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}sort'],
@@ -237,6 +263,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
   final bool isIncomeDefault;
   final bool isExpenseDefault;
   final BucketCategory bucketCategory;
+  final double expectedRate;
   final int sort;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -246,6 +273,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     required this.isIncomeDefault,
     required this.isExpenseDefault,
     required this.bucketCategory,
+    required this.expectedRate,
     required this.sort,
     required this.createdAt,
     required this.updatedAt,
@@ -262,6 +290,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
         $BucketsTable.$converterbucketCategory.toSql(bucketCategory),
       );
     }
+    map['expected_rate'] = Variable<double>(expectedRate);
     map['sort'] = Variable<int>(sort);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -275,6 +304,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       isIncomeDefault: Value(isIncomeDefault),
       isExpenseDefault: Value(isExpenseDefault),
       bucketCategory: Value(bucketCategory),
+      expectedRate: Value(expectedRate),
       sort: Value(sort),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
@@ -294,6 +324,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       bucketCategory: $BucketsTable.$converterbucketCategory.fromJson(
         serializer.fromJson<String>(json['bucketCategory']),
       ),
+      expectedRate: serializer.fromJson<double>(json['expectedRate']),
       sort: serializer.fromJson<int>(json['sort']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -310,6 +341,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       'bucketCategory': serializer.toJson<String>(
         $BucketsTable.$converterbucketCategory.toJson(bucketCategory),
       ),
+      'expectedRate': serializer.toJson<double>(expectedRate),
       'sort': serializer.toJson<int>(sort),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -322,6 +354,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     bool? isIncomeDefault,
     bool? isExpenseDefault,
     BucketCategory? bucketCategory,
+    double? expectedRate,
     int? sort,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -331,6 +364,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     isIncomeDefault: isIncomeDefault ?? this.isIncomeDefault,
     isExpenseDefault: isExpenseDefault ?? this.isExpenseDefault,
     bucketCategory: bucketCategory ?? this.bucketCategory,
+    expectedRate: expectedRate ?? this.expectedRate,
     sort: sort ?? this.sort,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -348,6 +382,9 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       bucketCategory: data.bucketCategory.present
           ? data.bucketCategory.value
           : this.bucketCategory,
+      expectedRate: data.expectedRate.present
+          ? data.expectedRate.value
+          : this.expectedRate,
       sort: data.sort.present ? data.sort.value : this.sort,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -362,6 +399,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
           ..write('isIncomeDefault: $isIncomeDefault, ')
           ..write('isExpenseDefault: $isExpenseDefault, ')
           ..write('bucketCategory: $bucketCategory, ')
+          ..write('expectedRate: $expectedRate, ')
           ..write('sort: $sort, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
@@ -376,6 +414,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     isIncomeDefault,
     isExpenseDefault,
     bucketCategory,
+    expectedRate,
     sort,
     createdAt,
     updatedAt,
@@ -389,6 +428,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
           other.isIncomeDefault == this.isIncomeDefault &&
           other.isExpenseDefault == this.isExpenseDefault &&
           other.bucketCategory == this.bucketCategory &&
+          other.expectedRate == this.expectedRate &&
           other.sort == this.sort &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
@@ -400,6 +440,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
   final Value<bool> isIncomeDefault;
   final Value<bool> isExpenseDefault;
   final Value<BucketCategory> bucketCategory;
+  final Value<double> expectedRate;
   final Value<int> sort;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
@@ -409,6 +450,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     this.isIncomeDefault = const Value.absent(),
     this.isExpenseDefault = const Value.absent(),
     this.bucketCategory = const Value.absent(),
+    this.expectedRate = const Value.absent(),
     this.sort = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -419,6 +461,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     this.isIncomeDefault = const Value.absent(),
     this.isExpenseDefault = const Value.absent(),
     required BucketCategory bucketCategory,
+    this.expectedRate = const Value.absent(),
     required int sort,
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -431,6 +474,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     Expression<bool>? isIncomeDefault,
     Expression<bool>? isExpenseDefault,
     Expression<String>? bucketCategory,
+    Expression<double>? expectedRate,
     Expression<int>? sort,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
@@ -441,6 +485,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
       if (isIncomeDefault != null) 'is_income_default': isIncomeDefault,
       if (isExpenseDefault != null) 'is_expense_default': isExpenseDefault,
       if (bucketCategory != null) 'bucket_category': bucketCategory,
+      if (expectedRate != null) 'expected_rate': expectedRate,
       if (sort != null) 'sort': sort,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -453,6 +498,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     Value<bool>? isIncomeDefault,
     Value<bool>? isExpenseDefault,
     Value<BucketCategory>? bucketCategory,
+    Value<double>? expectedRate,
     Value<int>? sort,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
@@ -463,6 +509,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
       isIncomeDefault: isIncomeDefault ?? this.isIncomeDefault,
       isExpenseDefault: isExpenseDefault ?? this.isExpenseDefault,
       bucketCategory: bucketCategory ?? this.bucketCategory,
+      expectedRate: expectedRate ?? this.expectedRate,
       sort: sort ?? this.sort,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -489,6 +536,9 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
         $BucketsTable.$converterbucketCategory.toSql(bucketCategory.value),
       );
     }
+    if (expectedRate.present) {
+      map['expected_rate'] = Variable<double>(expectedRate.value);
+    }
     if (sort.present) {
       map['sort'] = Variable<int>(sort.value);
     }
@@ -509,6 +559,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
           ..write('isIncomeDefault: $isIncomeDefault, ')
           ..write('isExpenseDefault: $isExpenseDefault, ')
           ..write('bucketCategory: $bucketCategory, ')
+          ..write('expectedRate: $expectedRate, ')
           ..write('sort: $sort, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')

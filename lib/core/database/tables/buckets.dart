@@ -10,6 +10,7 @@ class Buckets extends Table {
   BoolColumn get isIncomeDefault => boolean().withDefault(const Constant(false))();
   BoolColumn get isExpenseDefault => boolean().withDefault(const Constant(false))();
   TextColumn get bucketCategory => textEnum<BucketCategory>()();
+  RealColumn get expectedRate => real().withDefault(const Constant<double>(0))();
   IntColumn get sort => integer()();
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
