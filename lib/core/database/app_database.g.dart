@@ -559,6 +559,399 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
   }
 }
 
+class BucketSnaps extends Table with TableInfo<BucketSnaps, BucketSnapTable> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  BucketSnaps(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT',
+  );
+  static const VerificationMeta _bucketIdMeta = const VerificationMeta(
+    'bucketId',
+  );
+  late final GeneratedColumn<int> bucketId = GeneratedColumn<int>(
+    'bucket_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL REFERENCES buckets(id)ON DELETE CASCADE',
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL',
+  );
+  static const VerificationMeta _snappedOnMeta = const VerificationMeta(
+    'snappedOn',
+  );
+  late final GeneratedColumn<DateTime> snappedOn = GeneratedColumn<DateTime>(
+    'snapped_on',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL',
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    bucketId,
+    amount,
+    snappedOn,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'bucket_snaps';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BucketSnapTable> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('bucket_id')) {
+      context.handle(
+        _bucketIdMeta,
+        bucketId.isAcceptableOrUnknown(data['bucket_id']!, _bucketIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_bucketIdMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('snapped_on')) {
+      context.handle(
+        _snappedOnMeta,
+        snappedOn.isAcceptableOrUnknown(data['snapped_on']!, _snappedOnMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_snappedOnMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BucketSnapTable map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BucketSnapTable(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      bucketId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}bucket_id'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}amount'],
+      )!,
+      snappedOn: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}snapped_on'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  BucketSnaps createAlias(String alias) {
+    return BucketSnaps(attachedDatabase, alias);
+  }
+
+  @override
+  bool get dontWriteConstraints => true;
+}
+
+class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
+  final int id;
+  final int bucketId;
+  final int amount;
+  final DateTime snappedOn;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const BucketSnapTable({
+    required this.id,
+    required this.bucketId,
+    required this.amount,
+    required this.snappedOn,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['bucket_id'] = Variable<int>(bucketId);
+    map['amount'] = Variable<int>(amount);
+    map['snapped_on'] = Variable<DateTime>(snappedOn);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  BucketSnapsCompanion toCompanion(bool nullToAbsent) {
+    return BucketSnapsCompanion(
+      id: Value(id),
+      bucketId: Value(bucketId),
+      amount: Value(amount),
+      snappedOn: Value(snappedOn),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory BucketSnapTable.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BucketSnapTable(
+      id: serializer.fromJson<int>(json['id']),
+      bucketId: serializer.fromJson<int>(json['bucket_id']),
+      amount: serializer.fromJson<int>(json['amount']),
+      snappedOn: serializer.fromJson<DateTime>(json['snapped_on']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'bucket_id': serializer.toJson<int>(bucketId),
+      'amount': serializer.toJson<int>(amount),
+      'snapped_on': serializer.toJson<DateTime>(snappedOn),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'updated_at': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  BucketSnapTable copyWith({
+    int? id,
+    int? bucketId,
+    int? amount,
+    DateTime? snappedOn,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => BucketSnapTable(
+    id: id ?? this.id,
+    bucketId: bucketId ?? this.bucketId,
+    amount: amount ?? this.amount,
+    snappedOn: snappedOn ?? this.snappedOn,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  BucketSnapTable copyWithCompanion(BucketSnapsCompanion data) {
+    return BucketSnapTable(
+      id: data.id.present ? data.id.value : this.id,
+      bucketId: data.bucketId.present ? data.bucketId.value : this.bucketId,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      snappedOn: data.snappedOn.present ? data.snappedOn.value : this.snappedOn,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BucketSnapTable(')
+          ..write('id: $id, ')
+          ..write('bucketId: $bucketId, ')
+          ..write('amount: $amount, ')
+          ..write('snappedOn: $snappedOn, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, bucketId, amount, snappedOn, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BucketSnapTable &&
+          other.id == this.id &&
+          other.bucketId == this.bucketId &&
+          other.amount == this.amount &&
+          other.snappedOn == this.snappedOn &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
+  final Value<int> id;
+  final Value<int> bucketId;
+  final Value<int> amount;
+  final Value<DateTime> snappedOn;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const BucketSnapsCompanion({
+    this.id = const Value.absent(),
+    this.bucketId = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.snappedOn = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  BucketSnapsCompanion.insert({
+    this.id = const Value.absent(),
+    required int bucketId,
+    required int amount,
+    required DateTime snappedOn,
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : bucketId = Value(bucketId),
+       amount = Value(amount),
+       snappedOn = Value(snappedOn);
+  static Insertable<BucketSnapTable> custom({
+    Expression<int>? id,
+    Expression<int>? bucketId,
+    Expression<int>? amount,
+    Expression<DateTime>? snappedOn,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (bucketId != null) 'bucket_id': bucketId,
+      if (amount != null) 'amount': amount,
+      if (snappedOn != null) 'snapped_on': snappedOn,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  BucketSnapsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? bucketId,
+    Value<int>? amount,
+    Value<DateTime>? snappedOn,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return BucketSnapsCompanion(
+      id: id ?? this.id,
+      bucketId: bucketId ?? this.bucketId,
+      amount: amount ?? this.amount,
+      snappedOn: snappedOn ?? this.snappedOn,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (bucketId.present) {
+      map['bucket_id'] = Variable<int>(bucketId.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<int>(amount.value);
+    }
+    if (snappedOn.present) {
+      map['snapped_on'] = Variable<DateTime>(snappedOn.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BucketSnapsCompanion(')
+          ..write('id: $id, ')
+          ..write('bucketId: $bucketId, ')
+          ..write('amount: $amount, ')
+          ..write('snappedOn: $snappedOn, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $DropCategoriesTable extends DropCategories
     with TableInfo<$DropCategoriesTable, DropCategoryTable> {
   @override
@@ -2426,361 +2819,15 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
   }
 }
 
-class $BucketSnapsTable extends BucketSnaps
-    with TableInfo<$BucketSnapsTable, BucketSnapTable> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $BucketSnapsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
-  @override
-  late final GeneratedColumn<int> amount = GeneratedColumn<int>(
-    'amount',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _snappedOnMeta = const VerificationMeta(
-    'snappedOn',
-  );
-  @override
-  late final GeneratedColumn<DateTime> snappedOn = GeneratedColumn<DateTime>(
-    'snapped_on',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    amount,
-    snappedOn,
-    createdAt,
-    updatedAt,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'bucket_snaps';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<BucketSnapTable> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('amount')) {
-      context.handle(
-        _amountMeta,
-        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_amountMeta);
-    }
-    if (data.containsKey('snapped_on')) {
-      context.handle(
-        _snappedOnMeta,
-        snappedOn.isAcceptableOrUnknown(data['snapped_on']!, _snappedOnMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_snappedOnMeta);
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  BucketSnapTable map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return BucketSnapTable(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      amount: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}amount'],
-      )!,
-      snappedOn: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}snapped_on'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
-      )!,
-    );
-  }
-
-  @override
-  $BucketSnapsTable createAlias(String alias) {
-    return $BucketSnapsTable(attachedDatabase, alias);
-  }
-}
-
-class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
-  final int id;
-  final int amount;
-  final DateTime snappedOn;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  const BucketSnapTable({
-    required this.id,
-    required this.amount,
-    required this.snappedOn,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['amount'] = Variable<int>(amount);
-    map['snapped_on'] = Variable<DateTime>(snappedOn);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
-    return map;
-  }
-
-  BucketSnapsCompanion toCompanion(bool nullToAbsent) {
-    return BucketSnapsCompanion(
-      id: Value(id),
-      amount: Value(amount),
-      snappedOn: Value(snappedOn),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
-    );
-  }
-
-  factory BucketSnapTable.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return BucketSnapTable(
-      id: serializer.fromJson<int>(json['id']),
-      amount: serializer.fromJson<int>(json['amount']),
-      snappedOn: serializer.fromJson<DateTime>(json['snappedOn']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'amount': serializer.toJson<int>(amount),
-      'snappedOn': serializer.toJson<DateTime>(snappedOn),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
-    };
-  }
-
-  BucketSnapTable copyWith({
-    int? id,
-    int? amount,
-    DateTime? snappedOn,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  }) => BucketSnapTable(
-    id: id ?? this.id,
-    amount: amount ?? this.amount,
-    snappedOn: snappedOn ?? this.snappedOn,
-    createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
-  );
-  BucketSnapTable copyWithCompanion(BucketSnapsCompanion data) {
-    return BucketSnapTable(
-      id: data.id.present ? data.id.value : this.id,
-      amount: data.amount.present ? data.amount.value : this.amount,
-      snappedOn: data.snappedOn.present ? data.snappedOn.value : this.snappedOn,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('BucketSnapTable(')
-          ..write('id: $id, ')
-          ..write('amount: $amount, ')
-          ..write('snappedOn: $snappedOn, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, amount, snappedOn, createdAt, updatedAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is BucketSnapTable &&
-          other.id == this.id &&
-          other.amount == this.amount &&
-          other.snappedOn == this.snappedOn &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
-}
-
-class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
-  final Value<int> id;
-  final Value<int> amount;
-  final Value<DateTime> snappedOn;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
-  const BucketSnapsCompanion({
-    this.id = const Value.absent(),
-    this.amount = const Value.absent(),
-    this.snappedOn = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-  });
-  BucketSnapsCompanion.insert({
-    this.id = const Value.absent(),
-    required int amount,
-    required DateTime snappedOn,
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-  }) : amount = Value(amount),
-       snappedOn = Value(snappedOn);
-  static Insertable<BucketSnapTable> custom({
-    Expression<int>? id,
-    Expression<int>? amount,
-    Expression<DateTime>? snappedOn,
-    Expression<DateTime>? createdAt,
-    Expression<DateTime>? updatedAt,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (amount != null) 'amount': amount,
-      if (snappedOn != null) 'snapped_on': snappedOn,
-      if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
-    });
-  }
-
-  BucketSnapsCompanion copyWith({
-    Value<int>? id,
-    Value<int>? amount,
-    Value<DateTime>? snappedOn,
-    Value<DateTime>? createdAt,
-    Value<DateTime>? updatedAt,
-  }) {
-    return BucketSnapsCompanion(
-      id: id ?? this.id,
-      amount: amount ?? this.amount,
-      snappedOn: snappedOn ?? this.snappedOn,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (amount.present) {
-      map['amount'] = Variable<int>(amount.value);
-    }
-    if (snappedOn.present) {
-      map['snapped_on'] = Variable<DateTime>(snappedOn.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('BucketSnapsCompanion(')
-          ..write('id: $id, ')
-          ..write('amount: $amount, ')
-          ..write('snappedOn: $snappedOn, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
-          ..write(')'))
-        .toString();
-  }
-}
-
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   late final Buckets buckets = Buckets(this);
+  late final BucketSnaps bucketSnaps = BucketSnaps(this);
   late final $DropCategoriesTable dropCategories = $DropCategoriesTable(this);
   late final $SubscribedDropsTable subscribedDrops = $SubscribedDropsTable(
     this,
   );
   late final $DropsTable drops = $DropsTable(this);
-  late final $BucketSnapsTable bucketSnaps = $BucketSnapsTable(this);
   Selectable<BucketTable> getBuckets() {
     return customSelect(
       'SELECT * FROM buckets ORDER BY sort ASC',
@@ -2819,13 +2866,20 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     buckets,
+    bucketSnaps,
     dropCategories,
     subscribedDrops,
     drops,
-    bucketSnaps,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'buckets',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('bucket_snaps', kind: UpdateKind.delete)],
+    ),
     WritePropagation(
       on: TableUpdateQuery.onTableName(
         'drop_categories',

@@ -1,8 +1,6 @@
 import 'dart:io';
 
 import 'package:bucket_drop/core/database/master_seed.dart';
-import 'package:bucket_drop/core/database/tables/bucket_snaps.dart';
-// import 'package:bucket_drop/core/database/tables/buckets.dart';
 import 'package:bucket_drop/core/database/tables/drop_categories.dart';
 import 'package:bucket_drop/core/database/tables/drops.dart';
 import 'package:bucket_drop/core/database/tables/subscribed_drops.dart';
@@ -22,12 +20,14 @@ part 'app_database.g.dart';
 @DriftDatabase(
   include: {
     'tables/buckets.drift',
+    'tables/bucket_snaps.drift',
   },
+
   tables: [
     // Buckets,
     DropCategories,
     Drops,
-    BucketSnaps,
+    // BucketSnaps,
     SubscribedDrops,
   ],
 )

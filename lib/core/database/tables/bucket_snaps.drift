@@ -1,0 +1,10 @@
+import 'package:bucket_drop/core/database/tables/buckets.drift';
+
+CREATE TABLE bucket_snaps (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  bucket_id INTEGER NOT NULL REFERENCES buckets(id) ON DELETE CASCADE,
+  amount INTEGER NOT NULL,
+  snapped_on DATETIME NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) AS BucketSnapTable;
