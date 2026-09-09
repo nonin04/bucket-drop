@@ -3,13 +3,12 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
-class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
+class Buckets extends Table with TableInfo<Buckets, BucketTable> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $BucketsTable(this.attachedDatabase, [this._alias]);
+  Buckets(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
     'id',
     aliasedName,
@@ -17,102 +16,94 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
     hasAutoIncrement: true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
+    $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT',
   );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
-  @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
     'name',
     aliasedName,
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL',
   );
   static const VerificationMeta _isIncomeDefaultMeta = const VerificationMeta(
     'isIncomeDefault',
   );
-  @override
   late final GeneratedColumn<bool> isIncomeDefault = GeneratedColumn<bool>(
     'is_income_default',
     aliasedName,
     false,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_income_default" IN (0, 1))',
-    ),
-    defaultValue: const Constant(false),
+    $customConstraints: 'NOT NULL DEFAULT FALSE',
+    defaultValue: const CustomExpression('FALSE'),
   );
   static const VerificationMeta _isExpenseDefaultMeta = const VerificationMeta(
     'isExpenseDefault',
   );
-  @override
   late final GeneratedColumn<bool> isExpenseDefault = GeneratedColumn<bool>(
     'is_expense_default',
     aliasedName,
     false,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_expense_default" IN (0, 1))',
-    ),
-    defaultValue: const Constant(false),
+    $customConstraints: 'NOT NULL DEFAULT FALSE',
+    defaultValue: const CustomExpression('FALSE'),
   );
-  @override
-  late final GeneratedColumnWithTypeConverter<BucketCategory, String>
-  bucketCategory = GeneratedColumn<String>(
+  late final GeneratedColumnWithTypeConverter<BucketCategory, int>
+  bucketCategory = GeneratedColumn<int>(
     'bucket_category',
     aliasedName,
     false,
-    type: DriftSqlType.string,
+    type: DriftSqlType.int,
     requiredDuringInsert: true,
-  ).withConverter<BucketCategory>($BucketsTable.$converterbucketCategory);
+    $customConstraints: 'NOT NULL',
+  ).withConverter<BucketCategory>(Buckets.$converterbucketCategory);
   static const VerificationMeta _expectedRateMeta = const VerificationMeta(
     'expectedRate',
   );
-  @override
   late final GeneratedColumn<double> expectedRate = GeneratedColumn<double>(
     'expected_rate',
     aliasedName,
     false,
     type: DriftSqlType.double,
     requiredDuringInsert: false,
-    defaultValue: const Constant<double>(0),
+    $customConstraints: 'NOT NULL DEFAULT 0.0',
+    defaultValue: const CustomExpression('0.0'),
   );
   static const VerificationMeta _sortMeta = const VerificationMeta('sort');
-  @override
   late final GeneratedColumn<int> sort = GeneratedColumn<int>(
     'sort',
     aliasedName,
     false,
     type: DriftSqlType.int,
     requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL',
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
-  @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
+    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
   );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
   );
-  @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
     'updated_at',
     aliasedName,
     false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
+    $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+    defaultValue: const CustomExpression('CURRENT_TIMESTAMP'),
   );
   @override
   List<GeneratedColumn> get $columns => [
@@ -221,9 +212,9 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
         DriftSqlType.bool,
         data['${effectivePrefix}is_expense_default'],
       )!,
-      bucketCategory: $BucketsTable.$converterbucketCategory.fromSql(
+      bucketCategory: Buckets.$converterbucketCategory.fromSql(
         attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
+          DriftSqlType.int,
           data['${effectivePrefix}bucket_category'],
         )!,
       ),
@@ -247,14 +238,14 @@ class $BucketsTable extends Buckets with TableInfo<$BucketsTable, BucketTable> {
   }
 
   @override
-  $BucketsTable createAlias(String alias) {
-    return $BucketsTable(attachedDatabase, alias);
+  Buckets createAlias(String alias) {
+    return Buckets(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<BucketCategory, String, String>
-  $converterbucketCategory = const EnumNameConverter<BucketCategory>(
-    BucketCategory.values,
-  );
+  static JsonTypeConverter2<BucketCategory, int, int> $converterbucketCategory =
+      const EnumIndexConverter<BucketCategory>(BucketCategory.values);
+  @override
+  bool get dontWriteConstraints => true;
 }
 
 class BucketTable extends DataClass implements Insertable<BucketTable> {
@@ -286,8 +277,8 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     map['is_income_default'] = Variable<bool>(isIncomeDefault);
     map['is_expense_default'] = Variable<bool>(isExpenseDefault);
     {
-      map['bucket_category'] = Variable<String>(
-        $BucketsTable.$converterbucketCategory.toSql(bucketCategory),
+      map['bucket_category'] = Variable<int>(
+        Buckets.$converterbucketCategory.toSql(bucketCategory),
       );
     }
     map['expected_rate'] = Variable<double>(expectedRate);
@@ -319,15 +310,15 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     return BucketTable(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
-      isIncomeDefault: serializer.fromJson<bool>(json['isIncomeDefault']),
-      isExpenseDefault: serializer.fromJson<bool>(json['isExpenseDefault']),
-      bucketCategory: $BucketsTable.$converterbucketCategory.fromJson(
-        serializer.fromJson<String>(json['bucketCategory']),
+      isIncomeDefault: serializer.fromJson<bool>(json['is_income_default']),
+      isExpenseDefault: serializer.fromJson<bool>(json['is_expense_default']),
+      bucketCategory: Buckets.$converterbucketCategory.fromJson(
+        serializer.fromJson<int>(json['bucket_category']),
       ),
-      expectedRate: serializer.fromJson<double>(json['expectedRate']),
+      expectedRate: serializer.fromJson<double>(json['expected_rate']),
       sort: serializer.fromJson<int>(json['sort']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      createdAt: serializer.fromJson<DateTime>(json['created_at']),
+      updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
     );
   }
   @override
@@ -336,15 +327,15 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
-      'isIncomeDefault': serializer.toJson<bool>(isIncomeDefault),
-      'isExpenseDefault': serializer.toJson<bool>(isExpenseDefault),
-      'bucketCategory': serializer.toJson<String>(
-        $BucketsTable.$converterbucketCategory.toJson(bucketCategory),
+      'is_income_default': serializer.toJson<bool>(isIncomeDefault),
+      'is_expense_default': serializer.toJson<bool>(isExpenseDefault),
+      'bucket_category': serializer.toJson<int>(
+        Buckets.$converterbucketCategory.toJson(bucketCategory),
       ),
-      'expectedRate': serializer.toJson<double>(expectedRate),
+      'expected_rate': serializer.toJson<double>(expectedRate),
       'sort': serializer.toJson<int>(sort),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'created_at': serializer.toJson<DateTime>(createdAt),
+      'updated_at': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
@@ -473,7 +464,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     Expression<String>? name,
     Expression<bool>? isIncomeDefault,
     Expression<bool>? isExpenseDefault,
-    Expression<String>? bucketCategory,
+    Expression<int>? bucketCategory,
     Expression<double>? expectedRate,
     Expression<int>? sort,
     Expression<DateTime>? createdAt,
@@ -532,8 +523,8 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
       map['is_expense_default'] = Variable<bool>(isExpenseDefault.value);
     }
     if (bucketCategory.present) {
-      map['bucket_category'] = Variable<String>(
-        $BucketsTable.$converterbucketCategory.toSql(bucketCategory.value),
+      map['bucket_category'] = Variable<int>(
+        Buckets.$converterbucketCategory.toSql(bucketCategory.value),
       );
     }
     if (expectedRate.present) {
@@ -1130,34 +1121,6 @@ class $SubscribedDropsTable extends SubscribedDrops
       'PRIMARY KEY AUTOINCREMENT',
     ),
   );
-  static const VerificationMeta _fromBucketIdMeta = const VerificationMeta(
-    'fromBucketId',
-  );
-  @override
-  late final GeneratedColumn<int> fromBucketId = GeneratedColumn<int>(
-    'from_bucket_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES buckets (id) ON DELETE RESTRICT',
-    ),
-  );
-  static const VerificationMeta _toBucketIdMeta = const VerificationMeta(
-    'toBucketId',
-  );
-  @override
-  late final GeneratedColumn<int> toBucketId = GeneratedColumn<int>(
-    'to_bucket_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES buckets (id) ON DELETE RESTRICT',
-    ),
-  );
   static const VerificationMeta _dropCategoryIdMeta = const VerificationMeta(
     'dropCategoryId',
   );
@@ -1282,8 +1245,6 @@ class $SubscribedDropsTable extends SubscribedDrops
   @override
   List<GeneratedColumn> get $columns => [
     id,
-    fromBucketId,
-    toBucketId,
     dropCategoryId,
     title,
     amount,
@@ -1310,24 +1271,6 @@ class $SubscribedDropsTable extends SubscribedDrops
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('from_bucket_id')) {
-      context.handle(
-        _fromBucketIdMeta,
-        fromBucketId.isAcceptableOrUnknown(
-          data['from_bucket_id']!,
-          _fromBucketIdMeta,
-        ),
-      );
-    }
-    if (data.containsKey('to_bucket_id')) {
-      context.handle(
-        _toBucketIdMeta,
-        toBucketId.isAcceptableOrUnknown(
-          data['to_bucket_id']!,
-          _toBucketIdMeta,
-        ),
-      );
     }
     if (data.containsKey('drop_category_id')) {
       context.handle(
@@ -1414,14 +1357,6 @@ class $SubscribedDropsTable extends SubscribedDrops
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      fromBucketId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}from_bucket_id'],
-      ),
-      toBucketId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}to_bucket_id'],
-      ),
       dropCategoryId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}drop_category_id'],
@@ -1483,8 +1418,6 @@ class $SubscribedDropsTable extends SubscribedDrops
 class SubscribedDropTable extends DataClass
     implements Insertable<SubscribedDropTable> {
   final int id;
-  final int? fromBucketId;
-  final int? toBucketId;
   final int? dropCategoryId;
   final String title;
   final int amount;
@@ -1498,8 +1431,6 @@ class SubscribedDropTable extends DataClass
   final DateTime updatedAt;
   const SubscribedDropTable({
     required this.id,
-    this.fromBucketId,
-    this.toBucketId,
     this.dropCategoryId,
     required this.title,
     required this.amount,
@@ -1516,12 +1447,6 @@ class SubscribedDropTable extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    if (!nullToAbsent || fromBucketId != null) {
-      map['from_bucket_id'] = Variable<int>(fromBucketId);
-    }
-    if (!nullToAbsent || toBucketId != null) {
-      map['to_bucket_id'] = Variable<int>(toBucketId);
-    }
     if (!nullToAbsent || dropCategoryId != null) {
       map['drop_category_id'] = Variable<int>(dropCategoryId);
     }
@@ -1549,12 +1474,6 @@ class SubscribedDropTable extends DataClass
   SubscribedDropsCompanion toCompanion(bool nullToAbsent) {
     return SubscribedDropsCompanion(
       id: Value(id),
-      fromBucketId: fromBucketId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(fromBucketId),
-      toBucketId: toBucketId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(toBucketId),
       dropCategoryId: dropCategoryId == null && nullToAbsent
           ? const Value.absent()
           : Value(dropCategoryId),
@@ -1582,8 +1501,6 @@ class SubscribedDropTable extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return SubscribedDropTable(
       id: serializer.fromJson<int>(json['id']),
-      fromBucketId: serializer.fromJson<int?>(json['fromBucketId']),
-      toBucketId: serializer.fromJson<int?>(json['toBucketId']),
       dropCategoryId: serializer.fromJson<int?>(json['dropCategoryId']),
       title: serializer.fromJson<String>(json['title']),
       amount: serializer.fromJson<int>(json['amount']),
@@ -1604,8 +1521,6 @@ class SubscribedDropTable extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'fromBucketId': serializer.toJson<int?>(fromBucketId),
-      'toBucketId': serializer.toJson<int?>(toBucketId),
       'dropCategoryId': serializer.toJson<int?>(dropCategoryId),
       'title': serializer.toJson<String>(title),
       'amount': serializer.toJson<int>(amount),
@@ -1624,8 +1539,6 @@ class SubscribedDropTable extends DataClass
 
   SubscribedDropTable copyWith({
     int? id,
-    Value<int?> fromBucketId = const Value.absent(),
-    Value<int?> toBucketId = const Value.absent(),
     Value<int?> dropCategoryId = const Value.absent(),
     String? title,
     int? amount,
@@ -1639,8 +1552,6 @@ class SubscribedDropTable extends DataClass
     DateTime? updatedAt,
   }) => SubscribedDropTable(
     id: id ?? this.id,
-    fromBucketId: fromBucketId.present ? fromBucketId.value : this.fromBucketId,
-    toBucketId: toBucketId.present ? toBucketId.value : this.toBucketId,
     dropCategoryId: dropCategoryId.present
         ? dropCategoryId.value
         : this.dropCategoryId,
@@ -1658,12 +1569,6 @@ class SubscribedDropTable extends DataClass
   SubscribedDropTable copyWithCompanion(SubscribedDropsCompanion data) {
     return SubscribedDropTable(
       id: data.id.present ? data.id.value : this.id,
-      fromBucketId: data.fromBucketId.present
-          ? data.fromBucketId.value
-          : this.fromBucketId,
-      toBucketId: data.toBucketId.present
-          ? data.toBucketId.value
-          : this.toBucketId,
       dropCategoryId: data.dropCategoryId.present
           ? data.dropCategoryId.value
           : this.dropCategoryId,
@@ -1686,8 +1591,6 @@ class SubscribedDropTable extends DataClass
   String toString() {
     return (StringBuffer('SubscribedDropTable(')
           ..write('id: $id, ')
-          ..write('fromBucketId: $fromBucketId, ')
-          ..write('toBucketId: $toBucketId, ')
           ..write('dropCategoryId: $dropCategoryId, ')
           ..write('title: $title, ')
           ..write('amount: $amount, ')
@@ -1706,8 +1609,6 @@ class SubscribedDropTable extends DataClass
   @override
   int get hashCode => Object.hash(
     id,
-    fromBucketId,
-    toBucketId,
     dropCategoryId,
     title,
     amount,
@@ -1725,8 +1626,6 @@ class SubscribedDropTable extends DataClass
       identical(this, other) ||
       (other is SubscribedDropTable &&
           other.id == this.id &&
-          other.fromBucketId == this.fromBucketId &&
-          other.toBucketId == this.toBucketId &&
           other.dropCategoryId == this.dropCategoryId &&
           other.title == this.title &&
           other.amount == this.amount &&
@@ -1742,8 +1641,6 @@ class SubscribedDropTable extends DataClass
 
 class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   final Value<int> id;
-  final Value<int?> fromBucketId;
-  final Value<int?> toBucketId;
   final Value<int?> dropCategoryId;
   final Value<String> title;
   final Value<int> amount;
@@ -1757,8 +1654,6 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   final Value<DateTime> updatedAt;
   const SubscribedDropsCompanion({
     this.id = const Value.absent(),
-    this.fromBucketId = const Value.absent(),
-    this.toBucketId = const Value.absent(),
     this.dropCategoryId = const Value.absent(),
     this.title = const Value.absent(),
     this.amount = const Value.absent(),
@@ -1773,8 +1668,6 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   });
   SubscribedDropsCompanion.insert({
     this.id = const Value.absent(),
-    this.fromBucketId = const Value.absent(),
-    this.toBucketId = const Value.absent(),
     this.dropCategoryId = const Value.absent(),
     required String title,
     required int amount,
@@ -1792,8 +1685,6 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
        startsOn = Value(startsOn);
   static Insertable<SubscribedDropTable> custom({
     Expression<int>? id,
-    Expression<int>? fromBucketId,
-    Expression<int>? toBucketId,
     Expression<int>? dropCategoryId,
     Expression<String>? title,
     Expression<int>? amount,
@@ -1808,8 +1699,6 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (fromBucketId != null) 'from_bucket_id': fromBucketId,
-      if (toBucketId != null) 'to_bucket_id': toBucketId,
       if (dropCategoryId != null) 'drop_category_id': dropCategoryId,
       if (title != null) 'title': title,
       if (amount != null) 'amount': amount,
@@ -1826,8 +1715,6 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
 
   SubscribedDropsCompanion copyWith({
     Value<int>? id,
-    Value<int?>? fromBucketId,
-    Value<int?>? toBucketId,
     Value<int?>? dropCategoryId,
     Value<String>? title,
     Value<int>? amount,
@@ -1842,8 +1729,6 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   }) {
     return SubscribedDropsCompanion(
       id: id ?? this.id,
-      fromBucketId: fromBucketId ?? this.fromBucketId,
-      toBucketId: toBucketId ?? this.toBucketId,
       dropCategoryId: dropCategoryId ?? this.dropCategoryId,
       title: title ?? this.title,
       amount: amount ?? this.amount,
@@ -1863,12 +1748,6 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
-    }
-    if (fromBucketId.present) {
-      map['from_bucket_id'] = Variable<int>(fromBucketId.value);
-    }
-    if (toBucketId.present) {
-      map['to_bucket_id'] = Variable<int>(toBucketId.value);
     }
     if (dropCategoryId.present) {
       map['drop_category_id'] = Variable<int>(dropCategoryId.value);
@@ -1912,8 +1791,6 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   String toString() {
     return (StringBuffer('SubscribedDropsCompanion(')
           ..write('id: $id, ')
-          ..write('fromBucketId: $fromBucketId, ')
-          ..write('toBucketId: $toBucketId, ')
           ..write('dropCategoryId: $dropCategoryId, ')
           ..write('title: $title, ')
           ..write('amount: $amount, ')
@@ -1946,34 +1823,6 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _fromBucketIdMeta = const VerificationMeta(
-    'fromBucketId',
-  );
-  @override
-  late final GeneratedColumn<int> fromBucketId = GeneratedColumn<int>(
-    'from_bucket_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES buckets (id) ON DELETE RESTRICT',
-    ),
-  );
-  static const VerificationMeta _toBucketIdMeta = const VerificationMeta(
-    'toBucketId',
-  );
-  @override
-  late final GeneratedColumn<int> toBucketId = GeneratedColumn<int>(
-    'to_bucket_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES buckets (id) ON DELETE RESTRICT',
     ),
   );
   static const VerificationMeta _dropCategoryIdMeta = const VerificationMeta(
@@ -2083,8 +1932,6 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
   @override
   List<GeneratedColumn> get $columns => [
     id,
-    fromBucketId,
-    toBucketId,
     dropCategoryId,
     subscribedDropId,
     parentDropId,
@@ -2109,24 +1956,6 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('from_bucket_id')) {
-      context.handle(
-        _fromBucketIdMeta,
-        fromBucketId.isAcceptableOrUnknown(
-          data['from_bucket_id']!,
-          _fromBucketIdMeta,
-        ),
-      );
-    }
-    if (data.containsKey('to_bucket_id')) {
-      context.handle(
-        _toBucketIdMeta,
-        toBucketId.isAcceptableOrUnknown(
-          data['to_bucket_id']!,
-          _toBucketIdMeta,
-        ),
-      );
     }
     if (data.containsKey('drop_category_id')) {
       context.handle(
@@ -2210,14 +2039,6 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      fromBucketId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}from_bucket_id'],
-      ),
-      toBucketId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}to_bucket_id'],
-      ),
       dropCategoryId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}drop_category_id'],
@@ -2265,8 +2086,6 @@ class $DropsTable extends Drops with TableInfo<$DropsTable, DropTable> {
 
 class DropTable extends DataClass implements Insertable<DropTable> {
   final int id;
-  final int? fromBucketId;
-  final int? toBucketId;
   final int? dropCategoryId;
   final int? subscribedDropId;
   final int? parentDropId;
@@ -2278,8 +2097,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
   final DateTime updatedAt;
   const DropTable({
     required this.id,
-    this.fromBucketId,
-    this.toBucketId,
     this.dropCategoryId,
     this.subscribedDropId,
     this.parentDropId,
@@ -2294,12 +2111,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    if (!nullToAbsent || fromBucketId != null) {
-      map['from_bucket_id'] = Variable<int>(fromBucketId);
-    }
-    if (!nullToAbsent || toBucketId != null) {
-      map['to_bucket_id'] = Variable<int>(toBucketId);
-    }
     if (!nullToAbsent || dropCategoryId != null) {
       map['drop_category_id'] = Variable<int>(dropCategoryId);
     }
@@ -2323,12 +2134,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
   DropsCompanion toCompanion(bool nullToAbsent) {
     return DropsCompanion(
       id: Value(id),
-      fromBucketId: fromBucketId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(fromBucketId),
-      toBucketId: toBucketId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(toBucketId),
       dropCategoryId: dropCategoryId == null && nullToAbsent
           ? const Value.absent()
           : Value(dropCategoryId),
@@ -2356,8 +2161,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return DropTable(
       id: serializer.fromJson<int>(json['id']),
-      fromBucketId: serializer.fromJson<int?>(json['fromBucketId']),
-      toBucketId: serializer.fromJson<int?>(json['toBucketId']),
       dropCategoryId: serializer.fromJson<int?>(json['dropCategoryId']),
       subscribedDropId: serializer.fromJson<int?>(json['subscribedDropId']),
       parentDropId: serializer.fromJson<int?>(json['parentDropId']),
@@ -2374,8 +2177,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'fromBucketId': serializer.toJson<int?>(fromBucketId),
-      'toBucketId': serializer.toJson<int?>(toBucketId),
       'dropCategoryId': serializer.toJson<int?>(dropCategoryId),
       'subscribedDropId': serializer.toJson<int?>(subscribedDropId),
       'parentDropId': serializer.toJson<int?>(parentDropId),
@@ -2390,8 +2191,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
 
   DropTable copyWith({
     int? id,
-    Value<int?> fromBucketId = const Value.absent(),
-    Value<int?> toBucketId = const Value.absent(),
     Value<int?> dropCategoryId = const Value.absent(),
     Value<int?> subscribedDropId = const Value.absent(),
     Value<int?> parentDropId = const Value.absent(),
@@ -2403,8 +2202,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
     DateTime? updatedAt,
   }) => DropTable(
     id: id ?? this.id,
-    fromBucketId: fromBucketId.present ? fromBucketId.value : this.fromBucketId,
-    toBucketId: toBucketId.present ? toBucketId.value : this.toBucketId,
     dropCategoryId: dropCategoryId.present
         ? dropCategoryId.value
         : this.dropCategoryId,
@@ -2422,12 +2219,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
   DropTable copyWithCompanion(DropsCompanion data) {
     return DropTable(
       id: data.id.present ? data.id.value : this.id,
-      fromBucketId: data.fromBucketId.present
-          ? data.fromBucketId.value
-          : this.fromBucketId,
-      toBucketId: data.toBucketId.present
-          ? data.toBucketId.value
-          : this.toBucketId,
       dropCategoryId: data.dropCategoryId.present
           ? data.dropCategoryId.value
           : this.dropCategoryId,
@@ -2450,8 +2241,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
   String toString() {
     return (StringBuffer('DropTable(')
           ..write('id: $id, ')
-          ..write('fromBucketId: $fromBucketId, ')
-          ..write('toBucketId: $toBucketId, ')
           ..write('dropCategoryId: $dropCategoryId, ')
           ..write('subscribedDropId: $subscribedDropId, ')
           ..write('parentDropId: $parentDropId, ')
@@ -2468,8 +2257,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
   @override
   int get hashCode => Object.hash(
     id,
-    fromBucketId,
-    toBucketId,
     dropCategoryId,
     subscribedDropId,
     parentDropId,
@@ -2485,8 +2272,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
       identical(this, other) ||
       (other is DropTable &&
           other.id == this.id &&
-          other.fromBucketId == this.fromBucketId &&
-          other.toBucketId == this.toBucketId &&
           other.dropCategoryId == this.dropCategoryId &&
           other.subscribedDropId == this.subscribedDropId &&
           other.parentDropId == this.parentDropId &&
@@ -2500,8 +2285,6 @@ class DropTable extends DataClass implements Insertable<DropTable> {
 
 class DropsCompanion extends UpdateCompanion<DropTable> {
   final Value<int> id;
-  final Value<int?> fromBucketId;
-  final Value<int?> toBucketId;
   final Value<int?> dropCategoryId;
   final Value<int?> subscribedDropId;
   final Value<int?> parentDropId;
@@ -2513,8 +2296,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
   final Value<DateTime> updatedAt;
   const DropsCompanion({
     this.id = const Value.absent(),
-    this.fromBucketId = const Value.absent(),
-    this.toBucketId = const Value.absent(),
     this.dropCategoryId = const Value.absent(),
     this.subscribedDropId = const Value.absent(),
     this.parentDropId = const Value.absent(),
@@ -2527,8 +2308,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
   });
   DropsCompanion.insert({
     this.id = const Value.absent(),
-    this.fromBucketId = const Value.absent(),
-    this.toBucketId = const Value.absent(),
     this.dropCategoryId = const Value.absent(),
     this.subscribedDropId = const Value.absent(),
     this.parentDropId = const Value.absent(),
@@ -2543,8 +2322,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
        droppedOn = Value(droppedOn);
   static Insertable<DropTable> custom({
     Expression<int>? id,
-    Expression<int>? fromBucketId,
-    Expression<int>? toBucketId,
     Expression<int>? dropCategoryId,
     Expression<int>? subscribedDropId,
     Expression<int>? parentDropId,
@@ -2557,8 +2334,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (fromBucketId != null) 'from_bucket_id': fromBucketId,
-      if (toBucketId != null) 'to_bucket_id': toBucketId,
       if (dropCategoryId != null) 'drop_category_id': dropCategoryId,
       if (subscribedDropId != null) 'subscribed_drop_id': subscribedDropId,
       if (parentDropId != null) 'parent_drop_id': parentDropId,
@@ -2573,8 +2348,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
 
   DropsCompanion copyWith({
     Value<int>? id,
-    Value<int?>? fromBucketId,
-    Value<int?>? toBucketId,
     Value<int?>? dropCategoryId,
     Value<int?>? subscribedDropId,
     Value<int?>? parentDropId,
@@ -2587,8 +2360,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
   }) {
     return DropsCompanion(
       id: id ?? this.id,
-      fromBucketId: fromBucketId ?? this.fromBucketId,
-      toBucketId: toBucketId ?? this.toBucketId,
       dropCategoryId: dropCategoryId ?? this.dropCategoryId,
       subscribedDropId: subscribedDropId ?? this.subscribedDropId,
       parentDropId: parentDropId ?? this.parentDropId,
@@ -2606,12 +2377,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
-    }
-    if (fromBucketId.present) {
-      map['from_bucket_id'] = Variable<int>(fromBucketId.value);
-    }
-    if (toBucketId.present) {
-      map['to_bucket_id'] = Variable<int>(toBucketId.value);
     }
     if (dropCategoryId.present) {
       map['drop_category_id'] = Variable<int>(dropCategoryId.value);
@@ -2647,8 +2412,6 @@ class DropsCompanion extends UpdateCompanion<DropTable> {
   String toString() {
     return (StringBuffer('DropsCompanion(')
           ..write('id: $id, ')
-          ..write('fromBucketId: $fromBucketId, ')
-          ..write('toBucketId: $toBucketId, ')
           ..write('dropCategoryId: $dropCategoryId, ')
           ..write('subscribedDropId: $subscribedDropId, ')
           ..write('parentDropId: $parentDropId, ')
@@ -2680,20 +2443,6 @@ class $BucketSnapsTable extends BucketSnaps
     requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _bucketIdMeta = const VerificationMeta(
-    'bucketId',
-  );
-  @override
-  late final GeneratedColumn<int> bucketId = GeneratedColumn<int>(
-    'bucket_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES buckets (id) ON DELETE CASCADE',
     ),
   );
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
@@ -2743,7 +2492,6 @@ class $BucketSnapsTable extends BucketSnaps
   @override
   List<GeneratedColumn> get $columns => [
     id,
-    bucketId,
     amount,
     snappedOn,
     createdAt,
@@ -2763,14 +2511,6 @@ class $BucketSnapsTable extends BucketSnaps
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('bucket_id')) {
-      context.handle(
-        _bucketIdMeta,
-        bucketId.isAcceptableOrUnknown(data['bucket_id']!, _bucketIdMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_bucketIdMeta);
     }
     if (data.containsKey('amount')) {
       context.handle(
@@ -2813,10 +2553,6 @@ class $BucketSnapsTable extends BucketSnaps
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      bucketId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}bucket_id'],
-      )!,
       amount: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}amount'],
@@ -2844,14 +2580,12 @@ class $BucketSnapsTable extends BucketSnaps
 
 class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
   final int id;
-  final int bucketId;
   final int amount;
   final DateTime snappedOn;
   final DateTime createdAt;
   final DateTime updatedAt;
   const BucketSnapTable({
     required this.id,
-    required this.bucketId,
     required this.amount,
     required this.snappedOn,
     required this.createdAt,
@@ -2861,7 +2595,6 @@ class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['bucket_id'] = Variable<int>(bucketId);
     map['amount'] = Variable<int>(amount);
     map['snapped_on'] = Variable<DateTime>(snappedOn);
     map['created_at'] = Variable<DateTime>(createdAt);
@@ -2872,7 +2605,6 @@ class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
   BucketSnapsCompanion toCompanion(bool nullToAbsent) {
     return BucketSnapsCompanion(
       id: Value(id),
-      bucketId: Value(bucketId),
       amount: Value(amount),
       snappedOn: Value(snappedOn),
       createdAt: Value(createdAt),
@@ -2887,7 +2619,6 @@ class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return BucketSnapTable(
       id: serializer.fromJson<int>(json['id']),
-      bucketId: serializer.fromJson<int>(json['bucketId']),
       amount: serializer.fromJson<int>(json['amount']),
       snappedOn: serializer.fromJson<DateTime>(json['snappedOn']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -2899,7 +2630,6 @@ class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'bucketId': serializer.toJson<int>(bucketId),
       'amount': serializer.toJson<int>(amount),
       'snappedOn': serializer.toJson<DateTime>(snappedOn),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -2909,14 +2639,12 @@ class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
 
   BucketSnapTable copyWith({
     int? id,
-    int? bucketId,
     int? amount,
     DateTime? snappedOn,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => BucketSnapTable(
     id: id ?? this.id,
-    bucketId: bucketId ?? this.bucketId,
     amount: amount ?? this.amount,
     snappedOn: snappedOn ?? this.snappedOn,
     createdAt: createdAt ?? this.createdAt,
@@ -2925,7 +2653,6 @@ class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
   BucketSnapTable copyWithCompanion(BucketSnapsCompanion data) {
     return BucketSnapTable(
       id: data.id.present ? data.id.value : this.id,
-      bucketId: data.bucketId.present ? data.bucketId.value : this.bucketId,
       amount: data.amount.present ? data.amount.value : this.amount,
       snappedOn: data.snappedOn.present ? data.snappedOn.value : this.snappedOn,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
@@ -2937,7 +2664,6 @@ class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
   String toString() {
     return (StringBuffer('BucketSnapTable(')
           ..write('id: $id, ')
-          ..write('bucketId: $bucketId, ')
           ..write('amount: $amount, ')
           ..write('snappedOn: $snappedOn, ')
           ..write('createdAt: $createdAt, ')
@@ -2947,14 +2673,12 @@ class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, bucketId, amount, snappedOn, createdAt, updatedAt);
+  int get hashCode => Object.hash(id, amount, snappedOn, createdAt, updatedAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is BucketSnapTable &&
           other.id == this.id &&
-          other.bucketId == this.bucketId &&
           other.amount == this.amount &&
           other.snappedOn == this.snappedOn &&
           other.createdAt == this.createdAt &&
@@ -2963,14 +2687,12 @@ class BucketSnapTable extends DataClass implements Insertable<BucketSnapTable> {
 
 class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
   final Value<int> id;
-  final Value<int> bucketId;
   final Value<int> amount;
   final Value<DateTime> snappedOn;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const BucketSnapsCompanion({
     this.id = const Value.absent(),
-    this.bucketId = const Value.absent(),
     this.amount = const Value.absent(),
     this.snappedOn = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -2978,17 +2700,14 @@ class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
   });
   BucketSnapsCompanion.insert({
     this.id = const Value.absent(),
-    required int bucketId,
     required int amount,
     required DateTime snappedOn,
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-  }) : bucketId = Value(bucketId),
-       amount = Value(amount),
+  }) : amount = Value(amount),
        snappedOn = Value(snappedOn);
   static Insertable<BucketSnapTable> custom({
     Expression<int>? id,
-    Expression<int>? bucketId,
     Expression<int>? amount,
     Expression<DateTime>? snappedOn,
     Expression<DateTime>? createdAt,
@@ -2996,7 +2715,6 @@ class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (bucketId != null) 'bucket_id': bucketId,
       if (amount != null) 'amount': amount,
       if (snappedOn != null) 'snapped_on': snappedOn,
       if (createdAt != null) 'created_at': createdAt,
@@ -3006,7 +2724,6 @@ class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
 
   BucketSnapsCompanion copyWith({
     Value<int>? id,
-    Value<int>? bucketId,
     Value<int>? amount,
     Value<DateTime>? snappedOn,
     Value<DateTime>? createdAt,
@@ -3014,7 +2731,6 @@ class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
   }) {
     return BucketSnapsCompanion(
       id: id ?? this.id,
-      bucketId: bucketId ?? this.bucketId,
       amount: amount ?? this.amount,
       snappedOn: snappedOn ?? this.snappedOn,
       createdAt: createdAt ?? this.createdAt,
@@ -3027,9 +2743,6 @@ class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
-    }
-    if (bucketId.present) {
-      map['bucket_id'] = Variable<int>(bucketId.value);
     }
     if (amount.present) {
       map['amount'] = Variable<int>(amount.value);
@@ -3050,7 +2763,6 @@ class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
   String toString() {
     return (StringBuffer('BucketSnapsCompanion(')
           ..write('id: $id, ')
-          ..write('bucketId: $bucketId, ')
           ..write('amount: $amount, ')
           ..write('snappedOn: $snappedOn, ')
           ..write('createdAt: $createdAt, ')
@@ -3062,13 +2774,45 @@ class BucketSnapsCompanion extends UpdateCompanion<BucketSnapTable> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-  late final $BucketsTable buckets = $BucketsTable(this);
+  late final Buckets buckets = Buckets(this);
   late final $DropCategoriesTable dropCategories = $DropCategoriesTable(this);
   late final $SubscribedDropsTable subscribedDrops = $SubscribedDropsTable(
     this,
   );
   late final $DropsTable drops = $DropsTable(this);
   late final $BucketSnapsTable bucketSnaps = $BucketSnapsTable(this);
+  Selectable<BucketTable> getBuckets() {
+    return customSelect(
+      'SELECT * FROM buckets ORDER BY sort ASC',
+      variables: [],
+      readsFrom: {buckets},
+    ).asyncMap(buckets.mapFromRow);
+  }
+
+  Selectable<BucketTable> getBucketById(int var1) {
+    return customSelect(
+      'SELECT * FROM buckets WHERE id = ?1',
+      variables: [Variable<int>(var1)],
+      readsFrom: {buckets},
+    ).asyncMap(buckets.mapFromRow);
+  }
+
+  Selectable<BucketTable> getIncomeDefaultBucket() {
+    return customSelect(
+      'SELECT * FROM buckets WHERE is_income_default = TRUE',
+      variables: [],
+      readsFrom: {buckets},
+    ).asyncMap(buckets.mapFromRow);
+  }
+
+  Selectable<BucketTable> getExpenseDefaultBucket() {
+    return customSelect(
+      'SELECT * FROM buckets WHERE is_expense_default = TRUE',
+      variables: [],
+      readsFrom: {buckets},
+    ).asyncMap(buckets.mapFromRow);
+  }
+
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3109,13 +2853,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('drops', kind: UpdateKind.delete)],
-    ),
-    WritePropagation(
-      on: TableUpdateQuery.onTableName(
-        'buckets',
-        limitUpdateKind: UpdateKind.delete,
-      ),
-      result: [TableUpdate('bucket_snaps', kind: UpdateKind.delete)],
     ),
   ]);
 }

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bucket_drop/core/database/master_seed.dart';
 import 'package:bucket_drop/core/database/tables/bucket_snaps.dart';
-import 'package:bucket_drop/core/database/tables/buckets.dart';
+// import 'package:bucket_drop/core/database/tables/buckets.dart';
 import 'package:bucket_drop/core/database/tables/drop_categories.dart';
 import 'package:bucket_drop/core/database/tables/drops.dart';
 import 'package:bucket_drop/core/database/tables/subscribed_drops.dart';
@@ -20,8 +20,11 @@ import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 part 'app_database.g.dart';
 
 @DriftDatabase(
+  include: {
+    'tables/buckets.drift',
+  },
   tables: [
-    Buckets,
+    // Buckets,
     DropCategories,
     Drops,
     BucketSnaps,
@@ -44,7 +47,7 @@ class AppDatabase extends _$AppDatabase {
     },
     beforeOpen: (details) async {
       // データベース起動時にバケットが0件なら確実にシードを実行
-      final existingBuckets = await (select(buckets)..limit(1)).get();
+      final existingBuckets = await getBuckets().get();
       if (existingBuckets.isEmpty) {
         await runMasterSeed(this);
         await runUserSeed(this);

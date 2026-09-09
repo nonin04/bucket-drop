@@ -1,0 +1,29 @@
+import 'package:bucket_drop/core/enums/bucket_category.dart';
+
+CREATE TABLE buckets (
+  id INT NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  is_income_default BOOLEAN NOT NULL DEFAULT FALSE,
+  is_expense_default BOOLEAN NOT NULL DEFAULT FALSE,
+  bucket_category ENUM(BucketCategory) NOT NULL,
+  expected_rate REAL NOT NULL DEFAULT 0.0,
+  sort INT NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) AS BucketTable;
+
+-- バケット一覧取得
+getBuckets:
+SELECT * FROM buckets ORDER BY sort ASC;
+
+-- id指定で取得
+getBucketById:
+SELECT * FROM buckets WHERE id = ?;
+
+-- 収入のデフォルトバケットを取得
+getIncomeDefaultBucket:
+SELECT * FROM buckets WHERE is_income_default = TRUE;
+
+-- 支出のデフォルトバケットを取得
+getExpenseDefaultBucket:
+SELECT * FROM buckets WHERE is_expense_default = TRUE;

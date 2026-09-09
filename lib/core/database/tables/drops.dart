@@ -1,5 +1,4 @@
 // dart format off
-import 'package:bucket_drop/core/database/tables/buckets.dart';
 import 'package:bucket_drop/core/database/tables/drop_categories.dart';
 import 'package:bucket_drop/core/database/tables/subscribed_drops.dart';
 import 'package:drift/drift.dart';
@@ -8,8 +7,8 @@ import 'package:drift/drift.dart';
 @DataClassName('DropTable')
 class Drops extends Table {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get fromBucketId => integer().nullable().references(Buckets, #id, onDelete: KeyAction.restrict)();
-  IntColumn get toBucketId => integer().nullable().references(Buckets, #id, onDelete: KeyAction.restrict)();
+  // IntColumn get fromBucketId => integer().nullable().references(Buckets, #id, onDelete: KeyAction.restrict)();
+  // IntColumn get toBucketId => integer().nullable().references(Buckets, #id, onDelete: KeyAction.restrict)();
   IntColumn get dropCategoryId => integer().nullable().references(DropCategories, #id, onDelete: KeyAction.setNull)();
   IntColumn get subscribedDropId => integer().nullable().references(SubscribedDrops, #id, onDelete: KeyAction.setNull)();
   IntColumn get parentDropId => integer().nullable().references(Drops, #id, onDelete: KeyAction.cascade)();

@@ -1,5 +1,5 @@
 // dart format off
-import 'package:bucket_drop/core/database/tables/buckets.dart';
+// import 'package:bucket_drop/core/database/tables/buckets.dart';
 import 'package:bucket_drop/core/database/tables/drop_categories.dart';
 import 'package:bucket_drop/core/enums/frequency.dart';
 import 'package:drift/drift.dart';
@@ -9,9 +9,9 @@ import 'package:drift/drift.dart';
 class SubscribedDrops extends Table {
   IntColumn get id => integer().autoIncrement()();
   @ReferenceName('fromBucketId')
-  IntColumn get fromBucketId => integer().nullable().references(Buckets, #id, onDelete: KeyAction.restrict)();
+  // IntColumn get fromBucketId => integer().nullable().references(Buckets, #id, onDelete: KeyAction.restrict)();
   @ReferenceName('toBucketId')
-  IntColumn get toBucketId => integer().nullable().references(Buckets, #id, onDelete: KeyAction.restrict)();
+  // IntColumn get toBucketId => integer().nullable().references(Buckets, #id, onDelete: KeyAction.restrict)();
   IntColumn get dropCategoryId => integer().nullable().references(DropCategories, #id, onDelete: KeyAction.setNull)();
   TextColumn get title => text()();
   IntColumn get amount => integer()();
