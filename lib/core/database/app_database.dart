@@ -1,9 +1,6 @@
 import 'dart:io';
 
 import 'package:bucket_drop/core/database/master_seed.dart';
-import 'package:bucket_drop/core/database/tables/drop_categories.dart';
-import 'package:bucket_drop/core/database/tables/drops.dart';
-import 'package:bucket_drop/core/database/tables/subscribed_drops.dart';
 import 'package:bucket_drop/core/database/user_seed.dart';
 import 'package:bucket_drop/core/enums/bucket_category.dart';
 import 'package:bucket_drop/core/enums/drop_type.dart';
@@ -21,15 +18,10 @@ part 'app_database.g.dart';
   include: {
     'tables/buckets.drift',
     'tables/bucket_snaps.drift',
+    'tables/drop_categories.drift',
+    'tables/drops.drift',
+    'tables/subscribed_drops.drift',
   },
-
-  tables: [
-    // Buckets,
-    DropCategories,
-    Drops,
-    // BucketSnaps,
-    SubscribedDrops,
-  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());

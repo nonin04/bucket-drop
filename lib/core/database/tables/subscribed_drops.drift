@@ -1,0 +1,20 @@
+import 'package:bucket_drop/core/database/tables/buckets.drift';
+import 'package:bucket_drop/core/database/tables/drop_categories.drift';
+import 'package:bucket_drop/core/enums/frequency.dart';
+
+CREATE TABLE subscribed_drops (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  from_bucket_id INTEGER REFERENCES buckets(id) ON DELETE RESTRICT,
+  to_bucket_id INTEGER REFERENCES buckets(id) ON DELETE RESTRICT,
+  drop_category_id INTEGER REFERENCES drop_categories(id) ON DELETE SET NULL,
+  title TEXT NOT NULL,
+  amount INTEGER NOT NULL,
+  frequency ENUM(Frequency) NOT NULL,
+  repeat_interval INTEGER NOT NULL,
+  starts_on DATETIME NOT NULL,
+  ends_on DATETIME,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  notes TEXT,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) AS SubscribedDropTable;

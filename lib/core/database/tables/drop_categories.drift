@@ -1,0 +1,13 @@
+import 'package:bucket_drop/core/enums/drop_type.dart';
+
+CREATE TABLE drop_categories (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  icon TEXT NOT NULL,
+  drop_type ENUM(DropType) NOT NULL,
+  budget INTEGER NOT NULL DEFAULT 0,
+  sort INTEGER NOT NULL,
+  is_system BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) AS DropCategoryTable;

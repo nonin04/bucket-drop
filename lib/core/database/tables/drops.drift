@@ -1,0 +1,18 @@
+import 'package:bucket_drop/core/database/tables/buckets.drift';
+import 'package:bucket_drop/core/database/tables/drop_categories.drift';
+import 'package:bucket_drop/core/database/tables/subscribed_drops.drift';
+
+CREATE TABLE drops (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  from_bucket_id INTEGER REFERENCES buckets(id) ON DELETE RESTRICT,
+  to_bucket_id INTEGER REFERENCES buckets(id) ON DELETE RESTRICT,
+  drop_category_id INTEGER REFERENCES drop_categories(id) ON DELETE SET NULL,
+  subscribed_drop_id INTEGER REFERENCES subscribed_drops(id) ON DELETE SET NULL,
+  parent_drop_id INTEGER REFERENCES drops(id) ON DELETE CASCADE,
+  amount INTEGER NOT NULL,
+  dropped_on DATETIME NOT NULL,
+  notes TEXT,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) AS DropTable;
