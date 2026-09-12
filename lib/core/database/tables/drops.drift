@@ -16,3 +16,22 @@ CREATE TABLE drops (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) AS DropTable;
+
+
+-- 一覧取得
+getDrops: 
+SELECT 
+    drops.*,
+    fb.name as from_bucket_name,
+    tb.name as to_bucket_name,
+    dc.name as drop_category_name,
+    dc.icon as drop_category_icon,
+    sd.title as subscribed_drop_title,
+    sd.name as subscribed_drop_name,
+    sd.notes as subscribed_drop_notes
+FROM drops 
+LEFT JOIN buckets AS fb ON drops.from_bucket_id = fb.id
+LEFT JOIN buckets AS tb ON drops.to_bucket_id = tb.id
+LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id
+LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id
+ORDER BY dropped_on DESC;

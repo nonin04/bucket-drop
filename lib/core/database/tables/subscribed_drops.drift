@@ -4,6 +4,7 @@ import 'package:bucket_drop/core/enums/frequency.dart';
 
 CREATE TABLE subscribed_drops (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
   from_bucket_id INTEGER REFERENCES buckets(id) ON DELETE RESTRICT,
   to_bucket_id INTEGER REFERENCES buckets(id) ON DELETE RESTRICT,
   drop_category_id INTEGER REFERENCES drop_categories(id) ON DELETE SET NULL,

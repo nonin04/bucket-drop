@@ -1114,6 +1114,15 @@ class SubscribedDrops extends Table
     requiredDuringInsert: false,
     $customConstraints: 'NOT NULL PRIMARY KEY AUTOINCREMENT',
   );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    $customConstraints: 'NOT NULL',
+  );
   static const VerificationMeta _fromBucketIdMeta = const VerificationMeta(
     'fromBucketId',
   );
@@ -1253,6 +1262,7 @@ class SubscribedDrops extends Table
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    name,
     fromBucketId,
     toBucketId,
     dropCategoryId,
@@ -1281,6 +1291,14 @@ class SubscribedDrops extends Table
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('from_bucket_id')) {
       context.handle(
@@ -1387,6 +1405,10 @@ class SubscribedDrops extends Table
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
       fromBucketId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}from_bucket_id'],
@@ -1458,6 +1480,7 @@ class SubscribedDrops extends Table
 class SubscribedDropTable extends DataClass
     implements Insertable<SubscribedDropTable> {
   final int id;
+  final String name;
   final int? fromBucketId;
   final int? toBucketId;
   final int? dropCategoryId;
@@ -1473,6 +1496,7 @@ class SubscribedDropTable extends DataClass
   final DateTime updatedAt;
   const SubscribedDropTable({
     required this.id,
+    required this.name,
     this.fromBucketId,
     this.toBucketId,
     this.dropCategoryId,
@@ -1491,6 +1515,7 @@ class SubscribedDropTable extends DataClass
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
     if (!nullToAbsent || fromBucketId != null) {
       map['from_bucket_id'] = Variable<int>(fromBucketId);
     }
@@ -1524,6 +1549,7 @@ class SubscribedDropTable extends DataClass
   SubscribedDropsCompanion toCompanion(bool nullToAbsent) {
     return SubscribedDropsCompanion(
       id: Value(id),
+      name: Value(name),
       fromBucketId: fromBucketId == null && nullToAbsent
           ? const Value.absent()
           : Value(fromBucketId),
@@ -1557,6 +1583,7 @@ class SubscribedDropTable extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return SubscribedDropTable(
       id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
       fromBucketId: serializer.fromJson<int?>(json['from_bucket_id']),
       toBucketId: serializer.fromJson<int?>(json['to_bucket_id']),
       dropCategoryId: serializer.fromJson<int?>(json['drop_category_id']),
@@ -1579,6 +1606,7 @@ class SubscribedDropTable extends DataClass
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
       'from_bucket_id': serializer.toJson<int?>(fromBucketId),
       'to_bucket_id': serializer.toJson<int?>(toBucketId),
       'drop_category_id': serializer.toJson<int?>(dropCategoryId),
@@ -1599,6 +1627,7 @@ class SubscribedDropTable extends DataClass
 
   SubscribedDropTable copyWith({
     int? id,
+    String? name,
     Value<int?> fromBucketId = const Value.absent(),
     Value<int?> toBucketId = const Value.absent(),
     Value<int?> dropCategoryId = const Value.absent(),
@@ -1614,6 +1643,7 @@ class SubscribedDropTable extends DataClass
     DateTime? updatedAt,
   }) => SubscribedDropTable(
     id: id ?? this.id,
+    name: name ?? this.name,
     fromBucketId: fromBucketId.present ? fromBucketId.value : this.fromBucketId,
     toBucketId: toBucketId.present ? toBucketId.value : this.toBucketId,
     dropCategoryId: dropCategoryId.present
@@ -1633,6 +1663,7 @@ class SubscribedDropTable extends DataClass
   SubscribedDropTable copyWithCompanion(SubscribedDropsCompanion data) {
     return SubscribedDropTable(
       id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
       fromBucketId: data.fromBucketId.present
           ? data.fromBucketId.value
           : this.fromBucketId,
@@ -1661,6 +1692,7 @@ class SubscribedDropTable extends DataClass
   String toString() {
     return (StringBuffer('SubscribedDropTable(')
           ..write('id: $id, ')
+          ..write('name: $name, ')
           ..write('fromBucketId: $fromBucketId, ')
           ..write('toBucketId: $toBucketId, ')
           ..write('dropCategoryId: $dropCategoryId, ')
@@ -1681,6 +1713,7 @@ class SubscribedDropTable extends DataClass
   @override
   int get hashCode => Object.hash(
     id,
+    name,
     fromBucketId,
     toBucketId,
     dropCategoryId,
@@ -1700,6 +1733,7 @@ class SubscribedDropTable extends DataClass
       identical(this, other) ||
       (other is SubscribedDropTable &&
           other.id == this.id &&
+          other.name == this.name &&
           other.fromBucketId == this.fromBucketId &&
           other.toBucketId == this.toBucketId &&
           other.dropCategoryId == this.dropCategoryId &&
@@ -1717,6 +1751,7 @@ class SubscribedDropTable extends DataClass
 
 class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   final Value<int> id;
+  final Value<String> name;
   final Value<int?> fromBucketId;
   final Value<int?> toBucketId;
   final Value<int?> dropCategoryId;
@@ -1732,6 +1767,7 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   final Value<DateTime> updatedAt;
   const SubscribedDropsCompanion({
     this.id = const Value.absent(),
+    this.name = const Value.absent(),
     this.fromBucketId = const Value.absent(),
     this.toBucketId = const Value.absent(),
     this.dropCategoryId = const Value.absent(),
@@ -1748,6 +1784,7 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   });
   SubscribedDropsCompanion.insert({
     this.id = const Value.absent(),
+    required String name,
     this.fromBucketId = const Value.absent(),
     this.toBucketId = const Value.absent(),
     this.dropCategoryId = const Value.absent(),
@@ -1761,13 +1798,15 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
     this.notes = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-  }) : title = Value(title),
+  }) : name = Value(name),
+       title = Value(title),
        amount = Value(amount),
        frequency = Value(frequency),
        repeatInterval = Value(repeatInterval),
        startsOn = Value(startsOn);
   static Insertable<SubscribedDropTable> custom({
     Expression<int>? id,
+    Expression<String>? name,
     Expression<int>? fromBucketId,
     Expression<int>? toBucketId,
     Expression<int>? dropCategoryId,
@@ -1784,6 +1823,7 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (name != null) 'name': name,
       if (fromBucketId != null) 'from_bucket_id': fromBucketId,
       if (toBucketId != null) 'to_bucket_id': toBucketId,
       if (dropCategoryId != null) 'drop_category_id': dropCategoryId,
@@ -1802,6 +1842,7 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
 
   SubscribedDropsCompanion copyWith({
     Value<int>? id,
+    Value<String>? name,
     Value<int?>? fromBucketId,
     Value<int?>? toBucketId,
     Value<int?>? dropCategoryId,
@@ -1818,6 +1859,7 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   }) {
     return SubscribedDropsCompanion(
       id: id ?? this.id,
+      name: name ?? this.name,
       fromBucketId: fromBucketId ?? this.fromBucketId,
       toBucketId: toBucketId ?? this.toBucketId,
       dropCategoryId: dropCategoryId ?? this.dropCategoryId,
@@ -1839,6 +1881,9 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
     }
     if (fromBucketId.present) {
       map['from_bucket_id'] = Variable<int>(fromBucketId.value);
@@ -1888,6 +1933,7 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
   String toString() {
     return (StringBuffer('SubscribedDropsCompanion(')
           ..write('id: $id, ')
+          ..write('name: $name, ')
           ..write('fromBucketId: $fromBucketId, ')
           ..write('toBucketId: $toBucketId, ')
           ..write('dropCategoryId: $dropCategoryId, ')
@@ -3024,6 +3070,36 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final SubscribedDrops subscribedDrops = SubscribedDrops(this);
   late final Drops drops = Drops(this);
   late final BucketSnaps bucketSnaps = BucketSnaps(this);
+  Selectable<GetDropsResult> getDrops() {
+    return customSelect(
+      'SELECT drops.*, fb.name AS from_bucket_name, tb.name AS to_bucket_name, dc.name AS drop_category_name, dc.icon AS drop_category_icon, sd.title AS subscribed_drop_title, sd.name AS subscribed_drop_name, sd.notes AS subscribed_drop_notes FROM drops LEFT JOIN buckets AS fb ON drops.from_bucket_id = fb.id LEFT JOIN buckets AS tb ON drops.to_bucket_id = tb.id LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id ORDER BY dropped_on DESC',
+      variables: [],
+      readsFrom: {buckets, dropCategories, subscribedDrops, drops},
+    ).map(
+      (QueryRow row) => GetDropsResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        fromBucketId: row.readNullable<int>('from_bucket_id'),
+        toBucketId: row.readNullable<int>('to_bucket_id'),
+        dropCategoryId: row.readNullable<int>('drop_category_id'),
+        subscribedDropId: row.readNullable<int>('subscribed_drop_id'),
+        parentDropId: row.readNullable<int>('parent_drop_id'),
+        amount: row.read<int>('amount'),
+        droppedOn: row.read<DateTime>('dropped_on'),
+        notes: row.readNullable<String>('notes'),
+        createdAt: row.read<DateTime>('created_at'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        fromBucketName: row.readNullable<String>('from_bucket_name'),
+        toBucketName: row.readNullable<String>('to_bucket_name'),
+        dropCategoryName: row.readNullable<String>('drop_category_name'),
+        dropCategoryIcon: row.readNullable<String>('drop_category_icon'),
+        subscribedDropTitle: row.readNullable<String>('subscribed_drop_title'),
+        subscribedDropName: row.readNullable<String>('subscribed_drop_name'),
+        subscribedDropNotes: row.readNullable<String>('subscribed_drop_notes'),
+      ),
+    );
+  }
+
   Selectable<BucketTable> getBuckets() {
     return customSelect(
       'SELECT * FROM buckets ORDER BY sort ASC',
@@ -3098,4 +3174,47 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       result: [TableUpdate('bucket_snaps', kind: UpdateKind.delete)],
     ),
   ]);
+}
+
+class GetDropsResult {
+  final int id;
+  final String title;
+  final int? fromBucketId;
+  final int? toBucketId;
+  final int? dropCategoryId;
+  final int? subscribedDropId;
+  final int? parentDropId;
+  final int amount;
+  final DateTime droppedOn;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String? fromBucketName;
+  final String? toBucketName;
+  final String? dropCategoryName;
+  final String? dropCategoryIcon;
+  final String? subscribedDropTitle;
+  final String? subscribedDropName;
+  final String? subscribedDropNotes;
+  GetDropsResult({
+    required this.id,
+    required this.title,
+    this.fromBucketId,
+    this.toBucketId,
+    this.dropCategoryId,
+    this.subscribedDropId,
+    this.parentDropId,
+    required this.amount,
+    required this.droppedOn,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+    this.fromBucketName,
+    this.toBucketName,
+    this.dropCategoryName,
+    this.dropCategoryIcon,
+    this.subscribedDropTitle,
+    this.subscribedDropName,
+    this.subscribedDropNotes,
+  });
 }

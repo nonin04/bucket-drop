@@ -15,7 +15,7 @@ class AppNavigationBar extends ConsumerWidget {
       icon: Icon(
         icon,
         color: Colors.black,
-        fill: 0.0,
+        fill: 0,
         weight: 400,
         grade: -25,
         opticalSize: 24,
@@ -23,7 +23,7 @@ class AppNavigationBar extends ConsumerWidget {
       selectedIcon: Icon(
         icon,
         color: Colors.black,
-        fill: 1.0,
+        fill: 1,
         weight: 400,
         grade: -25,
         opticalSize: 24,
