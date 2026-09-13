@@ -17,13 +17,13 @@ CREATE TABLE drops (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) AS DropTable;
 
--- 新規作成
+-- C 新規作成
 createDrop:
 INSERT INTO drops $entry;
 
 
--- 一件取得
-readDrop:
+-- R 一件取得
+getDrop:
 SELECT 
     drops.*,
     fb.name as from_bucket_name,
@@ -40,8 +40,8 @@ LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id
 LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id
 WHERE drops.id = :id;
 
--- 全件取得
-readDrops: 
+-- R 全件取得
+getDrops: 
 SELECT 
     drops.*,
     fb.name as from_bucket_name,
@@ -57,7 +57,25 @@ LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id
 LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id
 ORDER BY dropped_on DESC;
 
--- 更新
+-- R 特定期間のドロップを取得
+getDropsInPeriod:
+SELECT 
+    drops.*,
+    fb.name as from_bucket_name,
+    tb.name as to_bucket_name,
+    dc.name as drop_category_name,
+    dc.icon as drop_category_icon,
+    sd.title as subscribed_drop_title,
+    sd.name as subscribed_drop_name
+FROM drops 
+LEFT JOIN buckets AS fb ON drops.from_bucket_id = fb.id
+LEFT JOIN buckets AS tb ON drops.to_bucket_id = tb.id
+LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id
+LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id
+WHERE unixepoch(dropped_on) BETWEEN unixepoch(:startDate) AND unixepoch(:endDate)
+ORDER BY dropped_on DESC;
+
+-- U 更新
 updateDrop:
 UPDATE drops SET 
   title = :title, 
@@ -72,6 +90,6 @@ UPDATE drops SET
   updated_at = CURRENT_TIMESTAMP 
 WHERE id = :id;
 
--- id指定削除
+-- D 削除
 deleteDrop:
 DELETE FROM drops WHERE id = :id;
