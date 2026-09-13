@@ -1,6 +1,7 @@
 import 'package:bucket_drop/core/constants/app_icons.dart';
 import 'package:bucket_drop/core/database/app_database.dart';
 import 'package:bucket_drop/features/drop/domain/drop.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,28 +17,50 @@ class DropRepository {
   DropRepository(this._db);
   final AppDatabase _db;
 
-// ① Future は async / await で書くのが標準
+  // 新規登録
+  Future<void> createDrop(Drop drop) async {
+    debugPrint('◼︎ DropRepository: createDrop() called');
+    await _db.createDrop(drop.toCompanion());
+  }
+
+  // ① Future は async / await で書くのが標準
   Future<List<Drop>> getDrops() async {
-    debugPrint('DropRepository: getDrops() called');
-    final rows = await _db.getDrops().get();
+    debugPrint('◼ DropRepository: getDrops() called');
+    final rows = await _db.readDrops().get();
     return rows.map((r) => r.toDomain()).toList();
   }
 
-// ② Stream は .map() でパイプライン変換するのが標準
+  // ② Stream は .map() でパイプライン変換するのが標準
   Stream<List<Drop>> watchDrops() {
-    return _db
-        .getDrops()
-        .watch()
-        .map((rows) => rows.map((r) => r.toDomain()).toList());
+    debugPrint('◼ DropRepository: watchDrops() called');
+    return _db.readDrops().watch().map(
+      (rows) => rows.map((r) => r.toDomain()).toList(),
+    );
+  }
+
+  Future<void> updateDrop(Drop drop) async {
+    debugPrint('◼︎ DropRepository: updateDrop(${drop.id}) called');
+    await _db.updateDrop(
+      drop.title,
+      drop.fromBucketId,
+      drop.toBucketId,
+      drop.dropCategoryId,
+      drop.subscribedDropId,
+      drop.parentDropId,
+      drop.amount,
+      drop.droppedOn,
+      drop.notes,
+      drop.id,
+    );
   }
 
   Future<void> deleteDrop(int id) async {
-    debugPrint('DropRepository: deleteDrop($id) called');
+    debugPrint('◼︎ DropRepository: deleteDrop($id) called');
     await _db.deleteDrop(id);
   }
 }
 
-extension on GetDropsResult {
+extension on ReadDropsResult {
   Drop toDomain() => Drop(
     id: id,
     title: title,
@@ -55,8 +78,21 @@ extension on GetDropsResult {
     dropCategoryIcon: AppIcons.fromName(dropCategoryIcon),
     subscribedDropTitle: subscribedDropTitle,
     subscribedDropName: subscribedDropName,
-    subscribedDropNotes: subscribedDropNotes,
     createdAt: createdAt,
     updatedAt: updatedAt,
+  );
+}
+
+extension on Drop {
+  DropsCompanion toCompanion() => DropsCompanion.insert(
+    title: title,
+    amount: amount,
+    droppedOn: droppedOn,
+    fromBucketId: Value(fromBucketId),
+    toBucketId: Value(toBucketId),
+    dropCategoryId: Value(dropCategoryId),
+    subscribedDropId: Value(subscribedDropId),
+    parentDropId: Value(parentDropId),
+    notes: Value(notes),
   );
 }
