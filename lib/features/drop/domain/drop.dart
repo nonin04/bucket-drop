@@ -24,6 +24,5 @@ abstract class Drop with _$Drop {
     AppIcons? dropCategoryIcon,
     String? subscribedDropTitle,
     String? subscribedDropName,
-    String? subscribedDropNotes,
   }) = _Drop;
 }

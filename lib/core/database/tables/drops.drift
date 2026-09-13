@@ -17,9 +17,13 @@ CREATE TABLE drops (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) AS DropTable;
 
+-- 新規作成
+createDrop:
+INSERT INTO drops $entry;
 
--- 一覧取得
-getDrops: 
+
+-- 一件取得
+readDrop:
 SELECT 
     drops.*,
     fb.name as from_bucket_name,
@@ -34,9 +38,40 @@ LEFT JOIN buckets AS fb ON drops.from_bucket_id = fb.id
 LEFT JOIN buckets AS tb ON drops.to_bucket_id = tb.id
 LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id
 LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id
+WHERE drops.id = :id;
+
+-- 全件取得
+readDrops: 
+SELECT 
+    drops.*,
+    fb.name as from_bucket_name,
+    tb.name as to_bucket_name,
+    dc.name as drop_category_name,
+    dc.icon as drop_category_icon,
+    sd.title as subscribed_drop_title,
+    sd.name as subscribed_drop_name
+FROM drops 
+LEFT JOIN buckets AS fb ON drops.from_bucket_id = fb.id
+LEFT JOIN buckets AS tb ON drops.to_bucket_id = tb.id
+LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id
+LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id
 ORDER BY dropped_on DESC;
 
+-- 更新
+updateDrop:
+UPDATE drops SET 
+  title = :title, 
+  from_bucket_id = :fromBucketId, 
+  to_bucket_id = :toBucketId, 
+  drop_category_id = :dropCategoryId, 
+  subscribed_drop_id = :subscribedDropId, 
+  parent_drop_id = :parentDropId, 
+  amount = :amount, 
+  dropped_on = :droppedOn, 
+  notes = :notes, 
+  updated_at = CURRENT_TIMESTAMP 
+WHERE id = :id;
 
 -- id指定削除
 deleteDrop:
-DELETE FROM drops WHERE id = ?;
+DELETE FROM drops WHERE id = :id;
