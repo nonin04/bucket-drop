@@ -13,7 +13,7 @@ part of 'drop_index_controller.dart';
 final dropIndexControllerProvider = DropIndexControllerProvider._();
 
 final class DropIndexControllerProvider
-    extends $AsyncNotifierProvider<DropIndexController, List<Drop>> {
+    extends $StreamNotifierProvider<DropIndexController, List<Drop>> {
   DropIndexControllerProvider._()
     : super(
         from: null,
@@ -34,10 +34,10 @@ final class DropIndexControllerProvider
 }
 
 String _$dropIndexControllerHash() =>
-    r'19a4d649b695c9f0be5cfbf3fb1cec378f191c99';
+    r'2de88471a74440bc50885157753bfe2697c37b45';
 
-abstract class _$DropIndexController extends $AsyncNotifier<List<Drop>> {
-  FutureOr<List<Drop>> build();
+abstract class _$DropIndexController extends $StreamNotifier<List<Drop>> {
+  Stream<List<Drop>> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {

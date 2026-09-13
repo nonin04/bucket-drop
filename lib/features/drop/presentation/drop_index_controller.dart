@@ -7,13 +7,12 @@ part 'drop_index_controller.g.dart';
 @riverpod
 class DropIndexController extends _$DropIndexController {
   @override
-  Future<List<Drop>> build() async {
-    return ref.watch(dropRepositoryProvider).getDrops();
+  Stream<List<Drop>> build() {
+    return ref.watch(dropRepositoryProvider).watchDrops();
   }
 
-
-  Stream<List<Drop>> watchDrops() {
-    return ref.watch(dropRepositoryProvider).watchDrops();
+  Future<List<Drop>> getDrops() async {
+    return ref.read(dropRepositoryProvider).getDrops();
   }
 
   Future<void> deleteDrop(int id) async {
