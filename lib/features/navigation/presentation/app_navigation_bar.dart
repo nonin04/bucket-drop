@@ -1,6 +1,6 @@
+import 'package:bucket_drop/features/navigation/presentation/index_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:bucket_drop/features/navigation/presentation/index_controller.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class AppNavigationBar extends ConsumerWidget {

@@ -6,7 +6,7 @@ part 'drop.freezed.dart';
 @freezed
 abstract class Drop with _$Drop {
   const factory Drop({
-    required int id, //テーブル項目
+    required int id,
     required String title,
     required int amount,
     required DateTime droppedOn,
