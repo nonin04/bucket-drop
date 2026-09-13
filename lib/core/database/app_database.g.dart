@@ -51,12 +51,12 @@ class Buckets extends Table with TableInfo<Buckets, BucketTable> {
     $customConstraints: 'NOT NULL DEFAULT FALSE',
     defaultValue: const CustomExpression('FALSE'),
   );
-  late final GeneratedColumnWithTypeConverter<BucketCategory, int>
-  bucketCategory = GeneratedColumn<int>(
+  late final GeneratedColumnWithTypeConverter<BucketCategory, String>
+  bucketCategory = GeneratedColumn<String>(
     'bucket_category',
     aliasedName,
     false,
-    type: DriftSqlType.int,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
     $customConstraints: 'NOT NULL',
   ).withConverter<BucketCategory>(Buckets.$converterbucketCategory);
@@ -214,7 +214,7 @@ class Buckets extends Table with TableInfo<Buckets, BucketTable> {
       )!,
       bucketCategory: Buckets.$converterbucketCategory.fromSql(
         attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
+          DriftSqlType.string,
           data['${effectivePrefix}bucket_category'],
         )!,
       ),
@@ -242,8 +242,10 @@ class Buckets extends Table with TableInfo<Buckets, BucketTable> {
     return Buckets(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<BucketCategory, int, int> $converterbucketCategory =
-      const EnumIndexConverter<BucketCategory>(BucketCategory.values);
+  static JsonTypeConverter2<BucketCategory, String, String>
+  $converterbucketCategory = const EnumNameConverter<BucketCategory>(
+    BucketCategory.values,
+  );
   @override
   bool get dontWriteConstraints => true;
 }
@@ -277,7 +279,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     map['is_income_default'] = Variable<bool>(isIncomeDefault);
     map['is_expense_default'] = Variable<bool>(isExpenseDefault);
     {
-      map['bucket_category'] = Variable<int>(
+      map['bucket_category'] = Variable<String>(
         Buckets.$converterbucketCategory.toSql(bucketCategory),
       );
     }
@@ -313,7 +315,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       isIncomeDefault: serializer.fromJson<bool>(json['is_income_default']),
       isExpenseDefault: serializer.fromJson<bool>(json['is_expense_default']),
       bucketCategory: Buckets.$converterbucketCategory.fromJson(
-        serializer.fromJson<int>(json['bucket_category']),
+        serializer.fromJson<String>(json['bucket_category']),
       ),
       expectedRate: serializer.fromJson<double>(json['expected_rate']),
       sort: serializer.fromJson<int>(json['sort']),
@@ -329,7 +331,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       'name': serializer.toJson<String>(name),
       'is_income_default': serializer.toJson<bool>(isIncomeDefault),
       'is_expense_default': serializer.toJson<bool>(isExpenseDefault),
-      'bucket_category': serializer.toJson<int>(
+      'bucket_category': serializer.toJson<String>(
         Buckets.$converterbucketCategory.toJson(bucketCategory),
       ),
       'expected_rate': serializer.toJson<double>(expectedRate),
@@ -464,7 +466,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     Expression<String>? name,
     Expression<bool>? isIncomeDefault,
     Expression<bool>? isExpenseDefault,
-    Expression<int>? bucketCategory,
+    Expression<String>? bucketCategory,
     Expression<double>? expectedRate,
     Expression<int>? sort,
     Expression<DateTime>? createdAt,
@@ -523,7 +525,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
       map['is_expense_default'] = Variable<bool>(isExpenseDefault.value);
     }
     if (bucketCategory.present) {
-      map['bucket_category'] = Variable<int>(
+      map['bucket_category'] = Variable<String>(
         Buckets.$converterbucketCategory.toSql(bucketCategory.value),
       );
     }
@@ -593,12 +595,12 @@ class DropCategories extends Table
     requiredDuringInsert: true,
     $customConstraints: 'NOT NULL',
   );
-  late final GeneratedColumnWithTypeConverter<DropType, int> dropType =
-      GeneratedColumn<int>(
+  late final GeneratedColumnWithTypeConverter<DropType, String> dropType =
+      GeneratedColumn<String>(
         'drop_type',
         aliasedName,
         false,
-        type: DriftSqlType.int,
+        type: DriftSqlType.string,
         requiredDuringInsert: true,
         $customConstraints: 'NOT NULL',
       ).withConverter<DropType>(DropCategories.$converterdropType);
@@ -755,7 +757,7 @@ class DropCategories extends Table
       )!,
       dropType: DropCategories.$converterdropType.fromSql(
         attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
+          DriftSqlType.string,
           data['${effectivePrefix}drop_type'],
         )!,
       ),
@@ -787,8 +789,8 @@ class DropCategories extends Table
     return DropCategories(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<DropType, int, int> $converterdropType =
-      const EnumIndexConverter<DropType>(DropType.values);
+  static JsonTypeConverter2<DropType, String, String> $converterdropType =
+      const EnumNameConverter<DropType>(DropType.values);
   @override
   bool get dontWriteConstraints => true;
 }
@@ -822,7 +824,7 @@ class DropCategoryTable extends DataClass
     map['name'] = Variable<String>(name);
     map['icon'] = Variable<String>(icon);
     {
-      map['drop_type'] = Variable<int>(
+      map['drop_type'] = Variable<String>(
         DropCategories.$converterdropType.toSql(dropType),
       );
     }
@@ -858,7 +860,7 @@ class DropCategoryTable extends DataClass
       name: serializer.fromJson<String>(json['name']),
       icon: serializer.fromJson<String>(json['icon']),
       dropType: DropCategories.$converterdropType.fromJson(
-        serializer.fromJson<int>(json['drop_type']),
+        serializer.fromJson<String>(json['drop_type']),
       ),
       budget: serializer.fromJson<int>(json['budget']),
       sort: serializer.fromJson<int>(json['sort']),
@@ -874,7 +876,7 @@ class DropCategoryTable extends DataClass
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'icon': serializer.toJson<String>(icon),
-      'drop_type': serializer.toJson<int>(
+      'drop_type': serializer.toJson<String>(
         DropCategories.$converterdropType.toJson(dropType),
       ),
       'budget': serializer.toJson<int>(budget),
@@ -1002,7 +1004,7 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? icon,
-    Expression<int>? dropType,
+    Expression<String>? dropType,
     Expression<int>? budget,
     Expression<int>? sort,
     Expression<bool>? isSystem,
@@ -1059,7 +1061,7 @@ class DropCategoriesCompanion extends UpdateCompanion<DropCategoryTable> {
       map['icon'] = Variable<String>(icon.value);
     }
     if (dropType.present) {
-      map['drop_type'] = Variable<int>(
+      map['drop_type'] = Variable<String>(
         DropCategories.$converterdropType.toSql(dropType.value),
       );
     }
@@ -1174,12 +1176,12 @@ class SubscribedDrops extends Table
     requiredDuringInsert: true,
     $customConstraints: 'NOT NULL',
   );
-  late final GeneratedColumnWithTypeConverter<Frequency, int> frequency =
-      GeneratedColumn<int>(
+  late final GeneratedColumnWithTypeConverter<Frequency, String> frequency =
+      GeneratedColumn<String>(
         'frequency',
         aliasedName,
         false,
-        type: DriftSqlType.int,
+        type: DriftSqlType.string,
         requiredDuringInsert: true,
         $customConstraints: 'NOT NULL',
       ).withConverter<Frequency>(SubscribedDrops.$converterfrequency);
@@ -1431,7 +1433,7 @@ class SubscribedDrops extends Table
       )!,
       frequency: SubscribedDrops.$converterfrequency.fromSql(
         attachedDatabase.typeMapping.read(
-          DriftSqlType.int,
+          DriftSqlType.string,
           data['${effectivePrefix}frequency'],
         )!,
       ),
@@ -1471,8 +1473,8 @@ class SubscribedDrops extends Table
     return SubscribedDrops(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<Frequency, int, int> $converterfrequency =
-      const EnumIndexConverter<Frequency>(Frequency.values);
+  static JsonTypeConverter2<Frequency, String, String> $converterfrequency =
+      const EnumNameConverter<Frequency>(Frequency.values);
   @override
   bool get dontWriteConstraints => true;
 }
@@ -1528,7 +1530,7 @@ class SubscribedDropTable extends DataClass
     map['title'] = Variable<String>(title);
     map['amount'] = Variable<int>(amount);
     {
-      map['frequency'] = Variable<int>(
+      map['frequency'] = Variable<String>(
         SubscribedDrops.$converterfrequency.toSql(frequency),
       );
     }
@@ -1590,7 +1592,7 @@ class SubscribedDropTable extends DataClass
       title: serializer.fromJson<String>(json['title']),
       amount: serializer.fromJson<int>(json['amount']),
       frequency: SubscribedDrops.$converterfrequency.fromJson(
-        serializer.fromJson<int>(json['frequency']),
+        serializer.fromJson<String>(json['frequency']),
       ),
       repeatInterval: serializer.fromJson<int>(json['repeat_interval']),
       startsOn: serializer.fromJson<DateTime>(json['starts_on']),
@@ -1612,7 +1614,7 @@ class SubscribedDropTable extends DataClass
       'drop_category_id': serializer.toJson<int?>(dropCategoryId),
       'title': serializer.toJson<String>(title),
       'amount': serializer.toJson<int>(amount),
-      'frequency': serializer.toJson<int>(
+      'frequency': serializer.toJson<String>(
         SubscribedDrops.$converterfrequency.toJson(frequency),
       ),
       'repeat_interval': serializer.toJson<int>(repeatInterval),
@@ -1812,7 +1814,7 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
     Expression<int>? dropCategoryId,
     Expression<String>? title,
     Expression<int>? amount,
-    Expression<int>? frequency,
+    Expression<String>? frequency,
     Expression<int>? repeatInterval,
     Expression<DateTime>? startsOn,
     Expression<DateTime>? endsOn,
@@ -1901,7 +1903,7 @@ class SubscribedDropsCompanion extends UpdateCompanion<SubscribedDropTable> {
       map['amount'] = Variable<int>(amount.value);
     }
     if (frequency.present) {
-      map['frequency'] = Variable<int>(
+      map['frequency'] = Variable<String>(
         SubscribedDrops.$converterfrequency.toSql(frequency.value),
       );
     }
@@ -3100,6 +3102,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     );
   }
 
+  Future<int> deleteDrop(int var1) {
+    return customUpdate(
+      'DELETE FROM drops WHERE id = ?1',
+      variables: [Variable<int>(var1)],
+      updates: {drops},
+      updateKind: UpdateKind.delete,
+    );
+  }
+
   Selectable<BucketTable> getBuckets() {
     return customSelect(
       'SELECT * FROM buckets ORDER BY sort ASC',
@@ -3174,6 +3185,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       result: [TableUpdate('bucket_snaps', kind: UpdateKind.delete)],
     ),
   ]);
+  @override
+  DriftDatabaseOptions get options =>
+      const DriftDatabaseOptions(storeDateTimeAsText: true);
 }
 
 class GetDropsResult {

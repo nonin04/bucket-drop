@@ -3,11 +3,11 @@ import 'package:flutter/foundation.dart';
 
 // コメントは記述しないこと
 const String seedSql = '''
-INSERT INTO drop_categories (name, icon, drop_type, budget, sort, is_system)
+INSERT OR REPLACE INTO drop_categories (id, name, icon, drop_type, budget, sort, is_system)
 VALUES
-  ('手数料', 'receipt_long', 'expense', 0, 99997, true),
-  ('雑費', 'more_horiz', 'expense', 0, 99998, true),
-  ('雑収入', 'savings', 'income', 0, 99999, true);
+  (99997, '手数料', 'receipt_long', 'expense', 0, 99997, true),
+  (99998, '雑費', 'more_horiz', 'expense', 0, 99998, true),
+  (99999, '雑収入', 'savings', 'income', 0, 99999, true);
 ''';
 
 Future<void> runMasterSeed(GeneratedDatabase db) async {

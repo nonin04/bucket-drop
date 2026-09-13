@@ -10,7 +10,7 @@ CREATE TABLE subscribed_drops (
   drop_category_id INTEGER REFERENCES drop_categories(id) ON DELETE SET NULL,
   title TEXT NOT NULL,
   amount INTEGER NOT NULL,
-  frequency ENUM(Frequency) NOT NULL,
+  frequency ENUMNAME(Frequency) NOT NULL,
   repeat_interval INTEGER NOT NULL,
   starts_on DATETIME NOT NULL,
   ends_on DATETIME,

@@ -27,7 +27,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -36,6 +36,15 @@ class AppDatabase extends _$AppDatabase {
       await runMasterSeed(this);
       await runUserSeed(this);
       debugPrint('🌱 初回シードデータを投入しました');
+    },
+    onUpgrade: (m, from, to) async {
+      // 開発中用：全テーブルをドロップして最初から作り直す
+      for (final table in allTables) {
+        await m.deleteTable(table.actualTableName);
+      }
+      await m.createAll();
+      await runMasterSeed(this);
+      await runUserSeed(this);
     },
     beforeOpen: (details) async {
       // データベース起動時にバケットが0件なら確実にシードを実行

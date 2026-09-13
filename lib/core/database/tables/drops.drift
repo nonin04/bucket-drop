@@ -35,3 +35,8 @@ LEFT JOIN buckets AS tb ON drops.to_bucket_id = tb.id
 LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id
 LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id
 ORDER BY dropped_on DESC;
+
+
+-- id指定削除
+deleteDrop:
+DELETE FROM drops WHERE id = ?;

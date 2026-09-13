@@ -5,7 +5,7 @@ CREATE TABLE buckets (
   name TEXT NOT NULL,
   is_income_default BOOLEAN NOT NULL DEFAULT FALSE,
   is_expense_default BOOLEAN NOT NULL DEFAULT FALSE,
-  bucket_category ENUM(BucketCategory) NOT NULL,
+  bucket_category ENUMNAME(BucketCategory) NOT NULL,
   expected_rate REAL NOT NULL DEFAULT 0.0,
   sort INT NOT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
