@@ -11,3 +11,35 @@ CREATE TABLE drop_categories (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) AS DropCategoryTable;
+
+
+-- C 新規登録
+createDropCategory:
+INSERT INTO drop_categories $entry;
+
+
+-- R 一件取得
+getDropCategory:
+SELECT * FROM drop_categories WHERE id = :id;
+
+
+-- R 全件取得
+getDropCategories:
+SELECT * FROM drop_categories ORDER BY sort ASC;
+
+-- U 更新
+updateDropCategory:
+UPDATE drop_categories SET
+    name = :name,
+    icon = :icon,
+    drop_type = :dropType,
+    budget = :budget,
+    sort = :sort,
+    is_system = :isSystem,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = :id;
+
+
+-- D 削除
+deleteDropCategory:
+DELETE FROM drop_categories WHERE id = :id;

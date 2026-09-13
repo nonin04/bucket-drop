@@ -8,3 +8,28 @@ CREATE TABLE bucket_snaps (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) AS BucketSnapTable;
+
+-- C 新規登録
+createBucketSnap:
+INSERT INTO bucket_snaps $entry;
+
+-- R 一件取得
+getBucketSnap:
+SELECT * FROM bucket_snaps WHERE id = :id;
+
+-- R 全件取得
+getBucketSnaps:
+SELECT * FROM bucket_snaps ORDER BY snapped_on DESC;
+
+-- U 更新
+updateBucketSnap:
+UPDATE bucket_snaps SET 
+    bucket_id = :bucketId,
+    amount = :amount,
+    snapped_on = :snappedOn,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = :id;
+
+-- D 削除
+deleteBucketSnap:
+DELETE FROM bucket_snaps WHERE id = :id;

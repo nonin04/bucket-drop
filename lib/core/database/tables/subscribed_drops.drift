@@ -19,3 +19,46 @@ CREATE TABLE subscribed_drops (
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) AS SubscribedDropTable;
+
+-- C 新規登録
+createSubscribedDrop:
+INSERT INTO subscribed_drops $entry;
+
+
+-- R 一件取得
+getSubscribedDrop:
+SELECT * FROM subscribed_drops WHERE id = :id;
+
+-- R 全件取得
+getSubscribedDrops:
+SELECT * FROM subscribed_drops ORDER BY starts_on DESC;
+
+-- R アクティブなもののみ
+getActiveSubscribedDrops:
+SELECT * FROM subscribed_drops WHERE is_active = TRUE ORDER BY starts_on DESC;
+
+-- R 非アクティブなもののみ
+getUnactiveSubscribedDrops:
+SELECT * FROM subscribed_drops WHERE is_active = FALSE ORDER BY starts_on DESC;
+
+-- U 更新
+updateSubscribedDrop:
+UPDATE subscribed_drops SET
+  name = :name,
+  from_bucket_id = :fromBucketId,
+  to_bucket_id = :toBucketId,
+  drop_category_id = :dropCategoryId,
+  title = :title,
+  amount = :amount,
+  frequency = :frequency,
+  repeat_interval = :repeatInterval,
+  starts_on = :startsOn,
+  ends_on = :endsOn,
+  is_active = :isActive,
+  notes = :notes,
+  updated_at = CURRENT_TIMESTAMP
+WHERE id = :id;
+
+-- D 削除
+deleteSubscribedDrop:
+DELETE FROM subscribed_drops WHERE id = :id;

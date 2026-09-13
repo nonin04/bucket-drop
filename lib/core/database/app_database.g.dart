@@ -3072,6 +3072,99 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final SubscribedDrops subscribedDrops = SubscribedDrops(this);
   late final Drops drops = Drops(this);
   late final BucketSnaps bucketSnaps = BucketSnaps(this);
+  Future<int> createSubscribedDrop(Insertable<SubscribedDropTable> entry) {
+    var $arrayStartIndex = 1;
+    final generatedentry = $writeInsertable(
+      this.subscribedDrops,
+      entry,
+      startIndex: $arrayStartIndex,
+    );
+    $arrayStartIndex += generatedentry.amountOfVariables;
+    return customInsert(
+      'INSERT INTO subscribed_drops ${generatedentry.sql}',
+      variables: [...generatedentry.introducedVariables],
+      updates: {subscribedDrops},
+    );
+  }
+
+  Selectable<SubscribedDropTable> getSubscribedDrop(int id) {
+    return customSelect(
+      'SELECT * FROM subscribed_drops WHERE id = ?1',
+      variables: [Variable<int>(id)],
+      readsFrom: {subscribedDrops},
+    ).asyncMap(subscribedDrops.mapFromRow);
+  }
+
+  Selectable<SubscribedDropTable> getSubscribedDrops() {
+    return customSelect(
+      'SELECT * FROM subscribed_drops ORDER BY starts_on DESC',
+      variables: [],
+      readsFrom: {subscribedDrops},
+    ).asyncMap(subscribedDrops.mapFromRow);
+  }
+
+  Selectable<SubscribedDropTable> getActiveSubscribedDrops() {
+    return customSelect(
+      'SELECT * FROM subscribed_drops WHERE is_active = TRUE ORDER BY starts_on DESC',
+      variables: [],
+      readsFrom: {subscribedDrops},
+    ).asyncMap(subscribedDrops.mapFromRow);
+  }
+
+  Selectable<SubscribedDropTable> getUnactiveSubscribedDrops() {
+    return customSelect(
+      'SELECT * FROM subscribed_drops WHERE is_active = FALSE ORDER BY starts_on DESC',
+      variables: [],
+      readsFrom: {subscribedDrops},
+    ).asyncMap(subscribedDrops.mapFromRow);
+  }
+
+  Future<int> updateSubscribedDrop(
+    String name,
+    int? fromBucketId,
+    int? toBucketId,
+    int? dropCategoryId,
+    String title,
+    int amount,
+    Frequency frequency,
+    int repeatInterval,
+    DateTime startsOn,
+    DateTime? endsOn,
+    bool isActive,
+    String? notes,
+    int id,
+  ) {
+    return customUpdate(
+      'UPDATE subscribed_drops SET name = ?1, from_bucket_id = ?2, to_bucket_id = ?3, drop_category_id = ?4, title = ?5, amount = ?6, frequency = ?7, repeat_interval = ?8, starts_on = ?9, ends_on = ?10, is_active = ?11, notes = ?12, updated_at = CURRENT_TIMESTAMP WHERE id = ?13',
+      variables: [
+        Variable<String>(name),
+        Variable<int>(fromBucketId),
+        Variable<int>(toBucketId),
+        Variable<int>(dropCategoryId),
+        Variable<String>(title),
+        Variable<int>(amount),
+        Variable<String>(SubscribedDrops.$converterfrequency.toSql(frequency)),
+        Variable<int>(repeatInterval),
+        Variable<DateTime>(startsOn),
+        Variable<DateTime>(endsOn),
+        Variable<bool>(isActive),
+        Variable<String>(notes),
+        Variable<int>(id),
+      ],
+      updates: {subscribedDrops},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> deleteSubscribedDrop(int id) {
+    return customUpdate(
+      'DELETE FROM subscribed_drops WHERE id = ?1',
+      variables: [Variable<int>(id)],
+      updates: {subscribedDrops},
+      updateKind: UpdateKind.delete,
+    );
+  }
+
   Future<int> createDrop(Insertable<DropTable> entry) {
     var $arrayStartIndex = 1;
     final generatedentry = $writeInsertable(
@@ -3087,13 +3180,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     );
   }
 
-  Selectable<ReadDropResult> readDrop(int id) {
+  Selectable<GetDropResult> getDrop(int id) {
     return customSelect(
       'SELECT drops.*, fb.name AS from_bucket_name, tb.name AS to_bucket_name, dc.name AS drop_category_name, dc.icon AS drop_category_icon, sd.title AS subscribed_drop_title, sd.name AS subscribed_drop_name, sd.notes AS subscribed_drop_notes FROM drops LEFT JOIN buckets AS fb ON drops.from_bucket_id = fb.id LEFT JOIN buckets AS tb ON drops.to_bucket_id = tb.id LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id WHERE drops.id = ?1',
       variables: [Variable<int>(id)],
       readsFrom: {buckets, dropCategories, subscribedDrops, drops},
     ).map(
-      (QueryRow row) => ReadDropResult(
+      (QueryRow row) => GetDropResult(
         id: row.read<int>('id'),
         title: row.read<String>('title'),
         fromBucketId: row.readNullable<int>('from_bucket_id'),
@@ -3117,13 +3210,45 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     );
   }
 
-  Selectable<ReadDropsResult> readDrops() {
+  Selectable<GetDropsResult> getDrops() {
     return customSelect(
       'SELECT drops.*, fb.name AS from_bucket_name, tb.name AS to_bucket_name, dc.name AS drop_category_name, dc.icon AS drop_category_icon, sd.title AS subscribed_drop_title, sd.name AS subscribed_drop_name FROM drops LEFT JOIN buckets AS fb ON drops.from_bucket_id = fb.id LEFT JOIN buckets AS tb ON drops.to_bucket_id = tb.id LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id ORDER BY dropped_on DESC',
       variables: [],
       readsFrom: {buckets, dropCategories, subscribedDrops, drops},
     ).map(
-      (QueryRow row) => ReadDropsResult(
+      (QueryRow row) => GetDropsResult(
+        id: row.read<int>('id'),
+        title: row.read<String>('title'),
+        fromBucketId: row.readNullable<int>('from_bucket_id'),
+        toBucketId: row.readNullable<int>('to_bucket_id'),
+        dropCategoryId: row.readNullable<int>('drop_category_id'),
+        subscribedDropId: row.readNullable<int>('subscribed_drop_id'),
+        parentDropId: row.readNullable<int>('parent_drop_id'),
+        amount: row.read<int>('amount'),
+        droppedOn: row.read<DateTime>('dropped_on'),
+        notes: row.readNullable<String>('notes'),
+        createdAt: row.read<DateTime>('created_at'),
+        updatedAt: row.read<DateTime>('updated_at'),
+        fromBucketName: row.readNullable<String>('from_bucket_name'),
+        toBucketName: row.readNullable<String>('to_bucket_name'),
+        dropCategoryName: row.readNullable<String>('drop_category_name'),
+        dropCategoryIcon: row.readNullable<String>('drop_category_icon'),
+        subscribedDropTitle: row.readNullable<String>('subscribed_drop_title'),
+        subscribedDropName: row.readNullable<String>('subscribed_drop_name'),
+      ),
+    );
+  }
+
+  Selectable<GetDropsInPeriodResult> getDropsInPeriod(
+    String startDate,
+    String endDate,
+  ) {
+    return customSelect(
+      'SELECT drops.*, fb.name AS from_bucket_name, tb.name AS to_bucket_name, dc.name AS drop_category_name, dc.icon AS drop_category_icon, sd.title AS subscribed_drop_title, sd.name AS subscribed_drop_name FROM drops LEFT JOIN buckets AS fb ON drops.from_bucket_id = fb.id LEFT JOIN buckets AS tb ON drops.to_bucket_id = tb.id LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id WHERE unixepoch(dropped_on) BETWEEN unixepoch(?1) AND unixepoch(?2) ORDER BY dropped_on DESC',
+      variables: [Variable<String>(startDate), Variable<String>(endDate)],
+      readsFrom: {buckets, dropCategories, subscribedDrops, drops},
+    ).map(
+      (QueryRow row) => GetDropsInPeriodResult(
         id: row.read<int>('id'),
         title: row.read<String>('title'),
         fromBucketId: row.readNullable<int>('from_bucket_id'),
@@ -3186,18 +3311,157 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     );
   }
 
-  Selectable<BucketTable> getBuckets() {
+  Future<int> createDropCategory(Insertable<DropCategoryTable> entry) {
+    var $arrayStartIndex = 1;
+    final generatedentry = $writeInsertable(
+      this.dropCategories,
+      entry,
+      startIndex: $arrayStartIndex,
+    );
+    $arrayStartIndex += generatedentry.amountOfVariables;
+    return customInsert(
+      'INSERT INTO drop_categories ${generatedentry.sql}',
+      variables: [...generatedentry.introducedVariables],
+      updates: {dropCategories},
+    );
+  }
+
+  Selectable<DropCategoryTable> getDropCategory(int id) {
     return customSelect(
-      'SELECT * FROM buckets ORDER BY sort ASC',
+      'SELECT * FROM drop_categories WHERE id = ?1',
+      variables: [Variable<int>(id)],
+      readsFrom: {dropCategories},
+    ).asyncMap(dropCategories.mapFromRow);
+  }
+
+  Selectable<DropCategoryTable> getDropCategories() {
+    return customSelect(
+      'SELECT * FROM drop_categories ORDER BY sort ASC',
       variables: [],
+      readsFrom: {dropCategories},
+    ).asyncMap(dropCategories.mapFromRow);
+  }
+
+  Future<int> updateDropCategory(
+    String name,
+    String icon,
+    DropType dropType,
+    int budget,
+    int sort,
+    bool isSystem,
+    int id,
+  ) {
+    return customUpdate(
+      'UPDATE drop_categories SET name = ?1, icon = ?2, drop_type = ?3, budget = ?4, sort = ?5, is_system = ?6, updated_at = CURRENT_TIMESTAMP WHERE id = ?7',
+      variables: [
+        Variable<String>(name),
+        Variable<String>(icon),
+        Variable<String>(DropCategories.$converterdropType.toSql(dropType)),
+        Variable<int>(budget),
+        Variable<int>(sort),
+        Variable<bool>(isSystem),
+        Variable<int>(id),
+      ],
+      updates: {dropCategories},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> deleteDropCategory(int id) {
+    return customUpdate(
+      'DELETE FROM drop_categories WHERE id = ?1',
+      variables: [Variable<int>(id)],
+      updates: {dropCategories},
+      updateKind: UpdateKind.delete,
+    );
+  }
+
+  Future<int> createBucketSnap(Insertable<BucketSnapTable> entry) {
+    var $arrayStartIndex = 1;
+    final generatedentry = $writeInsertable(
+      this.bucketSnaps,
+      entry,
+      startIndex: $arrayStartIndex,
+    );
+    $arrayStartIndex += generatedentry.amountOfVariables;
+    return customInsert(
+      'INSERT INTO bucket_snaps ${generatedentry.sql}',
+      variables: [...generatedentry.introducedVariables],
+      updates: {bucketSnaps},
+    );
+  }
+
+  Selectable<BucketSnapTable> getBucketSnap(int id) {
+    return customSelect(
+      'SELECT * FROM bucket_snaps WHERE id = ?1',
+      variables: [Variable<int>(id)],
+      readsFrom: {bucketSnaps},
+    ).asyncMap(bucketSnaps.mapFromRow);
+  }
+
+  Selectable<BucketSnapTable> getBucketSnaps() {
+    return customSelect(
+      'SELECT * FROM bucket_snaps ORDER BY snapped_on DESC',
+      variables: [],
+      readsFrom: {bucketSnaps},
+    ).asyncMap(bucketSnaps.mapFromRow);
+  }
+
+  Future<int> updateBucketSnap(
+    int bucketId,
+    int amount,
+    DateTime snappedOn,
+    int id,
+  ) {
+    return customUpdate(
+      'UPDATE bucket_snaps SET bucket_id = ?1, amount = ?2, snapped_on = ?3, updated_at = CURRENT_TIMESTAMP WHERE id = ?4',
+      variables: [
+        Variable<int>(bucketId),
+        Variable<int>(amount),
+        Variable<DateTime>(snappedOn),
+        Variable<int>(id),
+      ],
+      updates: {bucketSnaps},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> deleteBucketSnap(int id) {
+    return customUpdate(
+      'DELETE FROM bucket_snaps WHERE id = ?1',
+      variables: [Variable<int>(id)],
+      updates: {bucketSnaps},
+      updateKind: UpdateKind.delete,
+    );
+  }
+
+  Future<int> createBucket(Insertable<BucketTable> entry) {
+    var $arrayStartIndex = 1;
+    final generatedentry = $writeInsertable(
+      this.buckets,
+      entry,
+      startIndex: $arrayStartIndex,
+    );
+    $arrayStartIndex += generatedentry.amountOfVariables;
+    return customInsert(
+      'INSERT INTO buckets ${generatedentry.sql}',
+      variables: [...generatedentry.introducedVariables],
+      updates: {buckets},
+    );
+  }
+
+  Selectable<BucketTable> getBucket(int id) {
+    return customSelect(
+      'SELECT * FROM buckets WHERE id = ?1',
+      variables: [Variable<int>(id)],
       readsFrom: {buckets},
     ).asyncMap(buckets.mapFromRow);
   }
 
-  Selectable<BucketTable> getBucketById(int var1) {
+  Selectable<BucketTable> getBuckets() {
     return customSelect(
-      'SELECT * FROM buckets WHERE id = ?1',
-      variables: [Variable<int>(var1)],
+      'SELECT * FROM buckets ORDER BY sort ASC',
+      variables: [],
       readsFrom: {buckets},
     ).asyncMap(buckets.mapFromRow);
   }
@@ -3216,6 +3480,42 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       variables: [],
       readsFrom: {buckets},
     ).asyncMap(buckets.mapFromRow);
+  }
+
+  Future<int> updateBucket(
+    String name,
+    bool isIncomeDefault,
+    bool isExpenseDefault,
+    BucketCategory bucketCategory,
+    double expectedRate,
+    int sort,
+    int id,
+  ) {
+    return customUpdate(
+      'UPDATE buckets SET name = ?1, is_income_default = ?2, is_expense_default = ?3, bucket_category = ?4, expected_rate = ?5, sort = ?6, updated_at = CURRENT_TIMESTAMP WHERE id = ?7',
+      variables: [
+        Variable<String>(name),
+        Variable<bool>(isIncomeDefault),
+        Variable<bool>(isExpenseDefault),
+        Variable<String>(
+          Buckets.$converterbucketCategory.toSql(bucketCategory),
+        ),
+        Variable<double>(expectedRate),
+        Variable<int>(sort),
+        Variable<int>(id),
+      ],
+      updates: {buckets},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> deleteBucket(int id) {
+    return customUpdate(
+      'DELETE FROM buckets WHERE id = ?1',
+      variables: [Variable<int>(id)],
+      updates: {buckets},
+      updateKind: UpdateKind.delete,
+    );
   }
 
   @override
@@ -3265,7 +3565,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       const DriftDatabaseOptions(storeDateTimeAsText: true);
 }
 
-class ReadDropResult {
+class GetDropResult {
   final int id;
   final String title;
   final int? fromBucketId;
@@ -3285,7 +3585,7 @@ class ReadDropResult {
   final String? subscribedDropTitle;
   final String? subscribedDropName;
   final String? subscribedDropNotes;
-  ReadDropResult({
+  GetDropResult({
     required this.id,
     required this.title,
     this.fromBucketId,
@@ -3308,7 +3608,7 @@ class ReadDropResult {
   });
 }
 
-class ReadDropsResult {
+class GetDropsResult {
   final int id;
   final String title;
   final int? fromBucketId;
@@ -3327,7 +3627,48 @@ class ReadDropsResult {
   final String? dropCategoryIcon;
   final String? subscribedDropTitle;
   final String? subscribedDropName;
-  ReadDropsResult({
+  GetDropsResult({
+    required this.id,
+    required this.title,
+    this.fromBucketId,
+    this.toBucketId,
+    this.dropCategoryId,
+    this.subscribedDropId,
+    this.parentDropId,
+    required this.amount,
+    required this.droppedOn,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+    this.fromBucketName,
+    this.toBucketName,
+    this.dropCategoryName,
+    this.dropCategoryIcon,
+    this.subscribedDropTitle,
+    this.subscribedDropName,
+  });
+}
+
+class GetDropsInPeriodResult {
+  final int id;
+  final String title;
+  final int? fromBucketId;
+  final int? toBucketId;
+  final int? dropCategoryId;
+  final int? subscribedDropId;
+  final int? parentDropId;
+  final int amount;
+  final DateTime droppedOn;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String? fromBucketName;
+  final String? toBucketName;
+  final String? dropCategoryName;
+  final String? dropCategoryIcon;
+  final String? subscribedDropTitle;
+  final String? subscribedDropName;
+  GetDropsInPeriodResult({
     required this.id,
     required this.title,
     this.fromBucketId,

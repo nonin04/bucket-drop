@@ -12,18 +12,38 @@ CREATE TABLE buckets (
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) AS BucketTable;
 
--- バケット一覧取得
+-- C 新規登録
+createBucket:
+INSERT INTO buckets $entry;
+
+-- R 一件取得
+getBucket:
+SELECT * FROM buckets WHERE id = :id;
+
+-- R 全件取得
 getBuckets:
 SELECT * FROM buckets ORDER BY sort ASC;
 
--- id指定で取得
-getBucketById:
-SELECT * FROM buckets WHERE id = ?;
-
--- 収入のデフォルトバケットを取得
+-- R 収入のデフォルトバケットを取得
 getIncomeDefaultBucket:
 SELECT * FROM buckets WHERE is_income_default = TRUE;
 
--- 支出のデフォルトバケットを取得
+-- R 支出のデフォルトバケットを取得
 getExpenseDefaultBucket:
 SELECT * FROM buckets WHERE is_expense_default = TRUE;
+
+-- U 更新
+updateBucket:
+UPDATE buckets SET 
+    name = :name,
+    is_income_default = :isIncomeDefault,
+    is_expense_default = :isExpenseDefault,
+    bucket_category = :bucketCategory,
+    expected_rate = :expectedRate,
+    sort = :sort,
+    updated_at = CURRENT_TIMESTAMP
+WHERE id = :id;
+
+-- D 削除
+deleteBucket:
+DELETE FROM buckets WHERE id = :id;
