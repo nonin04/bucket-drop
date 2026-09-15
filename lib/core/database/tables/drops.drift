@@ -93,3 +93,7 @@ WHERE id = :id;
 -- D 削除
 deleteDrop:
 DELETE FROM drops WHERE id = :id;
+
+-- D 全件削除
+deleteAllDrops:
+DELETE FROM drops;

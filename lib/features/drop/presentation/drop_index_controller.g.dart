@@ -34,7 +34,7 @@ final class DropIndexControllerProvider
 }
 
 String _$dropIndexControllerHash() =>
-    r'2de88471a74440bc50885157753bfe2697c37b45';
+    r'cab79c02e32ab879481bd3eebf7118cfa567fdea';
 
 abstract class _$DropIndexController extends $StreamNotifier<List<Drop>> {
   Stream<List<Drop>> build();

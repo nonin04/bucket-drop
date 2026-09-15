@@ -3311,6 +3311,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     );
   }
 
+  Future<int> deleteAllDrops() {
+    return customUpdate(
+      'DELETE FROM drops',
+      variables: [],
+      updates: {drops},
+      updateKind: UpdateKind.delete,
+    );
+  }
+
   Future<int> createDropCategory(Insertable<DropCategoryTable> entry) {
     var $arrayStartIndex = 1;
     final generatedentry = $writeInsertable(

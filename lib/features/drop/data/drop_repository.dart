@@ -58,6 +58,11 @@ class DropRepository {
     debugPrint('◼︎ DropRepository: deleteDrop($id) called');
     await _db.deleteDrop(id);
   }
+
+  Future<void> deleteAllDrops() async {
+    debugPrint('◼︎ DropRepository: deleteAllDrops() called');
+    await _db.deleteAllDrops();
+  }
 }
 
 extension on GetDropsResult {

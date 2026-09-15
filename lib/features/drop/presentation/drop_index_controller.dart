@@ -18,4 +18,8 @@ class DropIndexController extends _$DropIndexController {
   Future<void> deleteDrop(int id) async {
     await ref.read(dropRepositoryProvider).deleteDrop(id);
   }
+
+  Future<void> deleteAllDrops() async {
+    await ref.read(dropRepositoryProvider).deleteAllDrops();
+  }
 }
