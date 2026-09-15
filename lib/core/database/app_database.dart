@@ -47,8 +47,8 @@ class AppDatabase extends _$AppDatabase {
       await runUserSeed(this);
     },
     beforeOpen: (details) async {
-      // データベース起動時にバケットが0件なら確実にシードを実行
-      final existingBuckets = await getBuckets().get();
+      // データベース起動時にドロップが0件なら確実にシードを実行
+      final existingBuckets = await getDrops().get();
       if (existingBuckets.isEmpty) {
         await runMasterSeed(this);
         await runUserSeed(this);
