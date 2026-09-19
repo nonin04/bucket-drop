@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Bucket {
 
- int get id; String get name; bool get isIncomeDefault; bool get isExpenseDefault; String get bucketCategory; double get expectedRate; int get sort; DateTime get createdAt; DateTime get updatedAt;
+ int get id; String get name; bool get isIncomeDefault; bool get isExpenseDefault; BucketCategory get bucketCategory; double get expectedRate; int get sort; DateTime get createdAt; DateTime get updatedAt;
 /// Create a copy of Bucket
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $BucketCopyWith<$Res>  {
   factory $BucketCopyWith(Bucket value, $Res Function(Bucket) _then) = _$BucketCopyWithImpl;
 @useResult
 $Res call({
- int id, String name, bool isIncomeDefault, bool isExpenseDefault, String bucketCategory, double expectedRate, int sort, DateTime createdAt, DateTime updatedAt
+ int id, String name, bool isIncomeDefault, bool isExpenseDefault, BucketCategory bucketCategory, double expectedRate, int sort, DateTime createdAt, DateTime updatedAt
 });
 
 
@@ -69,7 +69,7 @@ as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nu
 as String,isIncomeDefault: null == isIncomeDefault ? _self.isIncomeDefault : isIncomeDefault // ignore: cast_nullable_to_non_nullable
 as bool,isExpenseDefault: null == isExpenseDefault ? _self.isExpenseDefault : isExpenseDefault // ignore: cast_nullable_to_non_nullable
 as bool,bucketCategory: null == bucketCategory ? _self.bucketCategory : bucketCategory // ignore: cast_nullable_to_non_nullable
-as String,expectedRate: null == expectedRate ? _self.expectedRate : expectedRate // ignore: cast_nullable_to_non_nullable
+as BucketCategory,expectedRate: null == expectedRate ? _self.expectedRate : expectedRate // ignore: cast_nullable_to_non_nullable
 as double,sort: null == sort ? _self.sort : sort // ignore: cast_nullable_to_non_nullable
 as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -158,7 +158,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  bool isIncomeDefault,  bool isExpenseDefault,  String bucketCategory,  double expectedRate,  int sort,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String name,  bool isIncomeDefault,  bool isExpenseDefault,  BucketCategory bucketCategory,  double expectedRate,  int sort,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Bucket() when $default != null:
 return $default(_that.id,_that.name,_that.isIncomeDefault,_that.isExpenseDefault,_that.bucketCategory,_that.expectedRate,_that.sort,_that.createdAt,_that.updatedAt);case _:
@@ -179,7 +179,7 @@ return $default(_that.id,_that.name,_that.isIncomeDefault,_that.isExpenseDefault
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  bool isIncomeDefault,  bool isExpenseDefault,  String bucketCategory,  double expectedRate,  int sort,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String name,  bool isIncomeDefault,  bool isExpenseDefault,  BucketCategory bucketCategory,  double expectedRate,  int sort,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Bucket():
 return $default(_that.id,_that.name,_that.isIncomeDefault,_that.isExpenseDefault,_that.bucketCategory,_that.expectedRate,_that.sort,_that.createdAt,_that.updatedAt);case _:
@@ -199,7 +199,7 @@ return $default(_that.id,_that.name,_that.isIncomeDefault,_that.isExpenseDefault
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  bool isIncomeDefault,  bool isExpenseDefault,  String bucketCategory,  double expectedRate,  int sort,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String name,  bool isIncomeDefault,  bool isExpenseDefault,  BucketCategory bucketCategory,  double expectedRate,  int sort,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Bucket() when $default != null:
 return $default(_that.id,_that.name,_that.isIncomeDefault,_that.isExpenseDefault,_that.bucketCategory,_that.expectedRate,_that.sort,_that.createdAt,_that.updatedAt);case _:
@@ -221,7 +221,7 @@ class _Bucket implements Bucket {
 @override final  String name;
 @override final  bool isIncomeDefault;
 @override final  bool isExpenseDefault;
-@override final  String bucketCategory;
+@override final  BucketCategory bucketCategory;
 @override final  double expectedRate;
 @override final  int sort;
 @override final  DateTime createdAt;
@@ -257,7 +257,7 @@ abstract mixin class _$BucketCopyWith<$Res> implements $BucketCopyWith<$Res> {
   factory _$BucketCopyWith(_Bucket value, $Res Function(_Bucket) _then) = __$BucketCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String name, bool isIncomeDefault, bool isExpenseDefault, String bucketCategory, double expectedRate, int sort, DateTime createdAt, DateTime updatedAt
+ int id, String name, bool isIncomeDefault, bool isExpenseDefault, BucketCategory bucketCategory, double expectedRate, int sort, DateTime createdAt, DateTime updatedAt
 });
 
 
@@ -281,7 +281,7 @@ as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nu
 as String,isIncomeDefault: null == isIncomeDefault ? _self.isIncomeDefault : isIncomeDefault // ignore: cast_nullable_to_non_nullable
 as bool,isExpenseDefault: null == isExpenseDefault ? _self.isExpenseDefault : isExpenseDefault // ignore: cast_nullable_to_non_nullable
 as bool,bucketCategory: null == bucketCategory ? _self.bucketCategory : bucketCategory // ignore: cast_nullable_to_non_nullable
-as String,expectedRate: null == expectedRate ? _self.expectedRate : expectedRate // ignore: cast_nullable_to_non_nullable
+as BucketCategory,expectedRate: null == expectedRate ? _self.expectedRate : expectedRate // ignore: cast_nullable_to_non_nullable
 as double,sort: null == sort ? _self.sort : sort // ignore: cast_nullable_to_non_nullable
 as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable

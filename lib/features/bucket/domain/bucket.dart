@@ -1,3 +1,4 @@
+import 'package:bucket_drop/core/enums/bucket_category.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'bucket.freezed.dart';
@@ -9,7 +10,7 @@ abstract class Bucket with _$Bucket {
     required String name,
     required bool isIncomeDefault,
     required bool isExpenseDefault,
-    required String bucketCategory,
+    required BucketCategory bucketCategory,
     required double expectedRate,
     required int sort,
     required DateTime createdAt,
