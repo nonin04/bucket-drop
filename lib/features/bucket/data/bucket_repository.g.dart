@@ -54,3 +54,42 @@ final class BucketRepositoryProvider
 }
 
 String _$bucketRepositoryHash() => r'da4802a25bdc8ede53071337e8d065e913af792a';
+
+@ProviderFor(bucketList)
+final bucketListProvider = BucketListProvider._();
+
+final class BucketListProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Bucket>>,
+          List<Bucket>,
+          Stream<List<Bucket>>
+        >
+    with $FutureModifier<List<Bucket>>, $StreamProvider<List<Bucket>> {
+  BucketListProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'bucketListProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$bucketListHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<List<Bucket>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<Bucket>> create(Ref ref) {
+    return bucketList(ref);
+  }
+}
+
+String _$bucketListHash() => r'977a3aa99b57f72ec4096cb1a7cf6c84b59d5fa9';

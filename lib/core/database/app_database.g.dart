@@ -81,6 +81,18 @@ class Buckets extends Table with TableInfo<Buckets, BucketTable> {
     requiredDuringInsert: true,
     $customConstraints: 'NOT NULL',
   );
+  static const VerificationMeta _isArchivedMeta = const VerificationMeta(
+    'isArchived',
+  );
+  late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>(
+    'is_archived',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    $customConstraints: 'NOT NULL DEFAULT TRUE',
+    defaultValue: const CustomExpression('TRUE'),
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -114,6 +126,7 @@ class Buckets extends Table with TableInfo<Buckets, BucketTable> {
     bucketCategory,
     expectedRate,
     sort,
+    isArchived,
     createdAt,
     updatedAt,
   ];
@@ -175,6 +188,12 @@ class Buckets extends Table with TableInfo<Buckets, BucketTable> {
     } else if (isInserting) {
       context.missing(_sortMeta);
     }
+    if (data.containsKey('is_archived')) {
+      context.handle(
+        _isArchivedMeta,
+        isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -226,6 +245,10 @@ class Buckets extends Table with TableInfo<Buckets, BucketTable> {
         DriftSqlType.int,
         data['${effectivePrefix}sort'],
       )!,
+      isArchived: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_archived'],
+      )!,
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -258,6 +281,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
   final BucketCategory bucketCategory;
   final double expectedRate;
   final int sort;
+  final bool isArchived;
   final DateTime createdAt;
   final DateTime updatedAt;
   const BucketTable({
@@ -268,6 +292,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     required this.bucketCategory,
     required this.expectedRate,
     required this.sort,
+    required this.isArchived,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -285,6 +310,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     }
     map['expected_rate'] = Variable<double>(expectedRate);
     map['sort'] = Variable<int>(sort);
+    map['is_archived'] = Variable<bool>(isArchived);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     return map;
@@ -299,6 +325,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       bucketCategory: Value(bucketCategory),
       expectedRate: Value(expectedRate),
       sort: Value(sort),
+      isArchived: Value(isArchived),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
     );
@@ -319,6 +346,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       ),
       expectedRate: serializer.fromJson<double>(json['expected_rate']),
       sort: serializer.fromJson<int>(json['sort']),
+      isArchived: serializer.fromJson<bool>(json['is_archived']),
       createdAt: serializer.fromJson<DateTime>(json['created_at']),
       updatedAt: serializer.fromJson<DateTime>(json['updated_at']),
     );
@@ -336,6 +364,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
       ),
       'expected_rate': serializer.toJson<double>(expectedRate),
       'sort': serializer.toJson<int>(sort),
+      'is_archived': serializer.toJson<bool>(isArchived),
       'created_at': serializer.toJson<DateTime>(createdAt),
       'updated_at': serializer.toJson<DateTime>(updatedAt),
     };
@@ -349,6 +378,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     BucketCategory? bucketCategory,
     double? expectedRate,
     int? sort,
+    bool? isArchived,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) => BucketTable(
@@ -359,6 +389,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     bucketCategory: bucketCategory ?? this.bucketCategory,
     expectedRate: expectedRate ?? this.expectedRate,
     sort: sort ?? this.sort,
+    isArchived: isArchived ?? this.isArchived,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
   );
@@ -379,6 +410,9 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
           ? data.expectedRate.value
           : this.expectedRate,
       sort: data.sort.present ? data.sort.value : this.sort,
+      isArchived: data.isArchived.present
+          ? data.isArchived.value
+          : this.isArchived,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -394,6 +428,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
           ..write('bucketCategory: $bucketCategory, ')
           ..write('expectedRate: $expectedRate, ')
           ..write('sort: $sort, ')
+          ..write('isArchived: $isArchived, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -409,6 +444,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
     bucketCategory,
     expectedRate,
     sort,
+    isArchived,
     createdAt,
     updatedAt,
   );
@@ -423,6 +459,7 @@ class BucketTable extends DataClass implements Insertable<BucketTable> {
           other.bucketCategory == this.bucketCategory &&
           other.expectedRate == this.expectedRate &&
           other.sort == this.sort &&
+          other.isArchived == this.isArchived &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -435,6 +472,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
   final Value<BucketCategory> bucketCategory;
   final Value<double> expectedRate;
   final Value<int> sort;
+  final Value<bool> isArchived;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   const BucketsCompanion({
@@ -445,6 +483,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     this.bucketCategory = const Value.absent(),
     this.expectedRate = const Value.absent(),
     this.sort = const Value.absent(),
+    this.isArchived = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -456,6 +495,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     required BucketCategory bucketCategory,
     this.expectedRate = const Value.absent(),
     required int sort,
+    this.isArchived = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : name = Value(name),
@@ -469,6 +509,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     Expression<String>? bucketCategory,
     Expression<double>? expectedRate,
     Expression<int>? sort,
+    Expression<bool>? isArchived,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
@@ -480,6 +521,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
       if (bucketCategory != null) 'bucket_category': bucketCategory,
       if (expectedRate != null) 'expected_rate': expectedRate,
       if (sort != null) 'sort': sort,
+      if (isArchived != null) 'is_archived': isArchived,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -493,6 +535,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     Value<BucketCategory>? bucketCategory,
     Value<double>? expectedRate,
     Value<int>? sort,
+    Value<bool>? isArchived,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
   }) {
@@ -504,6 +547,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
       bucketCategory: bucketCategory ?? this.bucketCategory,
       expectedRate: expectedRate ?? this.expectedRate,
       sort: sort ?? this.sort,
+      isArchived: isArchived ?? this.isArchived,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -535,6 +579,9 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
     if (sort.present) {
       map['sort'] = Variable<int>(sort.value);
     }
+    if (isArchived.present) {
+      map['is_archived'] = Variable<bool>(isArchived.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -554,6 +601,7 @@ class BucketsCompanion extends UpdateCompanion<BucketTable> {
           ..write('bucketCategory: $bucketCategory, ')
           ..write('expectedRate: $expectedRate, ')
           ..write('sort: $sort, ')
+          ..write('isArchived: $isArchived, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -3499,26 +3547,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     ).asyncMap(buckets.mapFromRow);
   }
 
-  Future<int> updateBucket(
-    String name,
-    bool isIncomeDefault,
-    bool isExpenseDefault,
-    BucketCategory bucketCategory,
-    double expectedRate,
-    int sort,
-    int id,
-  ) {
+  Future<int> updateBucket(String name, double expectedRate, int id) {
     return customUpdate(
-      'UPDATE buckets SET name = ?1, is_income_default = ?2, is_expense_default = ?3, bucket_category = ?4, expected_rate = ?5, sort = ?6, updated_at = CURRENT_TIMESTAMP WHERE id = ?7',
+      'UPDATE buckets SET name = ?1, expected_rate = ?2, updated_at = CURRENT_TIMESTAMP WHERE id = ?3',
       variables: [
         Variable<String>(name),
-        Variable<bool>(isIncomeDefault),
-        Variable<bool>(isExpenseDefault),
-        Variable<String>(
-          Buckets.$converterbucketCategory.toSql(bucketCategory),
-        ),
         Variable<double>(expectedRate),
-        Variable<int>(sort),
         Variable<int>(id),
       ],
       updates: {buckets},
@@ -3526,12 +3560,66 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     );
   }
 
-  Future<int> deleteBucket(int id) {
+  Future<int> clearIncomeDefault() {
     return customUpdate(
-      'DELETE FROM buckets WHERE id = ?1',
+      'UPDATE buckets SET is_income_default = FALSE WHERE is_income_default = TRUE',
+      variables: [],
+      updates: {buckets},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> setIncomeDefault(int id) {
+    return customUpdate(
+      'UPDATE buckets SET is_income_default = TRUE WHERE id = ?1',
       variables: [Variable<int>(id)],
       updates: {buckets},
-      updateKind: UpdateKind.delete,
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> clearExpenseDefault() {
+    return customUpdate(
+      'UPDATE buckets SET is_expense_default = FALSE WHERE is_expense_default = TRUE',
+      variables: [],
+      updates: {buckets},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> setExpenseDefault(int id) {
+    return customUpdate(
+      'UPDATE buckets SET is_expense_default = TRUE WHERE id = ?1',
+      variables: [Variable<int>(id)],
+      updates: {buckets},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> updateSort(int sort, int id) {
+    return customUpdate(
+      'UPDATE buckets SET sort = ?1 WHERE id = ?2',
+      variables: [Variable<int>(sort), Variable<int>(id)],
+      updates: {buckets},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> archiveBucket(int id) {
+    return customUpdate(
+      'UPDATE buckets SET is_archived = TRUE WHERE id = ?1',
+      variables: [Variable<int>(id)],
+      updates: {buckets},
+      updateKind: UpdateKind.update,
+    );
+  }
+
+  Future<int> unarchiveBucket(int id) {
+    return customUpdate(
+      'UPDATE buckets SET is_archived = FALSE WHERE id = ?1',
+      variables: [Variable<int>(id)],
+      updates: {buckets},
+      updateKind: UpdateKind.update,
     );
   }
 

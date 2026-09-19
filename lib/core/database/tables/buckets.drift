@@ -8,42 +8,64 @@ CREATE TABLE buckets (
   bucket_category ENUMNAME(BucketCategory) NOT NULL,
   expected_rate REAL NOT NULL DEFAULT 0.0,
   sort INT NOT NULL,
+  is_archived BOOLEAN NOT NULL DEFAULT TRUE,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) AS BucketTable;
 
--- C 新規登録
+-- CREATE ---------------------------------------------------------------------
+-- 新規登録
 createBucket:
 INSERT INTO buckets $entry;
 
--- R 一件取得
+-- READ -----------------------------------------------------------------------
+-- 一件取得
 getBucket:
 SELECT * FROM buckets WHERE id = :id;
 
--- R 全件取得
+-- 全件取得
 getBuckets:
 SELECT * FROM buckets ORDER BY sort ASC;
 
--- R 収入のデフォルトバケットを取得
+-- 収入のデフォルトバケットを取得
 getIncomeDefaultBucket:
 SELECT * FROM buckets WHERE is_income_default = TRUE;
 
--- R 支出のデフォルトバケットを取得
+-- 支出のデフォルトバケットを取得
 getExpenseDefaultBucket:
 SELECT * FROM buckets WHERE is_expense_default = TRUE;
 
--- U 更新
+-- UPDATE ---------------------------------------------------------------------
 updateBucket:
 UPDATE buckets SET 
     name = :name,
-    is_income_default = :isIncomeDefault,
-    is_expense_default = :isExpenseDefault,
-    bucket_category = :bucketCategory,
     expected_rate = :expectedRate,
-    sort = :sort,
     updated_at = CURRENT_TIMESTAMP
 WHERE id = :id;
 
--- D 削除
-deleteBucket:
-DELETE FROM buckets WHERE id = :id;
+-- すべての収入デフォルトを解除
+clearIncomeDefault:
+UPDATE buckets SET is_income_default = FALSE WHERE is_income_default = TRUE;
+-- 指定したバケットを収入デフォルトに設定
+setIncomeDefault:
+UPDATE buckets SET is_income_default = TRUE WHERE id = :id;
+
+-- すべての支出デフォルトを解除
+clearExpenseDefault:
+UPDATE buckets SET is_expense_default = FALSE WHERE is_expense_default = TRUE;
+-- 指定したバケットを支出デフォルトに設定
+setExpenseDefault:
+UPDATE buckets SET is_expense_default = TRUE WHERE id = :id;
+
+-- 並び順を更新
+updateSort:
+UPDATE buckets SET sort = :sort WHERE id = :id;
+
+-- DELETE ---------------------------------------------------------------------
+-- アーカイブ
+archiveBucket:
+UPDATE buckets SET is_archived = TRUE WHERE id = :id;
+
+-- アーカイブ解除
+unarchiveBucket:
+UPDATE buckets SET is_archived = FALSE WHERE id = :id;

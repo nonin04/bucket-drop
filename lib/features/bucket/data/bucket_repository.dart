@@ -12,9 +12,22 @@ BucketRepository bucketRepository(Ref ref) {
   return BucketRepository(db);
 }
 
+@riverpod
+Stream<List<Bucket>> bucketList(Ref ref) {
+  final repository = ref.watch(bucketRepositoryProvider);
+  return repository.watchBuckets();
+}
+
 class BucketRepository {
   BucketRepository(this._db);
   final AppDatabase _db;
+
+  Stream<List<Bucket>> watchBuckets() {
+    debugPrint('◼︎ BucketRepository: watchBuckets()');
+    return _db.getBuckets().watch().map(
+      (rows) => rows.map((r) => r.toDomain()).toList(),
+    );
+  }
 
   Future<List<Bucket>> getBuckets() async {
     debugPrint('◼︎ BucketRepository: getBuckets()');
@@ -25,6 +38,15 @@ class BucketRepository {
   Future<void> createBucket(Bucket bucket) async {
     debugPrint('◼︎ BucketRepository: createBucket(${bucket.name})');
     await _db.createBucket(bucket.toCompanion());
+  }
+
+  Future<void> updateBucket(Bucket bucket) async {
+    debugPrint('◼︎ BucketRepository: updateBucket(${bucket.id})');
+    await _db.updateBucket(
+      bucket.name,
+      bucket.expectedRate,
+      bucket.id,
+    );
   }
 }
 
@@ -37,6 +59,7 @@ extension on BucketTable {
     bucketCategory: bucketCategory,
     expectedRate: expectedRate,
     sort: sort,
+    isArchived: isArchived,
     createdAt: createdAt,
     updatedAt: updatedAt,
   );

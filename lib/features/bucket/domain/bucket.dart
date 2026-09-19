@@ -13,6 +13,7 @@ abstract class Bucket with _$Bucket {
     required BucketCategory bucketCategory,
     required double expectedRate,
     required int sort,
+    required bool isArchived,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _Bucket;
