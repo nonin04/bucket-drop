@@ -21,9 +21,12 @@ CREATE TABLE drops (
 createDrop:
 INSERT INTO drops $entry;
 
-
 -- R 一件取得
 getDrop:
+SELECT * FROM drops WHERE id = :id;
+
+-- R 一件取得(詳細)
+getDropWithDetail:
 SELECT 
     drops.*,
     fb.name as from_bucket_name,
@@ -40,8 +43,8 @@ LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id
 LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id
 WHERE drops.id = :id;
 
--- R 全件取得
-getDrops: 
+-- R 全件取得(詳細)
+getDropsWithDetail: 
 SELECT 
     drops.*,
     fb.name as from_bucket_name,

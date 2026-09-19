@@ -26,14 +26,14 @@ class DropRepository {
   // ① Future は async / await で書くのが標準
   Future<List<Drop>> getDrops() async {
     debugPrint('◼ DropRepository: getDrops() called');
-    final rows = await _db.getDrops().get();
+    final rows = await _db.getDropsWithDetail().get();
     return rows.map((r) => r.toDomain()).toList();
   }
 
   // ② Stream は .map() でパイプライン変換するのが標準
   Stream<List<Drop>> watchDrops() {
     debugPrint('◼ DropRepository: watchDrops() called');
-    return _db.getDrops().watch().map(
+    return _db.getDropsWithDetail().watch().map(
       (rows) => rows.map((r) => r.toDomain()).toList(),
     );
   }
@@ -65,7 +65,7 @@ class DropRepository {
   }
 }
 
-extension on GetDropsResult {
+extension on GetDropsWithDetailResult {
   Drop toDomain() => Drop(
     id: id,
     title: title,

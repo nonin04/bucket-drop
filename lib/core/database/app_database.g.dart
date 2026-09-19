@@ -3180,13 +3180,21 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     );
   }
 
-  Selectable<GetDropResult> getDrop(int id) {
+  Selectable<DropTable> getDrop(int id) {
+    return customSelect(
+      'SELECT * FROM drops WHERE id = ?1',
+      variables: [Variable<int>(id)],
+      readsFrom: {drops},
+    ).asyncMap(drops.mapFromRow);
+  }
+
+  Selectable<GetDropWithDetailResult> getDropWithDetail(int id) {
     return customSelect(
       'SELECT drops.*, fb.name AS from_bucket_name, tb.name AS to_bucket_name, dc.name AS drop_category_name, dc.icon AS drop_category_icon, sd.title AS subscribed_drop_title, sd.name AS subscribed_drop_name, sd.notes AS subscribed_drop_notes FROM drops LEFT JOIN buckets AS fb ON drops.from_bucket_id = fb.id LEFT JOIN buckets AS tb ON drops.to_bucket_id = tb.id LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id WHERE drops.id = ?1',
       variables: [Variable<int>(id)],
       readsFrom: {buckets, dropCategories, subscribedDrops, drops},
     ).map(
-      (QueryRow row) => GetDropResult(
+      (QueryRow row) => GetDropWithDetailResult(
         id: row.read<int>('id'),
         title: row.read<String>('title'),
         fromBucketId: row.readNullable<int>('from_bucket_id'),
@@ -3210,13 +3218,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     );
   }
 
-  Selectable<GetDropsResult> getDrops() {
+  Selectable<GetDropsWithDetailResult> getDropsWithDetail() {
     return customSelect(
       'SELECT drops.*, fb.name AS from_bucket_name, tb.name AS to_bucket_name, dc.name AS drop_category_name, dc.icon AS drop_category_icon, sd.title AS subscribed_drop_title, sd.name AS subscribed_drop_name FROM drops LEFT JOIN buckets AS fb ON drops.from_bucket_id = fb.id LEFT JOIN buckets AS tb ON drops.to_bucket_id = tb.id LEFT JOIN drop_categories AS dc ON drops.drop_category_id = dc.id LEFT JOIN subscribed_drops AS sd ON drops.subscribed_drop_id = sd.id ORDER BY dropped_on DESC',
       variables: [],
       readsFrom: {buckets, dropCategories, subscribedDrops, drops},
     ).map(
-      (QueryRow row) => GetDropsResult(
+      (QueryRow row) => GetDropsWithDetailResult(
         id: row.read<int>('id'),
         title: row.read<String>('title'),
         fromBucketId: row.readNullable<int>('from_bucket_id'),
@@ -3574,7 +3582,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       const DriftDatabaseOptions(storeDateTimeAsText: true);
 }
 
-class GetDropResult {
+class GetDropWithDetailResult {
   final int id;
   final String title;
   final int? fromBucketId;
@@ -3594,7 +3602,7 @@ class GetDropResult {
   final String? subscribedDropTitle;
   final String? subscribedDropName;
   final String? subscribedDropNotes;
-  GetDropResult({
+  GetDropWithDetailResult({
     required this.id,
     required this.title,
     this.fromBucketId,
@@ -3617,7 +3625,7 @@ class GetDropResult {
   });
 }
 
-class GetDropsResult {
+class GetDropsWithDetailResult {
   final int id;
   final String title;
   final int? fromBucketId;
@@ -3636,7 +3644,7 @@ class GetDropsResult {
   final String? dropCategoryIcon;
   final String? subscribedDropTitle;
   final String? subscribedDropName;
-  GetDropsResult({
+  GetDropsWithDetailResult({
     required this.id,
     required this.title,
     this.fromBucketId,
